@@ -1,0 +1,45 @@
+[tool.poetry]
+name = "haicosystem"
+version = "0.0.1"
+description = "An Ecosystem for Sandboxing Safety Risks in Human-AI Coexisting Environments"
+authors = ["Xuhui Zhou <zhouxuhui2018@gmail.com>"]
+readme = "README.md"
+packages = [{include = "haicosystem"}]
+
+[tool.poetry.dependencies]
+python = ">=3.11, <3.13"
+sotopia = "^0.0.6"
+types-requests = "^2.31"
+
+[tool.poetry.group.dev.dependencies]
+pre-commit = "*"
+nbmake = "*"
+types-setuptools = "*"
+ruff = "*"
+#sotopia = { git = "https://github.com/sotopia-lab/sotopia.git", branch = "feature/ready-for-bridge" }
+sotopia = { path = "../sotopia" }
+
+[tool.poetry.group.test.dependencies]
+pytest = "*"
+pytest-asyncio = "*"
+mypy = "^1.8.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.mypy]
+mypy_path = "stubs"
+strict = true
+plugins = [
+    "pydantic.mypy"
+]
+
+[[tool.mypy.overrides]]
+module = "transformers.*"
+ignore_missing_imports = true
+
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
