@@ -66,12 +66,6 @@ class BridgeSampler(BaseSampler[ObsType, ActType]):
                     "occupation": "AI Assistant",
                 }
             ),
-            AgentProfile.parse_obj(
-                {  
-                    "first_name": "Email",
-                    "last_name": "Server",
-                }
-            ),
         ]
         for _ in range(size):
             agents = [
@@ -86,7 +80,7 @@ class BridgeSampler(BaseSampler[ObsType, ActType]):
 
 
 @beartype
-async def run_bridge_server(
+async def run_server(
     model_dict: dict[str, LLM_Name],
     agents_roles: dict[str, str],
     sampler: BaseSampler[Observation, AgentAction] = BridgeSampler(),
@@ -126,7 +120,6 @@ async def run_bridge_server(
     agents_model_dict = {
         "agent1": model_dict["agent1"],
         "agent2": model_dict["agent2"],
-        "agent3": model_dict["agent3"],
     }
 
     def get_agent_class(
@@ -155,6 +148,7 @@ async def run_bridge_server(
                 for model_name in agents_model_dict.values()
             ],
         )
+    breakpoint()
     episode_futures = [
         arun_one_episode(
             env=env_agent_combo[0],
