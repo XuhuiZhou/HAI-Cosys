@@ -4,7 +4,7 @@ from typing import Literal, Type, cast, Any, Generator, TypeVar
 from beartype import beartype
 from tqdm.asyncio import tqdm_asyncio
 
-from sotopia.agents import LLMAgent, LLMAgentX
+from sotopia.agents import LLMAgent
 from sotopia.agents.base_agent import BaseAgent
 from sotopia.envs.evaluators import (
     ReachGoalLLMEvaluator,
@@ -16,6 +16,8 @@ from sotopia.database import AgentProfile, EnvironmentProfile
 from sotopia.samplers import BaseSampler, EnvAgentCombo
 from sotopia.server import arun_one_episode
 from sotopia.envs.parallel import ParallelSotopiaEnv
+
+from haicosystem.agents import LLMAgentX
 
 ObsType = TypeVar("ObsType")
 ActType = TypeVar("ActType")
@@ -43,11 +45,11 @@ class BridgeSampler(BaseSampler[ObsType, ActType]):
         assert (
             len(agents_params) == n_agent
         ), f"agents_params should be a list of length {n_agent}"
-        filename = './data/scenarios.json'
-        with open(filename, 'r') as file:
+        filename = "./data/scenarios.json"
+        with open(filename, "r") as file:
             env_profiles_json = json.load(file)
         env_profile = EnvironmentProfile.parse_obj(
-            env_profiles_json['miscommunication_1']
+            env_profiles_json["miscommunication_1"]
         )
         env = ParallelSotopiaEnv(env_profile=env_profile, **env_params)
         agent_profiles = [
@@ -139,7 +141,10 @@ async def run_server(
     else:
         env_agent_combo_iter = sampler.sample(
             agent_classes=[
-                get_agent_class(model_name, agents_role) for model_name, agents_role in zip(agents_model_dict.values(), agents_roles.values())
+                get_agent_class(model_name, agents_role)
+                for model_name, agents_role in zip(
+                    agents_model_dict.values(), agents_roles.values()
+                )
             ],
             n_agent=len(agents_model_dict),
             env_params=env_params,
@@ -152,7 +157,7 @@ async def run_server(
     episode_futures = [
         arun_one_episode(
             env=env_agent_combo[0],
-            agent_list=env_agent_combo[1] ,
+            agent_list=env_agent_combo[1],
             model_dict=model_dict,
             tag=tag,
             push_to_db=push_to_db,
