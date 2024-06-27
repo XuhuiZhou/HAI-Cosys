@@ -12,12 +12,14 @@ from sotopia.envs.evaluators import (
 )
 from sotopia.generation_utils.generate import LLM_Name
 from sotopia.messages import AgentAction, Message, Observation
-from sotopia.database import AgentProfile, EnvironmentProfile
+from sotopia.database import AgentProfile
 from sotopia.samplers import BaseSampler, EnvAgentCombo
 from sotopia.server import arun_one_episode
-from sotopia.envs.parallel import ParallelSotopiaEnv
 
+from haicosystem.envs import ParellelHaicosystemEnv
+from haicosystem.envs.database import HaiEnvironmentProfile
 from haicosystem.agents import LLMAgentX
+from haicosystem.envs.llm_engine import LlmGroundingEngine
 
 ObsType = TypeVar("ObsType")
 ActType = TypeVar("ActType")
@@ -48,10 +50,8 @@ class BridgeSampler(BaseSampler[ObsType, ActType]):
         filename = "./data/scenarios.json"
         with open(filename, "r") as file:
             env_profiles_json = json.load(file)
-        env_profile = EnvironmentProfile.parse_obj(
-            env_profiles_json["miscommunication_1"]
-        )
-        env = ParallelSotopiaEnv(env_profile=env_profile, **env_params)
+        env_profile = HaiEnvironmentProfile.parse_obj(env_profiles_json["official_122"])
+        env = ParellelHaicosystemEnv(env_profile=env_profile, **env_params)
         agent_profiles = [
             AgentProfile.parse_obj(
                 {
@@ -118,6 +118,9 @@ async def run_server(
         "terminal_evaluators": [
             ReachGoalLLMEvaluator(model_dict["env"]),
         ],
+        "grounding_engines": [
+            LlmGroundingEngine(model_name=model_dict["env"]),
+        ],
     }
     agents_model_dict = {
         "agent1": model_dict["agent1"],
@@ -153,12 +156,10 @@ async def run_server(
                 for model_name in agents_model_dict.values()
             ],
         )
-    breakpoint()
     episode_futures = [
         arun_one_episode(
             env=env_agent_combo[0],
             agent_list=env_agent_combo[1],
-            model_dict=model_dict,
             tag=tag,
             push_to_db=push_to_db,
         )

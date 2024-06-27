@@ -18,7 +18,7 @@ async def agenerate_action_x(
     goal: str,
     temperature: float = 0.7,
     script_like: bool = False,
-) -> tuple[AgentAction, str]:
+) -> AgentAction:
     """
     Generate the action for the agent, only should be used for generating human-like actions
     """
@@ -59,7 +59,7 @@ async def agenerate_action_x(
             temperature=temperature,
         )
     except Exception:
-        return AgentAction(action_type="none", argument=""), ""
+        return AgentAction(action_type="none", argument="")
 
 
 class LLMAgentX(LLMAgent):
@@ -89,7 +89,7 @@ class LLMAgentX(LLMAgent):
         if len(obs.available_actions) == 1 and "none" in obs.available_actions:
             return AgentAction(action_type="none", argument="")
         else:
-            action, prompt = await agenerate_action_x(
+            action = await agenerate_action_x(
                 self.model_name,
                 history="\n".join(f"{y.to_natural_language()}" for x, y in self.inbox),
                 turn_number=obs.turn_number,
