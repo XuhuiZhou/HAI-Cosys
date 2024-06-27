@@ -16,19 +16,13 @@ conda create -n haicosystem python=3.11; conda activate haicosystem;  curl -sSL 
 poetry install
 ```
 
-penAI key is required to run the code. Please set the environment variable `OPENAI_API_KEY` to your key. The recommend way is to add the key to the conda environment:
+OpenAI key is required to run the code. Please set the environment variable `OPENAI_API_KEY` to your key. The recommend way is to add the key to the conda environment:
 ```bash
 conda env config vars set OPENAI_API_KEY=your_key
 ```
 
-A redis-stack server is required to run the code.
-Here are four lines of code to create a redis-stack server:
-```bash
-curl -fsSL https://packages.redis.io/redis-stack/redis-stack-server-7.2.0-v10.focal.x86_64.tar.gz -o redis-stack-server.tar.gz
-tar -xvf redis-stack-server.tar.gz
-pip install redis
-./redis-stack-server-7.2.0-v10/bin/redis-stack-server --daemonize yes
-```
+A redis-stack server is required to run the code. Please follow the instruction [here](https://docs.sotopia.world/#set-up-redis-stack) to set up the server.
+
 
 The `REDIS_OM_URL` need to be set before loading and saving agents:
 ```bash
