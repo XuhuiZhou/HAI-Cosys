@@ -20,6 +20,7 @@ from beartype import beartype
 from sotopia.envs.evaluators import ScriptEnvironmentResponse, _reduce
 from collections import defaultdict
 import logging
+from haicosystem.envs.messages import SimulatedObservation
 
 
 from pydantic import Field
@@ -28,14 +29,16 @@ log = logging.getLogger("evaluators")
 
 
 class ScriptEnvironmentResponsePlus(ScriptEnvironmentResponse):
-    observation: str | None = Field(
+    observation: SimulatedObservation = Field(
         description="All of the comments supporting the termination and rating"
     )
 
 
 @beartype
 def unweighted_aggregate_response(
-    responses: list[tuple[str, tuple[tuple[str, int | float | bool], str]]],
+    responses: list[
+        tuple[str, tuple[tuple[str, int | float | bool], str]] | SimulatedObservation
+    ],
 ) -> ScriptEnvironmentResponsePlus:
     """
     Aggregate the responses from the environment
@@ -48,12 +51,14 @@ def unweighted_aggregate_response(
         defaultdict(list)
     )
     for response in responses:
-        assert (
-            response[0] == "environment"
-            or response[0].startswith("agent")
-            or response[0].startswith("engine")
-        )
-        responses_dict[response[0]].append(response[1])
+        if isinstance(response, SimulatedObservation):
+            assert (
+                len(responses_dict["engine"]) == 0
+            )  # TODO: allow multiple engine responses
+            responses_dict["engine"].append(response)
+        else:
+            assert response[0] == "environment" or response[0].startswith("agent")
+            responses_dict[response[0]].append(response[1])
 
     environment_responses: tuple[dict[str, float | int | bool], str] = ({}, "")
     agent_1_responses: tuple[dict[str, float | int | bool], str] = ({}, "")
@@ -61,6 +66,8 @@ def unweighted_aggregate_response(
     for k, v in responses_dict.items():
         if k == "environment":
             environment_responses = _reduce(v)
+        elif k == "engine":
+            continue
         else:
             if k == "agent_1":
                 agent_1_responses = _reduce(v)
@@ -113,9 +120,7 @@ def unweighted_aggregate_response(
         if agent_2_responses != ({}, "")
         else None,
         comments=comments,
-        observation=responses_dict["engine"][0][1]
-        if "engine" in responses_dict
-        else "",  # temp implementation
+        observation=responses_dict["engine"][0],
     )
 
 
@@ -176,6 +181,7 @@ class ParellelHaicosystemEnv(ParallelSotopiaEnv):
     ]:
         # Time step ++
         self.turn_number += 1
+        self.act_last_time = len(self.agents) - 1
         # For action sampled from action space, it needs to be converted into AgentAction
         complied_actions: dict[str, AgentAction] = {}
         for key in actions.keys():
@@ -198,6 +204,7 @@ class ParellelHaicosystemEnv(ParallelSotopiaEnv):
         )
         for agent, action in complied_actions.items():
             self.recv_message(agent, action)
+
         response = unweighted_aggregate_response(
             list(
                 itertools.chain(
@@ -240,14 +247,25 @@ class ParellelHaicosystemEnv(ParallelSotopiaEnv):
 
         self.action_mask = [False for _ in self.agents]
         if self.action_order == "round-robin":
-            self.action_mask[self.turn_number % len(self.action_mask)] = True
+            # lock if the engine has output an observation, then the agent continues
+            if response.observation:
+                self.action_mask[1] = (
+                    True  # TODO: assert the second agent is always the AI agent
+                )
+                self.action_mask[0] = False
+            else:
+                self.act_last_time = (self.act_last_time + 1) % len(self.agents)
+                self.action_mask[self.act_last_time] = True
         elif self.action_order == "random":
             self.action_mask[random.randint(0, len(self.action_mask) - 1)] = True
         else:
             self.action_mask = [True for _ in self.agents]
         obs = _actions_to_natural_language(complied_actions)
-        if response.observation:
-            obs += f"\n{response.observation}"
+        if response.observation.observation:
+            self.recv_message(
+                "Environment", response.observation
+            )  # TODO: only one engine response is supported
+            obs += f"\n{response.observation.to_natural_language()}"
         info = {
             self.background.p1_name: {
                 "comments": response.comments or "",

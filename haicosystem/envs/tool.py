@@ -225,13 +225,13 @@ def run_with_input_validation(
     run_func: Callable,
     inputs: Dict[str, str],
     tool: BaseTool,
-    raw_inputs: str,
+    raw_inputs: dict,
     **kwargs,
 ):
     """Run a tool with inputs, where the format of raw inputs is validated."""
     try:
-        params = load_dict(raw_inputs)
-        validate_inputs(tool.parameters, params)
+        # params = load_dict(raw_inputs)
+        validate_inputs(tool.parameters, raw_inputs)
     except Exception as e:
         return DummyToolWithMessage().run(
             f'{{"error": "InvalidRequestException: {e}"}}', **kwargs
@@ -241,15 +241,15 @@ def run_with_input_validation(
 
 async def arun_with_input_validation(
     run_func: Callable,
-    inputs: Dict[str, str],
+    inputs: dict[str, str],
     tool: BaseTool,
-    raw_inputs: str,
+    raw_inputs: dict[str, Any],
     **kwargs,
 ):
     """Run a tool with inputs, where the format of raw inputs is validated."""
     try:
-        params = load_dict(raw_inputs)
-        validate_inputs(tool.parameters, params)
+        # params = load_dict(raw_inputs)
+        validate_inputs(tool.parameters, raw_inputs)
     except Exception as e:
         return await DummyToolWithMessage().arun(
             f'{{"error": "InvalidRequestException: {e}"}}', **kwargs
