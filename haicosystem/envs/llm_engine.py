@@ -50,10 +50,7 @@ class SimulatorInputModel(BaseModel):
     current_tool: Optional[str]
     current_tool_description: Optional[str]
     toolkit_descriptions: Optional[str]
-    input: Optional[str]
-    underspecifications: Optional[str]
-    risky_outcome: Optional[str]
-    risky_actions: Optional[str]
+    interaction_history: Optional[str]
 
 
 @beartype
@@ -150,7 +147,6 @@ class LlmGroundingEngine(Evaluator):
             name="llm_simulator",
             description="Simulate the execution of a tool with a language model",
             args_schema=SimulatorInputModel,
-            # infer_schema=False
         )
         return result
 
@@ -209,7 +205,6 @@ class LlmGroundingEngine(Evaluator):
         regex = rf"{self.thought_summary_prefix}\s*([\s\S]*?){self.observation_prefix}\s*([\s\S]*)"
         match = re.search(regex, llm_output, re.DOTALL)
         if not match:
-            breakpoint()
             return None
         thought_summary = match.group(1).strip()
         observation = match.group(2).strip()
@@ -218,7 +213,6 @@ class LlmGroundingEngine(Evaluator):
     def _get_simulated_observation(
         self, callback_manager: CallbackManager, **full_inputs: Any
     ) -> SimulatedObservation:
-        print("---------------------Hey I am here---------------------")
         streaming_output = self.llm_simulator_chain.llm.streaming
         if streaming_output:
             print("\n" + self.generatetion_prefix)
@@ -231,9 +225,6 @@ class LlmGroundingEngine(Evaluator):
         )
         parsed_output = self._extract_observation_and_thought(full_output)
         while parsed_output is None:
-            print(
-                "---------------------Hey I can not parse the output---------------------"
-            )
             full_inputs["simulator_scratchpad"] += full_output
             output = self.llm_simulator_chain.predict(
                 **full_inputs, stop=self.stop_seqs
@@ -255,7 +246,6 @@ class LlmGroundingEngine(Evaluator):
             thought_summary=parsed_output[1],
             log=full_output,
         )
-
         observation = self._critique_simulated_observation(
             callback_manager, sim_observation, full_inputs
         )
@@ -481,6 +471,22 @@ class LlmGroundingEngine(Evaluator):
         temperature: float = 0.0,
     ) -> list[SimulatedObservation]:
         # filter did nothing
+        if not history and messages:
+            messages_filtered = [
+                (x, y)
+                for x, y in messages
+                if "did nothing" not in y.to_natural_language()
+            ]
+            history = "\n".join(
+                [
+                    (
+                        f"{x} {y.to_natural_language()}"
+                        if x != "Environment"
+                        else y.to_natural_language()
+                    )
+                    for x, y in messages_filtered
+                ]
+            )
         messages_in_single_turn = []
         for message in messages[::-1]:
             if message[0] == "Environment" and message[
@@ -512,7 +518,7 @@ class LlmGroundingEngine(Evaluator):
                     "toolkit_descriptions": self._get_current_toolkit_descriptions(
                         tool_action.tool
                     ),
-                    # **inputs, ## TODO: bring back inputs
+                    "interaction_history": history,
                 }
                 tool_run_kwargs = self.tool_run_logging_kwargs()
                 observation = await arun_with_input_validation(

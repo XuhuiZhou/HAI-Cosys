@@ -47,7 +47,7 @@ class BridgeSampler(BaseSampler[ObsType, ActType]):
         assert (
             len(agents_params) == n_agent
         ), f"agents_params should be a list of length {n_agent}"
-        filename = "./data/scenarios.json"
+        filename = "./data/example_scenarios.json"
         with open(filename, "r") as file:
             env_profiles_json = json.load(file)
         env_profile = HaiEnvironmentProfile.parse_obj(env_profiles_json["official_122"])

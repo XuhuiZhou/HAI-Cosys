@@ -131,6 +131,9 @@ Here is the detailed specification of the current tool that you needs to simulat
 
 * {current_tool}: {current_tool_description}
 
+Here is the interaction history that you need to consider for simulating the output of the current tool call:
+{interaction_history}
+
 Scratchpad:
 {simulator_scratchpad}
 """

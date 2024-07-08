@@ -162,8 +162,20 @@ class ParellelHaicosystemEnv(ParallelSotopiaEnv):
         tool_prompt = tool_prompt.replace("<", "&lt;").replace(
             ">", "&gt;"
         )  # TODO: temp fix for the bug in the xml renderer
+        environment_info = "\n".join(
+            f"### {key}:\n" + " ".join(getattr(env_profile, key))
+            for key in [
+                "user_intention",
+                "underspecifications",
+                "desired_behavior_and_outcomes",
+                "potential_risky_outcomes",
+                "potential_risky_behavior",
+            ]
+        )
         new_scenario = (
             env_profile.scenario
+            + "\n"
+            + f"<extra_info viewer='environment'>{environment_info}</extra_info>"
             + "\n"
             + f"<extra_info viewer='agent_1'>{tool_prompt}</extra_info>"
         )  # temp implementation; only agent_0 is able to use the tools
@@ -198,7 +210,6 @@ class ParellelHaicosystemEnv(ParallelSotopiaEnv):
         for idx, agent in enumerate(self.agents):
             if not self.action_mask[idx]:
                 complied_actions[agent] = AgentAction(action_type="none", argument="")
-
         self.recv_message(
             "Environment", SimpleMessage(message=f"Turn #{self.turn_number}")
         )
