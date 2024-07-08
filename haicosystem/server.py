@@ -1,5 +1,11 @@
+import asyncio
 import json
-from typing import Literal, Type, cast, Any, Generator, TypeVar
+import rich
+import gin
+import logging
+import itertools
+from sotopia.database import EpisodeLog
+from typing import Literal, Type, cast, Any, Generator, TypeVar, Sequence
 
 from beartype import beartype
 from tqdm.asyncio import tqdm_asyncio
@@ -7,18 +13,18 @@ from tqdm.asyncio import tqdm_asyncio
 from sotopia.agents import LLMAgent
 from sotopia.agents.base_agent import BaseAgent
 from sotopia.envs.evaluators import (
-    ReachGoalLLMEvaluator,
     RuleBasedTerminatedEvaluator,
 )
 from sotopia.generation_utils.generate import LLM_Name
 from sotopia.messages import AgentAction, Message, Observation
 from sotopia.database import AgentProfile
 from sotopia.samplers import BaseSampler, EnvAgentCombo
-from sotopia.server import arun_one_episode
+from sotopia.agents import Agents
 
 from haicosystem.envs import ParellelHaicosystemEnv
 from haicosystem.envs.database import HaiEnvironmentProfile
 from haicosystem.agents import LLMAgentX
+from haicosystem.envs.evaluators import SafetyLLMEvaluator
 from haicosystem.envs.llm_engine import LlmGroundingEngine
 
 ObsType = TypeVar("ObsType")
@@ -81,6 +87,147 @@ class BridgeSampler(BaseSampler[ObsType, ActType]):
             yield env, agents
 
 
+def render_for_humans(episode: EpisodeLog) -> list[str]:
+    """Generate a human readable version of the episode log.
+
+    Returns:
+        A tuple of (a list of agent_profiles, a list of str): The agent profiles, and the messages and rewards in each turn.
+    """
+
+    messages_and_rewards = []
+    for idx, turn in enumerate(episode.messages):
+        messages_in_this_turn = []
+        if idx == 0:
+            assert (
+                len(turn) >= 2
+            ), "The first turn should have at least environemnt messages"
+            messages_in_this_turn.append(turn[0][2])
+            messages_in_this_turn.append(turn[1][2])
+        for sender, receiver, message in turn:
+            if receiver == "Environment":
+                if sender != "Environment":
+                    if "did nothing" in message:
+                        continue
+                    else:
+                        if "said:" in message:
+                            messages_in_this_turn.append(f"{sender} {message}")
+                        else:
+                            messages_in_this_turn.append(f"{sender}: {message}")
+                else:
+                    messages_in_this_turn.append(message)
+        messages_and_rewards.append("\n".join(messages_in_this_turn))
+    messages_and_rewards.append(f"The reasoning is:\n{episode.reasoning}")
+    messages_and_rewards.append(
+        f"The rewards are:\nAgent 1: {episode.rewards[0]}\nAgent 2: {episode.rewards[1]}"
+    )
+    return messages_and_rewards
+
+
+@gin.configurable
+async def arun_one_episode(
+    env: ParellelHaicosystemEnv,
+    agent_list: Sequence[BaseAgent[Observation, AgentAction]],
+    omniscient: bool = False,
+    script_like: bool = False,
+    json_in_script: bool = False,
+    tag: str | None = None,
+    push_to_db: bool = False,
+) -> list[tuple[str, str, Message]]:
+    agents = Agents({agent.agent_name: agent for agent in agent_list})
+    environment_messages = env.reset(agents=agents, omniscient=omniscient)
+    agents.reset()
+
+    messages: list[list[tuple[str, str, Message]]] = []
+
+    # Main Event Loop
+    done = False
+    messages.append(
+        [
+            ("Environment", agent_name, environment_messages[agent_name])
+            for agent_name in env.agents
+        ]
+    )
+    # set goal for agents
+    for index, agent_name in enumerate(env.agents):
+        agents[agent_name].goal = env.profile.agent_goals[index]
+    rewards: list[list[float]] = []
+    reasons: list[str] = []
+    while not done:
+        # gather agent messages
+        agent_messages: dict[str, AgentAction] = dict()
+        actions = await asyncio.gather(
+            *[
+                agents[agent_name].aact(environment_messages[agent_name])
+                for agent_name in env.agents
+            ]
+        )
+        if script_like:
+            # manually mask one message
+            agent_mask = env.action_mask
+            for idx in range(len(agent_mask)):
+                print("Current mask: ", agent_mask)
+                if agent_mask[idx] == 0:
+                    print("Action not taken: ", actions[idx])
+                    actions[idx] = AgentAction(action_type="none", argument="")
+                else:
+                    print("Current action taken: ", actions[idx])
+
+        # actions = cast(list[AgentAction], actions)
+        for idx, agent_name in enumerate(env.agents):
+            agent_messages[agent_name] = actions[idx]
+
+            messages[-1].append((agent_name, "Environment", agent_messages[agent_name]))
+
+        # send agent messages to environment
+        (
+            environment_messages,
+            rewards_in_turn,
+            terminated,
+            ___,
+            info,
+        ) = await env.astep(agent_messages)
+        messages.append(
+            [
+                ("Environment", agent_name, environment_messages[agent_name])
+                for agent_name in env.agents
+            ]
+        )
+        # print("Environment message: ", environment_messages)
+        # exit(0)
+        rewards.append([rewards_in_turn[agent_name] for agent_name in env.agents])
+        reasons.append(
+            " ".join(info[agent_name]["comments"] for agent_name in env.agents)
+        )
+        done = all(terminated.values())
+
+    # TODO: clean up this part
+    epilog = EpisodeLog(
+        environment=env.profile.pk,
+        agents=[agent.profile.pk for agent in agent_list],
+        tag=tag,
+        models=[env.model_name, agent_list[0].model_name, agent_list[1].model_name],
+        messages=[
+            [(m[0], m[1], m[2].to_natural_language()) for m in messages_in_turn]
+            for messages_in_turn in messages
+        ],
+        reasoning=info[env.agents[0]]["comments"],
+        rewards=[info[agent_name]["complete_rating"] for agent_name in env.agents],
+        rewards_prompt=info["rewards_prompt"]["overall_prompt"],
+    )
+    rich.print(epilog.rewards_prompt)
+    conversation = render_for_humans(epilog)
+    for message in conversation:
+        rich.print(message)
+
+    if push_to_db:
+        try:
+            epilog.save()
+        except Exception as e:
+            logging.error(f"Failed to save episode log: {e}")
+    # flatten nested list messages
+    return list(itertools.chain(*messages))
+
+
 @beartype
 async def run_server(
     model_dict: dict[str, LLM_Name],
@@ -116,7 +263,7 @@ async def run_server(
             RuleBasedTerminatedEvaluator(max_turn_number=20, max_stale_turn=2),
         ],
         "terminal_evaluators": [
-            ReachGoalLLMEvaluator(model_dict["env"]),
+            SafetyLLMEvaluator(model_dict["env"]),
         ],
         "grounding_engines": [
             LlmGroundingEngine(model_name=model_dict["env"]),
