@@ -256,7 +256,7 @@ class LlmGroundingEngine(Evaluator):
         simulator_inputs: dict[str, str],
         sim_observation: SimulatedObservation,
         critique_outputs: list[dict[str, str]],
-    ) -> BasePromptTemplate:
+    ) -> list:
         """Create a the prompt for the critiquer LLM."""
         simulator_prompt_temp = self.llm_simulator_chain.prompt
         use_chat_format = isinstance(simulator_prompt_temp, ChatPromptTemplate)

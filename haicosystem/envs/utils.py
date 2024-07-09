@@ -4,7 +4,7 @@ def format_tool_prompt(
 ) -> str:
     """Format tool prompts"""
     return f"""
-You can choose to use tools when you issue an action.
+Tools to use when issuing an action:
 ### Tool Specifications
 Each toolkit is a collection of relevant tools for completing a specific task. Each tool is specified by:
 1. Arguments: The tool input argument specification
