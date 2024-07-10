@@ -15,17 +15,10 @@ from haicosystem.tools import get_toolkits_by_names
 from haicosystem.tools.tool_interface import BaseToolkit
 from haicosystem.tools.utils import DummyToolWithMessage
 
-from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
-from langchain.chains import LLMChain
-from langchain.prompts.base import BasePromptTemplate
-from langchain.prompts.chat import ChatPromptTemplate, HumanMessagePromptTemplate
-from langchain.prompts.prompt import PromptTemplate
-from langchain.schema import SystemMessage
 from langchain.tools.base import BaseTool, StructuredTool
 from langchain_core.utils.input import get_color_mapping
-from langchain_openai import ChatOpenAI
 
-from .prompts import (
+from haicosystem.generation_utils import (
     SIMULATOR_SYSTEM_INFO,
     SIMULATOR_PROMPT,
     SIMULATOR_CRITIQUE,
@@ -65,25 +58,6 @@ class LlmGroundingEngine(Evaluator):
         self.num_critique_steps: int = 0
         self.tool_names: list[str] = []
 
-    def create_simulator_prompt(
-        self, use_chat_format: Optional[bool] = False
-    ) -> BasePromptTemplate:
-        """Create a the prompt for the simulator LLM."""
-        if use_chat_format:
-            simulator_system_message = SystemMessage(content=self.sim_system_info)
-            simulator_instruction_message = HumanMessagePromptTemplate.from_template(
-                template=self.sim_prompt_instruction
-            )
-            messages = [
-                simulator_system_message,
-                simulator_instruction_message,
-            ]
-            return ChatPromptTemplate.from_messages(messages=messages)
-        else:
-            template = "\n\n".join([self.sim_system_info, self.sim_prompt_instruction])
-            input_variables = self._input_keys + ["simulator_scratchpad"]
-            return PromptTemplate(template=template, input_variables=input_variables)
-
     @staticmethod
     def get_all_tools(toolkits: Sequence[BaseToolkit]) -> list[BaseTool]:
         """Return all tools available to the agent."""
@@ -99,7 +73,7 @@ class LlmGroundingEngine(Evaluator):
         """Create prompt in the style of the zero shot agent."""
         toolkits = get_toolkits_by_names(toolkits_names)
         # initialize the engine
-        self.toolkits = toolkits
+        self.toolkits = toolkits  # type: ignore
         self.name_to_tool_map = {
             tool.name: tool for tool in self.get_all_tools(toolkits)
         }
@@ -114,39 +88,14 @@ class LlmGroundingEngine(Evaluator):
         self.tool_names = [tool.name for tool in self.get_all_tools(toolkits)]
         tool_prompt = format_tool_prompt(toolkit_strings, ", ".join(self.tool_names))
         self.tool_prompt = tool_prompt
-        self.simulator_llm = ChatOpenAI(
-            model_name=self.model_name,
-            temperature=0.0,
-            request_timeout=300,
-            streaming=True,
-            callbacks=[StreamingStdOutCallbackHandler()],
-        )
-        simulator_prompt = self.create_simulator_prompt(use_chat_format=True)
-        self.llm_simulator_chain = LLMChain(
-            llm=self.simulator_llm,
-            prompt=simulator_prompt,
-            callback_manager=None,
-        )
         return tool_prompt
-
-    @property
-    def llm_simulator_tool(self) -> BaseTool:
-        result = StructuredTool.from_function(
-            func=lambda callbacks, **kwargs: self._get_simulated_observation(
-                callbacks, **kwargs
-            ),
-            name="llm_simulator",
-            description="Simulate the execution of a tool with a language model",
-            args_schema=SimulatorInputModel,
-        )
-        return result
 
     def _get_current_toolkit_descriptions(self, tool_name: str) -> str:
         # NOTE: assume only one toolkit has the tool with tool_name
         for toolkit in self.toolkits:
-            for tool in toolkit.tools:
+            for tool in toolkit.tools:  # type: ignore
                 if tool.name == tool_name:
-                    return toolkit.create_description(detail_level="low")
+                    return toolkit.create_description(detail_level="low")  # type: ignore
         raise ValueError(f"Tool {tool_name} not found in any of the toolkits.")
 
     def __call__(

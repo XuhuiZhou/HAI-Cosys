@@ -4,7 +4,7 @@ from langchain.output_parsers import PydanticOutputParser
 from sotopia.messages import ActionType, AgentAction
 from sotopia.generation_utils.generate import agenerate
 
-from .prompts import SIMULATOR_PROMPT
+from .prompts import SIMULATOR_PROMPT, SIMULATOR_SYSTEM_INFO
 from haicosystem.protocols import SimulatedObservation
 
 
@@ -80,7 +80,7 @@ async def agenerate_simulated_observation(
     try:
         return await agenerate(
             model_name=model_name,
-            template=SIMULATOR_PROMPT,
+            template=SIMULATOR_SYSTEM_INFO + SIMULATOR_PROMPT,
             input_values=dict(
                 toolkit_descriptions=toolkit_descriptions,
                 current_tool=current_tool,

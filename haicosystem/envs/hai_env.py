@@ -12,12 +12,17 @@ from sotopia.envs import ParallelSotopiaEnv
 from sotopia.envs.evaluators import (
     Evaluator,
     unweighted_aggregate_evaluate,
-    ScriptEnvironmentResponse,
     _reduce,
-)  # type: ignore
+)
 from sotopia.envs.parallel import _actions_to_natural_language, render_text_for_agent
 from sotopia.database import EnvironmentProfile
-from sotopia.messages import ActionType, AgentAction, Observation, SimpleMessage
+from sotopia.messages import (
+    ActionType,
+    AgentAction,
+    Observation,
+    SimpleMessage,
+    ScriptEnvironmentResponse,
+)
 
 from haicosystem.protocols import HaiEnvironmentProfile, SimulatedObservation
 from haicosystem.envs.llm_engine_legacy import LlmGroundingEngine
