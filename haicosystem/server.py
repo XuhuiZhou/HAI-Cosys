@@ -22,10 +22,10 @@ from sotopia.samplers import BaseSampler, EnvAgentCombo
 from sotopia.agents import Agents
 
 from haicosystem.envs import ParellelHaicosystemEnv
-from haicosystem.envs.database import HaiEnvironmentProfile
+from haicosystem.protocols import HaiEnvironmentProfile
 from haicosystem.agents import LLMAgentX
 from haicosystem.envs.evaluators import SafetyLLMEvaluator
-from haicosystem.envs.llm_engine import LlmGroundingEngine
+from haicosystem.envs.llm_engine_legacy import LlmGroundingEngine
 
 ObsType = TypeVar("ObsType")
 ActType = TypeVar("ActType")

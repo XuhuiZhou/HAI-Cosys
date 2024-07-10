@@ -1,46 +1,37 @@
 import json
-import re
+import logging
+from typing import Any, Optional, Sequence
+
 from beartype import beartype
+from pydantic import BaseModel
+
 from sotopia.envs.evaluators import Evaluator
 from sotopia.messages import Message, AgentAction
-import logging
-from langchain.tools.base import BaseTool, StructuredTool
-from langchain.chains import LLMChain
-from langchain.schema import (
-    AIMessage,
-    HumanMessage,
-    SystemMessage,
-)
-from langchain.prompts.chat import (
-    ChatPromptTemplate,
-    HumanMessagePromptTemplate,
-)
-from langchain.prompts.base import BasePromptTemplate
-from langchain.prompts.prompt import PromptTemplate
-from langchain.callbacks.manager import (
-    CallbackManager,
-)
-from typing import Sequence
-from haicosystem.tools.tool_interface import BaseToolkit
-from pydantic import BaseModel
-from typing import Any, Optional
-from .tool import arun_with_input_validation
 
-from haicosystem.tools import get_toolkits_by_names
+from haicosystem.generation_utils.generate import agenerate_simulated_observation
+from haicosystem.protocols import SimulatedObservation, LangchainAgentAction
 from haicosystem.envs.utils import format_tool_prompt
-from langchain_core.utils.input import get_color_mapping
+from haicosystem.tools import get_toolkits_by_names
+from haicosystem.tools.tool_interface import BaseToolkit
+from haicosystem.tools.utils import DummyToolWithMessage
 
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
+from langchain.chains import LLMChain
+from langchain.prompts.base import BasePromptTemplate
+from langchain.prompts.chat import ChatPromptTemplate, HumanMessagePromptTemplate
+from langchain.prompts.prompt import PromptTemplate
+from langchain.schema import SystemMessage
+from langchain.tools.base import BaseTool, StructuredTool
+from langchain_core.utils.input import get_color_mapping
 from langchain_openai import ChatOpenAI
-from haicosystem.tools.utils import validate_outputs
 
-from haicosystem.envs.messages import SimulatedObservation, LangchainAgentAction
 from .prompts import (
     SIMULATOR_SYSTEM_INFO,
     SIMULATOR_PROMPT,
     SIMULATOR_CRITIQUE,
     SIMULATOR_CRITIQUE_REPEAT,
 )
+from .tool import validate_inputs
 
 log = logging.getLogger("evaluators")
 
@@ -197,275 +188,13 @@ class LlmGroundingEngine(Evaluator):
             "\n\tAction:",
         ]
 
-    def _extract_observation_and_thought(
-        self, llm_output: str
-    ) -> tuple[str, str] | None:
-        """Parse out the observation from the LLM output."""
-        # \s matches against tab/newline/whitespace
-        regex = rf"{self.thought_summary_prefix}\s*([\s\S]*?){self.observation_prefix}\s*([\s\S]*)"
-        match = re.search(regex, llm_output, re.DOTALL)
-        if not match:
-            return None
-        thought_summary = match.group(1).strip()
-        observation = match.group(2).strip()
-        return observation, thought_summary
-
-    def _get_simulated_observation(
-        self, callback_manager: CallbackManager, **full_inputs: Any
-    ) -> SimulatedObservation:
-        streaming_output = self.llm_simulator_chain.llm.streaming
-        if streaming_output:
-            print("\n" + self.generatetion_prefix)
-            # for handler in callback_manager.handlers:
-            #     getattr(handler, "on_text")(
-            #         "\n" + self.generatetion_prefix, verbose=self.verbose
-            #     )
-        full_output = self.llm_simulator_chain.predict(
-            **full_inputs, stop=self.stop_seqs
-        )
-        parsed_output = self._extract_observation_and_thought(full_output)
-        while parsed_output is None:
-            full_inputs["simulator_scratchpad"] += full_output
-            output = self.llm_simulator_chain.predict(
-                **full_inputs, stop=self.stop_seqs
-            )
-            full_output += output
-            parsed_output = self._extract_observation_and_thought(full_output)
-
-        log_output = self.generatetion_prefix + full_output
-        # remove all the text after self.observation_prefix
-        log_output = log_output.split(self.observation_prefix)[0].strip()
-        log_output = "\n" + log_output
-
-        if not streaming_output and not log_output.isspace():
-            for handler in callback_manager.handlers:
-                getattr(handler, "on_tool_end")(log_output, verbose=self.verbose)
-
-        sim_observation = SimulatedObservation(
-            observation=parsed_output[0],
-            thought_summary=parsed_output[1],
-            log=full_output,
-        )
-        observation = self._critique_simulated_observation(
-            callback_manager, sim_observation, full_inputs
-        )
-        return observation
-
-    def _create_critiquer_prompt(
-        self,
-        simulator_inputs: dict[str, str],
-        sim_observation: SimulatedObservation,
-        critique_outputs: list[dict[str, str]],
-    ) -> list:
-        """Create a the prompt for the critiquer LLM."""
-        simulator_prompt_temp = self.llm_simulator_chain.prompt
-        use_chat_format = isinstance(simulator_prompt_temp, ChatPromptTemplate)
-        simulator_prompt = simulator_prompt_temp.format_prompt(**simulator_inputs)
-
-        critique_prompt_messages = []
-
-        if use_chat_format:
-            # add simulator prompt
-            critique_prompt_messages += simulator_prompt.messages
-        else:
-            # add simulator prompt
-            critique_prompt_messages.append(HumanMessage(content=simulator_prompt))
-
-        # add simulator output
-        simulator_output = sim_observation.log
-        critique_prompt_messages.append(AIMessage(content=simulator_output))
-
-        # The last dict in critique_outputs only contains the validation results
-        for idx, crit_dict in enumerate(critique_outputs):
-            prompt = self.critique_prompt if idx == 0 else self.critique_prompt_repeat
-            prompt = f"{crit_dict['validation']}\n{prompt}"
-            critique_prompt_messages.append(HumanMessage(content=prompt))
-            if "critique" in crit_dict:
-                # add critique output
-                critique_prompt_messages.append(
-                    AIMessage(content=crit_dict["critique"])
-                )
-
-        if not use_chat_format:
-            critique_prompt_messages = "\n\n".join(
-                [t.content for t in critique_prompt_messages]
-            )
-
-        return critique_prompt_messages
-
-    @property
-    def critique_prefix(self) -> str:
-        return "Critique #{step}:"
-
-    @property
-    def revised_thought_summary_prefix(self) -> str:
-        return "Revised Simulator Log Summary #{step}:"
-
-    @property
-    def revised_observation_prefix(self) -> str:
-        return "Revised Observation #{step}:"
-
-    def _extract_revised_observation_and_thought(
-        self, critique_llm_output: str, current_step: int
-    ) -> Optional[list[str]]:
-        """Parse out the observation from the critiqued LLM output."""
-        thought_summary_prefix = self.revised_thought_summary_prefix.format(
-            step=current_step
-        )
-        observation_prefix = self.revised_observation_prefix.format(step=current_step)
-        # \s matches against tab/newline/whitespace
-        regex = rf"{thought_summary_prefix}(.*?)[\n]*{observation_prefix}[\s]*(.*)"
-        match = re.search(regex, critique_llm_output, re.DOTALL)
-
-        if not match:
-            return None
-        revised_thought_summary = match.group(1).strip()
-        revised_observation = match.group(2).strip()
-        return revised_observation, revised_thought_summary
-
-    def _critique_simulated_observation(
-        self,
-        callback_manager: CallbackManager,
-        sim_observation: SimulatedObservation,
-        simulator_inputs: dict[str, Any],
-    ) -> SimulatedObservation:
-        streaming_output = self.simulator_llm.streaming
-        tool_name = simulator_inputs["current_tool"]
-        tool_mapping = dict(zip(self.tool_names, self.tools))
-        tool = tool_mapping[tool_name]
-
-        def get_validation_result(obs):
-            msg = "The format of the output matches the specification of the tool."
-            exception = None
-            try:
-                outputs = json.loads(obs)
-            except json.decoder.JSONDecodeError as e:
-                msg = "The output is not a valid JSON object."
-                exception = e
-            if exception is None:
-                try:
-                    validate_outputs(tool.returns, outputs)
-                except ValueError as e:
-                    msg = "The format of the output does not match the specification of the tool."
-                    exception = e
-            return f"Format Validation: {msg}", exception
-
-        current_obs = sim_observation.observation
-        critique_outputs = []
-        sep = "\n\n"
-        revised_output = None
-
-        if self.max_allowed_steps <= 0:
-            return sim_observation
-
-        for step in range(self.max_allowed_steps):
-            step_idx = step + 1
-
-            validation_msg, exception = get_validation_result(current_obs)
-            if exception is not None:
-                validation_msg += f" {exception}"
-            elif step_idx > self.num_critique_steps:
-                # if we have enough number of critique steps and the last output obs is valid
-                break
-
-            critique_outputs.append({"validation": validation_msg})
-            critiquer_prompt = self._create_critiquer_prompt(
-                simulator_inputs,
-                sim_observation,
-                critique_outputs,
-            )
-            if streaming_output:
-                print(f"\n\n{validation_msg}\n\n")
-                # for handler in callback_manager.handlers:
-                #     getattr(handler, "on_text")("\n\n", verbose=self.verbose)
-            print("---------------------Hey I am revising---------------------")
-            crit_out = self.simulator_llm.generate(
-                [critiquer_prompt],
-                stop=[
-                    self.critique_prefix.format(step=step_idx + 1),
-                    "Action:",
-                    "Action Input:",
-                ],
-            )
-            assert len(crit_out.generations) == 1
-            # todo: this is for chat model
-            crit_out = crit_out.generations[0][0].text
-            # critique_outputs.append(crit_out)
-            critique_outputs[-1]["critique"] = crit_out
-            revised_output = self._extract_revised_observation_and_thought(
-                crit_out, current_step=step_idx
-            )
-            current_obs = revised_output[0] if revised_output else current_obs
-
-            log_output = sep + validation_msg + "\n" + crit_out
-            if not streaming_output and not log_output.isspace():
-                for handler in callback_manager.handlers:
-                    getattr(handler, "on_tool_end")(log_output, verbose=self.verbose)
-
-        # todo: extract sim_observation from sim_observation.log
-        if revised_output is None:
-            return sim_observation
-
-        # todo: the correctness of logging need to be checked.
-        logs = [sim_observation.log]
-        for crit_dict in critique_outputs:
-            logs.append(crit_dict["validation"] + "\n" + crit_dict["critique"])
-        log_output_with_critique = sep.join(logs)
-
-        critiqued_observation = SimulatedObservation(
-            observation=revised_output[0],
-            thought_summary=revised_output[1],
-            log=log_output_with_critique,
-        )
-        # update log in observation
-        return critiqued_observation
-
-    def _construct_simulator_scratchpad(
-        self,
-        intermediate_steps: list[tuple[LangchainAgentAction, str]],
-        include_simulator_log: bool = False,
-        include_simulator_thought_summary: bool = True,
-        include_simulator_last_step_only: bool = False,
-    ):
-        """Construct the scratchpad that without outputting the last observation."""
-
-        # this is copied from the agent's _construct_scratchpad
-        scratchpad = ""
-        for idx, (action, observation) in enumerate(intermediate_steps):
-            scratchpad += f"Action: {action.tool}\nAction Input: {action.tool_input}\n"
-
-            if idx == len(intermediate_steps) - 1:
-                scratchpad += "\n"
-            else:
-                if include_simulator_log and (
-                    not include_simulator_last_step_only
-                    or idx == len(intermediate_steps) - 2
-                ):
-                    scratchpad += f"\n{self.generatetion_prefix}{observation.log}\n"
-                elif include_simulator_thought_summary and (
-                    not include_simulator_last_step_only
-                    or idx == len(intermediate_steps) - 2
-                ):
-                    scratchpad += f"\n{self.thought_summary_prefix}{observation.thought_summary}\n{self.observation_prefix}{observation.observation}\n"
-                else:
-                    scratchpad += (
-                        f"\n{self.observation_prefix}{observation.observation}\n"
-                    )
-                # scratchpad += self.agent.llm_prefix
-
-        # add prefix for generation
-        scratchpad += self.generatetion_prefix
-        # scratchpad = self.agent.llm_prefix + scratchpad
-        return scratchpad
-
     def parse_action(self, action: str) -> LangchainAgentAction:
         json_action = json.loads(action)
         new_action = LangchainAgentAction(**json_action)
         return new_action
 
-    async def __acall__(
+    async def __acall__(  # type: ignore
         self,
-        turn_number: int,
         messages: list[tuple[str, Message]] | None,
         history: str = "",
         temperature: float = 0.0,
@@ -488,6 +217,7 @@ class LlmGroundingEngine(Evaluator):
                 ]
             )
         messages_in_single_turn = []
+        assert messages is not None
         for message in messages[::-1]:
             if message[0] == "Environment" and message[
                 1
@@ -504,31 +234,28 @@ class LlmGroundingEngine(Evaluator):
             ):
                 tool_action = self.parse_action(message_content.argument)
                 tool = self.name_to_tool_map[tool_action.tool]
-                color = self.color_mapping[tool_action.tool]
-
-                empty_observation = ""  # for the current step
-                intermediate_steps = []
-                simulator_scratchpad = self._construct_simulator_scratchpad(
-                    intermediate_steps + [(tool_action, empty_observation)]
-                )
-                full_inputs = {
-                    "simulator_scratchpad": simulator_scratchpad,
-                    "current_tool": tool_action.tool,
-                    "current_tool_description": tool.description,
-                    "toolkit_descriptions": self._get_current_toolkit_descriptions(
+                simulator_scratchpad = ""
+                tool_run_kwargs = self.tool_run_logging_kwargs()
+                try:
+                    # params = load_dict(raw_inputs)
+                    validate_inputs(tool.parameters, tool_action.tool_input)  # type: ignore
+                except Exception as e:
+                    error_observation = await DummyToolWithMessage().arun(
+                        f'{{"error": "InvalidRequestException: {e}"}}',
+                        **tool_run_kwargs,  # type: ignore
+                    )
+                    assert isinstance(error_observation, SimulatedObservation)
+                    return [error_observation]
+                observation = await agenerate_simulated_observation(
+                    model_name=self.model_name,
+                    history=history,
+                    current_tool=tool_action.tool,
+                    current_tool_description=tool.description,
+                    toolkit_descriptions=self._get_current_toolkit_descriptions(
                         tool_action.tool
                     ),
-                    "interaction_history": history,
-                }
-                tool_run_kwargs = self.tool_run_logging_kwargs()
-                observation = await arun_with_input_validation(
-                    self.llm_simulator_tool.arun,
-                    full_inputs,
-                    tool,
-                    tool_action.tool_input,
-                    verbose=self.verbose,
-                    color=color,
-                    **tool_run_kwargs,
+                    simulator_scratchpad=simulator_scratchpad,
+                    temperature=temperature,
                 )
                 return [observation]
         return [SimulatedObservation(observation="", thought_summary="", log="")]

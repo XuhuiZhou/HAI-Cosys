@@ -1,31 +1,26 @@
-from sotopia.envs import ParallelSotopiaEnv
-from typing import Literal, Any
-from sotopia.envs.evaluators import Evaluator
-from sotopia.database import EnvironmentProfile
-from haicosystem.envs.database import HaiEnvironmentProfile
-from sotopia.envs.evaluators import unweighted_aggregate_evaluate
-from sotopia.envs.parallel import _actions_to_natural_language, render_text_for_agent
 import asyncio
 import itertools
 import random
-
-from sotopia.messages import (
-    ActionType,
-    AgentAction,
-    Observation,
-    SimpleMessage,
-)
+import logging
+from collections import defaultdict
+from typing import Literal, Any
 
 from beartype import beartype
-
-# TODO: fix the import error
-from sotopia.envs.evaluators import ScriptEnvironmentResponse, _reduce  # type: ignore
-from collections import defaultdict
-import logging
-from haicosystem.envs.messages import SimulatedObservation
-from haicosystem.envs.llm_engine import LlmGroundingEngine
-
 from pydantic import Field
+
+from sotopia.envs import ParallelSotopiaEnv
+from sotopia.envs.evaluators import (
+    Evaluator,
+    unweighted_aggregate_evaluate,
+    ScriptEnvironmentResponse,
+    _reduce,
+)  # type: ignore
+from sotopia.envs.parallel import _actions_to_natural_language, render_text_for_agent
+from sotopia.database import EnvironmentProfile
+from sotopia.messages import ActionType, AgentAction, Observation, SimpleMessage
+
+from haicosystem.protocols import HaiEnvironmentProfile, SimulatedObservation
+from haicosystem.envs.llm_engine_legacy import LlmGroundingEngine
 
 log = logging.getLogger("evaluators")
 

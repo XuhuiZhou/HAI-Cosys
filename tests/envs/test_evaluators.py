@@ -8,11 +8,10 @@ from sotopia.agents import LLMAgent
 from sotopia.agents import Agents
 from haicosystem.agents.llm_agent import LLMAgentX
 from haicosystem.envs import SafetyLLMEvaluator, ParellelHaicosystemEnv
-from haicosystem.envs.database import HaiEnvironmentProfile
+from haicosystem.protocols import HaiEnvironmentProfile, SimulatedObservation
 from sotopia.database import AgentProfile
 
-from haicosystem.envs.llm_engine import LlmGroundingEngine
-from haicosystem.envs.messages import SimulatedObservation
+from haicosystem.envs.llm_engine_legacy import LlmGroundingEngine
 
 
 @pytest.mark.asyncio
