@@ -16,6 +16,11 @@ conda create -n haicosystem python=3.11; conda activate haicosystem;  curl -sSL 
 poetry install
 ```
 
+Double check you have installed poetry:
+```
+poetry --version
+```
+
 OpenAI key is required to run the code. Please set the environment variable `OPENAI_API_KEY` to your key. The recommend way is to add the key to the conda environment:
 ```bash
 conda env config vars set OPENAI_API_KEY=your_key
@@ -37,7 +42,7 @@ conda env config vars set REDIS_OM_URL="redis://user:password@host:port"
 ## Contribution
 ### Install dev options
 ```bash
-mypy --install-types --non-interactive haicosystem
+mypy --install-types --non-interactive haicosystem --exclude haicosystem/tools  --exclude haicosystem/envs/llm_engine.py
 pip install pre-commit
 pre-commit install
 ```
