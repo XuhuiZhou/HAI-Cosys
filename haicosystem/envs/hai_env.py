@@ -17,11 +17,13 @@ from sotopia.messages import (
 )
 
 from beartype import beartype
-from sotopia.envs.evaluators import ScriptEnvironmentResponse, _reduce
+
+# TODO: fix the import error
+from sotopia.envs.evaluators import ScriptEnvironmentResponse, _reduce  # type: ignore
 from collections import defaultdict
 import logging
 from haicosystem.envs.messages import SimulatedObservation
-
+from haicosystem.envs.llm_engine import LlmGroundingEngine
 
 from pydantic import Field
 
@@ -55,7 +57,7 @@ def unweighted_aggregate_response(
             assert (
                 len(responses_dict["engine"]) == 0
             )  # TODO: allow multiple engine responses
-            responses_dict["engine"].append(response)
+            engine_response = ("engine", response)
         else:
             assert response[0] == "environment" or response[0].startswith("agent")
             responses_dict[response[0]].append(response[1])
@@ -65,6 +67,7 @@ def unweighted_aggregate_response(
     agent_2_responses: tuple[dict[str, float | int | bool], str] = ({}, "")
     for k, v in responses_dict.items():
         if k == "environment":
+            assert isinstance(v, list)
             environment_responses = _reduce(v)
         elif k == "engine":
             continue
@@ -120,7 +123,7 @@ def unweighted_aggregate_response(
         if agent_2_responses != ({}, "")
         else None,
         comments=comments,
-        observation=responses_dict["engine"][0],
+        observation=engine_response[1],
     )
 
 
@@ -143,17 +146,17 @@ class ParellelHaicosystemEnv(ParallelSotopiaEnv):
         super().__init__(
             env_profile=EnvironmentProfile(),
             available_action_types=available_action_types,
-            action_order=action_order,
+            action_order=action_order,  # type: ignore
             model_name=model_name,
             evaluators=evaluators,
             terminal_evaluators=terminal_evaluators,
             uuid_str=uuid_str,
         )
-        self.profile = env_profile
+        self.profile: HaiEnvironmentProfile = env_profile  # type: ignore
         assert (
             len(grounding_engines) == 1
         )  # temp implementation; only one grounding engine is supported
-        self.grounding_engine = grounding_engines[0]
+        self.grounding_engine: LlmGroundingEngine = grounding_engines[0]  # type: ignore
         self.engines_and_evaluators = grounding_engines + evaluators
         self.profile.scenario = self.prepare_scenario(self.profile)
 

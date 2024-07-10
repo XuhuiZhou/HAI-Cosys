@@ -24,7 +24,7 @@ PRIMITIVE_TYPES = {
 }
 
 
-def insert_indent(s: str, indent: str = "\t", insert_first=True) -> str:
+def insert_indent(s: str, indent: str = "\t", insert_first: bool = True) -> str:
     prefix = indent if insert_first else ""
     return prefix + s.rstrip("\n ").replace("\n", "\n" + indent) + "\n"
 
@@ -106,7 +106,7 @@ class InvalidTool(DummyToolWithMessage):
 def special_fix_for_json_obj(s: str, pos: int) -> str:
     """Fix the string to make it a valid JSON object."""
     if pos >= len(s):
-        return None
+        return ""
     if s[pos] == "\\":  # fix for {"xxx\_yyy": "zzz"}
         broken = s[pos : pos + 2]
         return s.replace(broken, broken[1])
@@ -114,10 +114,12 @@ def special_fix_for_json_obj(s: str, pos: int) -> str:
         return s.replace("True", "true")
     elif s[pos : pos + 5] == "False":
         return s.replace("False", "false")
-    return None
+    return ""
 
 
-def get_first_json_object_str(s: str, enable_check=True, *args, **kwargs) -> str:
+def get_first_json_object_str(
+    s: str, enable_check: bool = True, *args: Any, **kwargs: Any
+) -> str:
     """Get the first JSON object from a string"""
     # print("[DEBUG] raw action string:", s)
     # allow ```json {JSON object} ``` format
@@ -136,7 +138,7 @@ def get_first_json_object_str(s: str, enable_check=True, *args, **kwargs) -> str
             break
         except json.JSONDecodeError as e:
             fix_res = special_fix_for_json_obj(s, e.pos)  # special fixes
-            if fix_res is not None:
+            if fix_res:
                 ret = s = fix_res
             else:
                 s = s[: e.pos].rstrip()  # take the first part
@@ -150,11 +152,11 @@ def get_first_json_object_str(s: str, enable_check=True, *args, **kwargs) -> str
     return ret
 
 
-def load_dict(tool_input: str) -> Dict[str, Any]:
+def load_dict(tool_input: str) -> dict[str, Any]:
     """Load a dictionary from a string."""
     # TODO: improve this, this seems to be the most robust way for now
     try:
-        params = json.loads(tool_input, strict=False)
+        params: dict[str, Any] = json.loads(tool_input, strict=False)
         # set strict=False to allow single quote, comments, escape characters, etc
         return params
     except Exception as e:
@@ -176,7 +178,7 @@ def match_type(value: Any, expected_type: type) -> bool:
     return isinstance(value, int) and expected_type == float
 
 
-def check_type(name: str, value: Any, expected_type: type):
+def check_type(name: str, value: Any, expected_type: type) -> None:
     if not match_type(value, expected_type):
         raise ValueError(
             f"Invalid type for {name}: {type(value).__name__}, "
@@ -184,7 +186,7 @@ def check_type(name: str, value: Any, expected_type: type):
         )
 
 
-def validate_inputs(parameters: List[ArgParameter], inputs: Dict[str, Any]):
+def validate_inputs(parameters: List[ArgParameter], inputs: Dict[str, Any]) -> None:
     """Validate the inputs for a tool."""
     remains = set(inputs.keys())
     for param in parameters:
@@ -193,14 +195,14 @@ def validate_inputs(parameters: List[ArgParameter], inputs: Dict[str, Any]):
             remains.remove(name)
         if name in inputs:
             expected_type = PRIMITIVE_TYPES[param["type"]]
-            check_type(name, inputs[name], expected_type)
+            check_type(name, inputs[name], expected_type)  # type: ignore
         elif param.get("required", False):
             raise ValueError(f"Missing required parameter: {name}.")
     if remains:
         raise ValueError(f"Unexpected parameters: {remains}.")
 
 
-def validate_outputs(returns: List[ArgReturn], outputs: Dict[str, Any]):
+def validate_outputs(returns: List[ArgReturn], outputs: Dict[str, Any]) -> None:
     """Validate the outputs for a tool."""
     if not isinstance(outputs, dict):
         raise ValueError(
@@ -215,23 +217,23 @@ def validate_outputs(returns: List[ArgReturn], outputs: Dict[str, Any]):
             remains.remove(name)
         if name not in outputs:
             raise ValueError(f"Missing return: {name}.")
-        expected_type = PRIMITIVE_TYPES[ret["type"]]
+        expected_type: type = PRIMITIVE_TYPES[ret["type"]]  # type: ignore
         check_type(name, outputs[name], expected_type)
     if remains:
         raise ValueError(f"Unexpected returns: {list(remains)}.")
 
 
 def run_with_input_validation(
-    run_func: Callable,
-    inputs: Dict[str, str],
+    run_func: Callable[..., Any],
+    inputs: dict[str, str],
     tool: BaseTool,
-    raw_inputs: dict,
-    **kwargs,
-):
+    raw_inputs: dict[str, str],
+    **kwargs: Any,
+) -> Any:
     """Run a tool with inputs, where the format of raw inputs is validated."""
     try:
         # params = load_dict(raw_inputs)
-        validate_inputs(tool.parameters, raw_inputs)
+        validate_inputs(tool.parameters, raw_inputs)  # type: ignore
     except Exception as e:
         return DummyToolWithMessage().run(
             f'{{"error": "InvalidRequestException: {e}"}}', **kwargs
@@ -240,16 +242,16 @@ def run_with_input_validation(
 
 
 async def arun_with_input_validation(
-    run_func: Callable,
+    run_func: Callable[..., Any],
     inputs: dict[str, str],
     tool: BaseTool,
     raw_inputs: dict[str, Any],
-    **kwargs,
-):
+    **kwargs: Any,
+) -> Any:
     """Run a tool with inputs, where the format of raw inputs is validated."""
     try:
         # params = load_dict(raw_inputs)
-        validate_inputs(tool.parameters, raw_inputs)
+        validate_inputs(tool.parameters, raw_inputs)  # type: ignore
     except Exception as e:
         return await DummyToolWithMessage().arun(
             f'{{"error": "InvalidRequestException: {e}"}}', **kwargs
@@ -271,7 +273,7 @@ def format_toolkit_dict(
     add_risks: bool = True,
     indent: str = "\t",
     use_simple_tool_desc: bool = False,
-):
+) -> str:
     """Format a toolkit specified as a dictionary into a string."""
     toolkit_name = toolkit[namekey]
     desc = f"<{toolkit_name}> toolkit with following tool APIs:\n"

@@ -13,14 +13,14 @@ class SimulatedObservation(Message):
     def to_natural_language(self) -> str:
         return "Observation: \n" + self.observation
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.observation
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.observation
 
 
 class LangchainAgentAction(AgentAction):
-    def action_api(self):
+    def action_api(self) -> None:
         # TODO: Implement the action API
         raise NotImplementedError

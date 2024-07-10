@@ -300,13 +300,13 @@ async def run_server(
             n_agent=len(agents_model_dict),
             env_params=env_params,
             agents_params=[
-                {"model_name": model_name} if model_name != "bridge" else {}
+                {"model_name": model_name} if model_name != "bridge" else {}  # type: ignore
                 for model_name in agents_model_dict.values()
             ],
         )
     episode_futures = [
         arun_one_episode(
-            env=env_agent_combo[0],
+            env=env_agent_combo[0],  # type: ignore
             agent_list=env_agent_combo[1],
             tag=tag,
             push_to_db=push_to_db,
