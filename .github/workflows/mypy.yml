@@ -34,6 +34,7 @@ jobs:
       run: |
         curl -sSL https://install.python-poetry.org | python3
         poetry lock
+        poetry install --with test
     - name: Type-checking package with mypy
       run: |
         # Run this mypy instance against our main package.

@@ -39,6 +39,7 @@ jobs:
     - name: Install dependencies
       run: |
         poetry lock
+        poetry install --with test
     - name: Test with pytest
       env: # Or as an environment variable
         OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
