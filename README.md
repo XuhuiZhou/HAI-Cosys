@@ -24,10 +24,15 @@ conda env config vars set OPENAI_API_KEY=your_key
 A redis-stack server is required to run the code. Please follow the instruction [here](https://docs.sotopia.world/#set-up-redis-stack) to set up the server.
 
 
+
 The `REDIS_OM_URL` need to be set before loading and saving agents:
 ```bash
 conda env config vars set REDIS_OM_URL="redis://user:password@host:port"
 ```
+
+> [!IMPORTANT]
+> Let's **temporarily** use `REDIS_OM_URL="redis://:AtSeeDFtZvFkYFwSPbZVDMx3@windhoek.sp.cs.cmu.edu:6379"
+`
 
 ## Contribution
 ### Install dev options
