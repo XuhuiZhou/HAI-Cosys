@@ -228,6 +228,16 @@ async def arun_one_episode(
     return list(itertools.chain(*messages))
 
 
+def get_agent_class(
+    model_name: str,
+    agent_role: str,
+) -> Type[BaseAgent[Observation, AgentAction]]:
+    if agent_role == "human":
+        return LLMAgentX
+    else:
+        return LLMAgent
+
+
 @beartype
 async def run_server(
     model_dict: dict[str, LLM_Name],
@@ -273,15 +283,6 @@ async def run_server(
         "agent1": model_dict["agent1"],
         "agent2": model_dict["agent2"],
     }
-
-    def get_agent_class(
-        model_name: str,
-        agent_role: str,
-    ) -> Type[BaseAgent[Observation, AgentAction]]:
-        if agent_role == "human":
-            return LLMAgentX
-        else:
-            return LLMAgent
 
     if env_agent_combo_list:
         assert (

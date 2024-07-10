@@ -7,11 +7,11 @@ class SimulatedObservation(Message):
     """Simulated observation."""
 
     observation: str = Field(description="the observation")
-    thought_summary: str = Field(description="the thought summary")
-    log: str = Field(description="the log")
+    thought_summary: str = Field(description="the thought summary", default="")
+    log: str = Field(description="the log", default="")
 
     def to_natural_language(self) -> str:
-        return "Obsavation: \n" + self.observation
+        return "Observation: \n" + self.observation
 
     def __str__(self):
         return self.observation
