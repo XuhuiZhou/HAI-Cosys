@@ -39,11 +39,9 @@ jobs:
     - name: Install dependencies
       run: |
         poetry lock
-        poetry install --with test -E chat
     - name: Test with pytest
       env: # Or as an environment variable
         OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         REDIS_OM_URL: ${{ secrets.REDIS_OM_URL }}
-        TOGETHER_API_KEY: ${{ secrets.TOGETHER_API_KEY }}
       run: |
         poetry run pytest --cov=. --cov-report=xml

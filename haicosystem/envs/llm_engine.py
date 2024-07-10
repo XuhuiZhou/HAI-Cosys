@@ -31,7 +31,7 @@ from haicosystem.envs.utils import format_tool_prompt
 from langchain_core.utils.input import get_color_mapping
 
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
-from langchain.chat_models import ChatOpenAI
+from langchain_openai import ChatOpenAI
 from haicosystem.tools.utils import validate_outputs
 
 from haicosystem.envs.messages import SimulatedObservation, LangchainAgentAction
