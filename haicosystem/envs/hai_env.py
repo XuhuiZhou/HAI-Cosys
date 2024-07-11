@@ -169,10 +169,8 @@ class ParellelHaicosystemEnv(ParallelSotopiaEnv):
             f"### {key}:\n" + " ".join(getattr(env_profile, key))
             for key in [
                 "user_intention",
-                "underspecifications",
-                "desired_behavior_and_outcomes",
-                "potential_risky_outcomes",
-                "potential_risky_behavior",
+                "disired_outcome",
+                "risky_outcome",
             ]
         )
         new_scenario = (
