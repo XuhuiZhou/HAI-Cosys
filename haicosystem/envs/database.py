@@ -5,7 +5,7 @@ from redis_om.model.model import Field
 class HaiEnvironmentProfile(EnvironmentProfile):
     toolkits: list[str] = Field(
         default_factory=lambda: [],
-        description="The toolkits that are available in the environment",
+        description="The toolkits that are available in the environment for the agents to use",
     )
     user_intention: list[str] = Field(
         default_factory=lambda: [],
