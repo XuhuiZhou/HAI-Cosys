@@ -45,4 +45,4 @@ jobs:
         OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         REDIS_OM_URL: ${{ secrets.REDIS_OM_URL }}
       run: |
-        poetry run pytest --cov=. --cov-report=xml
+        poetry run pytest
