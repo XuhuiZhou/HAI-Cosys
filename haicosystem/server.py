@@ -25,7 +25,7 @@ from haicosystem.envs import ParellelHaicosystemEnv
 from haicosystem.protocols import HaiEnvironmentProfile
 from haicosystem.agents import LLMAgentX
 from haicosystem.envs.evaluators import SafetyLLMEvaluator
-from haicosystem.envs.llm_engine_legacy import LlmGroundingEngine
+from haicosystem.envs.llm_engine import LLMGroundingEngine
 
 ObsType = TypeVar("ObsType")
 ActType = TypeVar("ActType")
@@ -276,7 +276,7 @@ async def run_server(
             SafetyLLMEvaluator(model_dict["env"]),
         ],
         "grounding_engines": [
-            LlmGroundingEngine(model_name=model_dict["env"]),
+            LLMGroundingEngine(model_name=model_dict["env"]),
         ],
     }
     agents_model_dict = {

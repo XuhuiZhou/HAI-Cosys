@@ -1,9 +1,8 @@
 import json
 import logging
-from typing import Any, Optional, Sequence
+from typing import Sequence
 
 from beartype import beartype
-from pydantic import BaseModel
 
 from sotopia.envs.evaluators import Evaluator
 from sotopia.messages import Message, AgentAction
@@ -28,17 +27,10 @@ from .tool import validate_inputs
 
 log = logging.getLogger("evaluators")
 
-
-class SimulatorInputModel(BaseModel):
-    simulator_scratchpad: Optional[Any]
-    current_tool: Optional[str]
-    current_tool_description: Optional[str]
-    toolkit_descriptions: Optional[str]
-    interaction_history: Optional[str]
+beartype
 
 
-@beartype
-class LlmGroundingEngine(Evaluator):
+class LLMGroundingEngine(Evaluator):
     def __init__(self, model_name: str, response_format: str = "basic") -> None:
         self.model_name = model_name
         self.prompt = ""
@@ -144,6 +136,7 @@ class LlmGroundingEngine(Evaluator):
 
     async def __acall__(  # type: ignore
         self,
+        turn_number: int,
         messages: list[tuple[str, Message]] | None,
         history: str = "",
         temperature: float = 0.0,
@@ -195,6 +188,7 @@ class LlmGroundingEngine(Evaluator):
                     )
                     assert isinstance(error_observation, SimulatedObservation)
                     return [error_observation]
+                breakpoint()
                 observation = await agenerate_simulated_observation(
                     model_name=self.model_name,
                     history=history,
@@ -206,5 +200,6 @@ class LlmGroundingEngine(Evaluator):
                     simulator_scratchpad=simulator_scratchpad,
                     temperature=temperature,
                 )
+                breakpoint()
                 return [observation]
         return [SimulatedObservation(observation="", thought_summary="", log="")]

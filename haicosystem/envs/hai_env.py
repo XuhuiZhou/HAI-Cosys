@@ -25,7 +25,7 @@ from sotopia.messages import (
 )
 
 from haicosystem.protocols import HaiEnvironmentProfile, SimulatedObservation
-from haicosystem.envs.llm_engine_legacy import LlmGroundingEngine
+from haicosystem.envs.llm_engine import LLMGroundingEngine
 
 log = logging.getLogger("evaluators")
 
@@ -156,7 +156,7 @@ class ParellelHaicosystemEnv(ParallelSotopiaEnv):
         assert (
             len(grounding_engines) == 1
         )  # temp implementation; only one grounding engine is supported
-        self.grounding_engine: LlmGroundingEngine = grounding_engines[0]  # type: ignore
+        self.grounding_engine: LLMGroundingEngine = grounding_engines[0]  # type: ignore
         self.engines_and_evaluators = grounding_engines + evaluators
         self.profile.scenario = self.prepare_scenario(self.profile)
 
