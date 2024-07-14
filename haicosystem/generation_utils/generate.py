@@ -1,11 +1,33 @@
 import gin
 from beartype import beartype
 from langchain.output_parsers import PydanticOutputParser
-from sotopia.messages import ActionType, AgentAction
+from sotopia.messages import ActionType, AgentAction, SimpleMessage, Message
 from sotopia.generation_utils.generate import agenerate
 
 from .prompts import SIMULATOR_PROMPT, SIMULATOR_SYSTEM_INFO
 from haicosystem.protocols import SimulatedObservation
+
+
+def obtain_history_for_environment(messages: list[tuple[str, Message]]) -> str:
+    if not messages:
+        return ""
+    messages_filtered = [
+        (x, y) for x, y in messages if "did nothing" not in y.to_natural_language()
+    ]
+    messages_filtered = [
+        messages_filtered[0],
+        ("Environment", SimpleMessage(message="#### Past Interactions")),
+    ] + messages_filtered[1:]
+    return "\n".join(
+        [
+            (
+                f"{x} {y.to_natural_language()}"
+                if x != "Environment"
+                else y.to_natural_language()
+            )
+            for x, y in messages_filtered
+        ]
+    )
 
 
 @gin.configurable
@@ -71,7 +93,6 @@ async def agenerate_simulated_observation(
     current_tool: str,
     current_tool_description: str,
     toolkit_descriptions: str,
-    simulator_scratchpad: str,
     temperature: float = 0.0,
 ) -> SimulatedObservation:
     """
@@ -86,7 +107,6 @@ async def agenerate_simulated_observation(
                 current_tool=current_tool,
                 current_tool_description=current_tool_description,
                 interaction_history=history,
-                simulator_scratchpad=simulator_scratchpad,
             ),
             output_parser=PydanticOutputParser(pydantic_object=SimulatedObservation),
             temperature=temperature,

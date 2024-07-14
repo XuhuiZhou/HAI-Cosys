@@ -26,6 +26,7 @@ from sotopia.messages import (
 
 from haicosystem.protocols import HaiEnvironmentProfile, SimulatedObservation
 from haicosystem.envs.llm_engine import LLMGroundingEngine
+from haicosystem.protocols import HaiScriptBackground
 
 log = logging.getLogger("evaluators")
 
@@ -151,6 +152,7 @@ class ParellelHaicosystemEnv(ParallelSotopiaEnv):
             evaluators=evaluators,
             terminal_evaluators=terminal_evaluators,
             uuid_str=uuid_str,
+            background_class=HaiScriptBackground,
         )
         self.profile: HaiEnvironmentProfile = env_profile  # type: ignore
         assert (
@@ -166,10 +168,10 @@ class ParellelHaicosystemEnv(ParallelSotopiaEnv):
             ">", "&gt;"
         )  # TODO: temp fix for the bug in the xml renderer
         environment_info = "\n".join(
-            f"### {key}:\n" + " ".join(getattr(env_profile, key))
+            f"[{key}]:\n" + " ".join(getattr(env_profile, key))
             for key in [
                 "user_intention",
-                "disired_outcome",
+                "desired_outcome",
                 "risky_outcome",
             ]
         )
@@ -179,7 +181,7 @@ class ParellelHaicosystemEnv(ParallelSotopiaEnv):
             + f"<extra_info viewer='environment'>{environment_info}</extra_info>"
             + "\n"
             + f"<extra_info viewer='agent_1'>{tool_prompt}</extra_info>"
-        )  # temp implementation; only agent_0 is able to use the tools
+        )  # temp implementation; only agent_1 is able to use the tools
         return new_scenario
 
     @beartype

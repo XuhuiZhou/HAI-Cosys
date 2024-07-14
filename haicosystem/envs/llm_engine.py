@@ -7,7 +7,6 @@ from beartype import beartype
 from sotopia.envs.evaluators import Evaluator
 from sotopia.messages import Message, AgentAction
 
-from haicosystem.generation_utils.generate import agenerate_simulated_observation
 from haicosystem.protocols import SimulatedObservation, LangchainAgentAction
 from haicosystem.envs.utils import format_tool_prompt
 from haicosystem.tools import get_toolkits_by_names
@@ -22,6 +21,8 @@ from haicosystem.generation_utils import (
     SIMULATOR_PROMPT,
     SIMULATOR_CRITIQUE,
     SIMULATOR_CRITIQUE_REPEAT,
+    obtain_history_for_environment,
+    agenerate_simulated_observation,
 )
 from .tool import validate_inputs
 
@@ -143,21 +144,7 @@ class LLMGroundingEngine(Evaluator):
     ) -> list[SimulatedObservation]:
         # filter did nothing
         if not history and messages:
-            messages_filtered = [
-                (x, y)
-                for x, y in messages
-                if "did nothing" not in y.to_natural_language()
-            ]
-            history = "\n".join(
-                [
-                    (
-                        f"{x} {y.to_natural_language()}"
-                        if x != "Environment"
-                        else y.to_natural_language()
-                    )
-                    for x, y in messages_filtered
-                ]
-            )
+            history = obtain_history_for_environment(messages)
         messages_in_single_turn = []
         assert messages is not None
         for message in messages[::-1]:
@@ -176,7 +163,6 @@ class LLMGroundingEngine(Evaluator):
             ):
                 tool_action = self.parse_action(message_content.argument)
                 tool = self.name_to_tool_map[tool_action.tool]
-                simulator_scratchpad = ""
                 tool_run_kwargs = self.tool_run_logging_kwargs()
                 try:
                     # params = load_dict(raw_inputs)
@@ -188,7 +174,6 @@ class LLMGroundingEngine(Evaluator):
                     )
                     assert isinstance(error_observation, SimulatedObservation)
                     return [error_observation]
-                breakpoint()
                 observation = await agenerate_simulated_observation(
                     model_name=self.model_name,
                     history=history,
@@ -197,9 +182,7 @@ class LLMGroundingEngine(Evaluator):
                     toolkit_descriptions=self._get_current_toolkit_descriptions(
                         tool_action.tool
                     ),
-                    simulator_scratchpad=simulator_scratchpad,
                     temperature=temperature,
                 )
-                breakpoint()
                 return [observation]
         return [SimulatedObservation(observation="", thought_summary="", log="")]

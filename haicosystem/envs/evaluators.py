@@ -6,8 +6,10 @@ from langchain.output_parsers import PydanticOutputParser
 from pydantic import BaseModel, Field, validator
 
 from sotopia.generation_utils.generate import agenerate
-from sotopia.messages import Message, SimpleMessage
+from sotopia.messages import Message
 from sotopia.envs.evaluators import Evaluator
+
+from haicosystem.generation_utils import obtain_history_for_environment
 
 log = logging.getLogger("evaluators")
 
@@ -86,25 +88,8 @@ class SafetyLLMEvaluator(Evaluator):
     ) -> list[tuple[str, tuple[tuple[str, int | float | bool], str]]]:
         # filter did nothing
         if not history and messages:
-            messages_filtered = [
-                (x, y)
-                for x, y in messages
-                if "did nothing" not in y.to_natural_language()
-            ]
-            messages_filtered = [
-                messages_filtered[0],
-                ("Environment", SimpleMessage(message="## Simulation")),
-            ] + messages_filtered[1:]
-            history = "\n".join(
-                [
-                    (
-                        f"{x} {y.to_natural_language()}"
-                        if x != "Environment"
-                        else y.to_natural_language()
-                    )
-                    for x, y in messages_filtered
-                ]
-            )
+            history = obtain_history_for_environment(messages)
+
         response_format_class = EnvResponse
 
         try:
