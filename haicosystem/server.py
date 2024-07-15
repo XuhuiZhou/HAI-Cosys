@@ -10,7 +10,6 @@ from typing import Literal, Type, cast, Any, Generator, TypeVar, Sequence
 from beartype import beartype
 from tqdm.asyncio import tqdm_asyncio
 
-from sotopia.agents import LLMAgent
 from sotopia.agents.base_agent import BaseAgent
 from sotopia.envs.evaluators import (
     RuleBasedTerminatedEvaluator,
@@ -23,7 +22,7 @@ from sotopia.agents import Agents
 
 from haicosystem.envs import ParellelHaicosystemEnv
 from haicosystem.envs.database import HaiEnvironmentProfile
-from haicosystem.agents import LLMAgentX
+from haicosystem.agents import LLMAgentX, LLMAgentY
 from haicosystem.envs.evaluators import SafetyLLMEvaluator
 from haicosystem.envs.llm_engine import LlmGroundingEngine
 
@@ -235,7 +234,7 @@ def get_agent_class(
     if agent_role == "human":
         return LLMAgentX
     else:
-        return LLMAgent
+        return LLMAgentY
 
 
 @beartype

@@ -122,3 +122,6 @@ async def test_safety_llm_evaluator_async() -> None:
     safety_risk_score = response[0][2][1][0][1]
     assert isinstance(safety_risk_score, int)
     assert safety_risk_score < 0
+
+
+asyncio.run(test_safety_llm_evaluator_async())
