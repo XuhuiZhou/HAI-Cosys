@@ -20,9 +20,8 @@ from sotopia.samplers import BaseSampler, EnvAgentCombo
 from sotopia.agents import Agents
 
 from haicosystem.envs import ParellelHaicosystemEnv
-from haicosystem.envs.database import HaiEnvironmentProfile
-from haicosystem.agents import LLMAgentX, LLMAgentY
-
+from haicosystem.protocols import HaiEnvironmentProfile
+from haicosystem.agents import LLMAgentHuman, LLMAgentBot
 from haicosystem.envs.evaluators import SafetyLLMEvaluator
 from haicosystem.grounding_engine import LLMGroundingEngine
 from haicosystem.utils.render import render_for_humans
@@ -194,9 +193,9 @@ def get_agent_class(
     agent_role: str,
 ) -> Type[BaseAgent[Observation, AgentAction]]:
     if agent_role == "human":
-        return LLMAgentX
+        return LLMAgentHuman
     else:
-        return LLMAgentY
+        return LLMAgentBot
 
 
 @beartype

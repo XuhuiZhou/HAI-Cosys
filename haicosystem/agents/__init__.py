@@ -1,6 +1,6 @@
-from .llm_agent import LLMAgentX, LLMAgentY
+from .llm_agent import LLMAgentHuman, LLMAgentBot
 
 __all__ = [
-    "LLMAgentX",
-    "LLMAgentY",
+    "LLMAgentHuman",
+    "LLMAgentBot",
 ]

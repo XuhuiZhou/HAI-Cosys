@@ -1,22 +1,20 @@
-import json
-import re
 import logging
+import langchain_core
+import langchain_core.agents
 from sotopia.agents import LLMAgent
 from sotopia.database import AgentProfile
 from sotopia.messages import AgentAction, Observation
 from haicosystem.generation_utils import agenerate_action_x
+from haicosystem.agents.validation import validate_agentAction
 
-from sotopia.generation_utils.generate import (
-    agenerate_action,
-    obtain_chain,
-)
+from sotopia.generation_utils.generate import agenerate_action
 from sotopia.generation_utils.langchain_callback_handler import LoggingCallbackHandler
 
 log = logging.getLogger("llm_agent")
 logging_handler = LoggingCallbackHandler("langchain")
 
 
-class LLMAgentX(LLMAgent):
+class LLMAgentHuman(LLMAgent):
     """
     This agent should only be used for simulating human characters in the environment.
     """
@@ -66,30 +64,7 @@ class LLMAgentX(LLMAgent):
             return action
 
 
-def format_bad_output_tool(
-    ill_formed_output: str,
-    model_name: str = "gpt-3.5-turbo",
-) -> str:
-    template = """
-    Given the string that can not be parsed by json parser, reformat it to a string that can be parsed by json parser.
-    Original string: {ill_formed_output}
-
-    Please only generate the JSON:
-    """
-    chain = obtain_chain(
-        model_name=model_name,
-        template=template,
-        input_variables=re.findall(r"{(.*?)}", template),
-    )
-    input_values = {
-        "ill_formed_output": ill_formed_output,
-    }
-    reformat = chain.predict([logging_handler], **input_values)
-    log.info(f"Reformated output: {reformat}")
-    return reformat
-
-
-class LLMAgentY(LLMAgent):
+class LLMAgentBot(LLMAgent):
     """
     This agent should only be used for simulating agent characters in the environment.
     """
@@ -125,15 +100,7 @@ class LLMAgentY(LLMAgent):
                 script_like=self.script_like,
             )
             if action.action_type == "action":
-                try:
-                    json.loads(action.argument)
-                except Exception as e:
-                    log.debug(
-                        f"[red] Failed to parse result: {action.argument}\nEncounter Exception {e}\nstart to reparse",
-                        extra={"markup": True},
-                    )
-                    reformat_parsed_result = format_bad_output_tool(action.argument)
-                    action.argument = reformat_parsed_result
+                action = await validate_agentAction(action, tool_output_parser=langchain_core.agents.AgentAction)
 
             # Temporary fix for mixtral-moe model for incorrect generation format
             if "Mixtral-8x7B-Instruct-v0.1" in self.model_name:

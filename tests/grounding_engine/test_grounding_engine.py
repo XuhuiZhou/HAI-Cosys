@@ -6,7 +6,7 @@ import json
 from sotopia.messages import AgentAction, SimpleMessage
 from sotopia.agents import LLMAgent
 from sotopia.agents import Agents
-from haicosystem.agents.llm_agent import LLMAgentX
+from haicosystem.agents.llm_agent import LLMAgentHuman
 from haicosystem.envs import ParellelHaicosystemEnv
 from haicosystem.protocols import HaiEnvironmentProfile, SimulatedObservation
 from sotopia.database import AgentProfile
@@ -45,7 +45,7 @@ async def test_llm_grounding_engine_async() -> None:
     ]
     agent_list = [
         agent_class(agent_profile=agent_profile)
-        for agent_class, agent_profile in zip([LLMAgentX, LLMAgent], agent_profiles)
+        for agent_class, agent_profile in zip([LLMAgentHuman, LLMAgent], agent_profiles)
     ]
     for agent, goal in zip(agent_list, env.profile.agent_goals):
         agent.goal = goal
