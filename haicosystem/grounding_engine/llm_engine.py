@@ -28,9 +28,8 @@ from .tool import validate_inputs
 
 log = logging.getLogger("evaluators")
 
-beartype
 
-
+@beartype
 class LLMGroundingEngine(Evaluator):
     def __init__(self, model_name: str, response_format: str = "basic") -> None:
         self.model_name = model_name

@@ -98,18 +98,17 @@ async def agenerate_simulated_observation(
     """
     Generate the action for the agent, only should be used for generating human-like actions
     """
-    try:
-        return await agenerate(
-            model_name=model_name,
-            template=SIMULATOR_SYSTEM_INFO + SIMULATOR_PROMPT,
-            input_values=dict(
-                toolkit_descriptions=toolkit_descriptions,
-                current_tool=current_tool,
-                current_tool_description=current_tool_description,
-                interaction_history=history,
-            ),
-            output_parser=PydanticOutputParser(pydantic_object=SimulatedObservation),
-            temperature=temperature,
-        )
-    except Exception:
-        return SimulatedObservation(observation="")
+    simulated_observation = await agenerate(
+        model_name=model_name,
+        template=SIMULATOR_SYSTEM_INFO + SIMULATOR_PROMPT,
+        input_values=dict(
+            toolkit_descriptions=toolkit_descriptions,
+            current_tool=current_tool,
+            current_tool_description=current_tool_description,
+            interaction_history=history,
+        ),
+        output_parser=PydanticOutputParser(pydantic_object=SimulatedObservation),
+        temperature=temperature,
+    )
+    assert isinstance(simulated_observation, SimulatedObservation)
+    return simulated_observation
