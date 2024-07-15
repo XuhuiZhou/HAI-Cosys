@@ -25,7 +25,7 @@ from haicosystem.envs import ParellelHaicosystemEnv
 from haicosystem.protocols import HaiEnvironmentProfile
 from haicosystem.agents import LLMAgentX
 from haicosystem.envs.evaluators import SafetyLLMEvaluator
-from haicosystem.envs.llm_engine import LLMGroundingEngine
+from haicosystem.grounding_engine import LLMGroundingEngine
 
 ObsType = TypeVar("ObsType")
 ActType = TypeVar("ActType")

@@ -11,7 +11,7 @@ from haicosystem.envs import SafetyLLMEvaluator, ParellelHaicosystemEnv
 from haicosystem.protocols import HaiEnvironmentProfile, SimulatedObservation
 from sotopia.database import AgentProfile
 
-from haicosystem.envs.llm_engine_legacy import LlmGroundingEngine
+from haicosystem.grounding_engine import LLMGroundingEngine
 
 
 @pytest.mark.asyncio
@@ -22,7 +22,7 @@ async def test_safety_llm_evaluator_async() -> None:
     env_profile = HaiEnvironmentProfile.parse_obj(env_profiles_json["official_122"])
     env = ParellelHaicosystemEnv(
         env_profile=env_profile,
-        grounding_engines=[LlmGroundingEngine(model_name="gpt-4o")],
+        grounding_engines=[LLMGroundingEngine(model_name="gpt-4o")],
     )
     agent_profiles = [
         AgentProfile.parse_obj(

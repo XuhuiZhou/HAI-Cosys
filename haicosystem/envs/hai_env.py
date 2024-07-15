@@ -25,7 +25,7 @@ from sotopia.messages import (
 )
 
 from haicosystem.protocols import HaiEnvironmentProfile, SimulatedObservation
-from haicosystem.envs.llm_engine import LLMGroundingEngine
+from haicosystem.grounding_engine import LLMGroundingEngine
 from haicosystem.protocols import HaiScriptBackground
 
 log = logging.getLogger("evaluators")
