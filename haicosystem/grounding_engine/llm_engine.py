@@ -1,6 +1,7 @@
 import json
 import logging
-from typing import Sequence
+from typing import Sequence, Type
+from pydantic import BaseModel
 
 from beartype import beartype
 
@@ -9,11 +10,11 @@ from sotopia.messages import Message, AgentAction
 
 from haicosystem.protocols import SimulatedObservation, LangchainAgentAction
 from haicosystem.envs.utils import format_tool_prompt
-from haicosystem.tools import get_toolkits_by_names
+from haicosystem.tools import get_toolkit_output_parser_by_names, get_toolkits_by_names
 from haicosystem.tools.tool_interface import BaseToolkit
 from haicosystem.tools.utils import DummyToolWithMessage
 
-from langchain.tools.base import BaseTool, StructuredTool
+from langchain.tools.base import BaseTool
 from langchain_core.utils.input import get_color_mapping
 
 from haicosystem.generation_utils import (
@@ -23,6 +24,7 @@ from haicosystem.generation_utils import (
     SIMULATOR_CRITIQUE_REPEAT,
     obtain_history_for_environment,
     agenerate_simulated_observation,
+    validate_observation,
 )
 from .tool import validate_inputs
 
@@ -37,7 +39,8 @@ class LLMGroundingEngine(Evaluator):
         self.response_format = response_format
         self.name_to_tool_map: dict[str, BaseTool] = {}
         self.color_mapping: dict[str, str] = {}
-        self.toolkits: list[StructuredTool] = []
+        self.toolkits: Sequence[BaseToolkit] = []
+        self.tool_parser: dict[str, Type[BaseModel]] = {}
         self.tools: list[BaseTool] = []
         self.tool_prompt: str = ""
         self.verbose = True
@@ -63,21 +66,21 @@ class LLMGroundingEngine(Evaluator):
         toolkits_names: list[str],
     ) -> str:
         """Create prompt in the style of the zero shot agent."""
-        toolkits = get_toolkits_by_names(toolkits_names)
         # initialize the engine
-        self.toolkits = toolkits  # type: ignore
+        self.toolkits = get_toolkits_by_names(toolkits_names)
+        self.tool_parser = get_toolkit_output_parser_by_names(toolkits_names)
         self.name_to_tool_map = {
-            tool.name: tool for tool in self.get_all_tools(toolkits)
+            tool.name: tool for tool in self.get_all_tools(self.toolkits)
         }
-        self.tools = self.get_all_tools(toolkits)
+        self.tools = self.get_all_tools(self.toolkits)
         # We construct a mapping from each tool to a color, used for logging.
         self.color_mapping = get_color_mapping(
             [tool.name for tool in self.tools], excluded_colors=["green", "red"]
         )
         toolkit_strings = "\n".join(
-            [toolkit.create_description("medium") for toolkit in toolkits]
+            [toolkit.create_description("medium") for toolkit in self.toolkits]
         )
-        self.tool_names = [tool.name for tool in self.get_all_tools(toolkits)]
+        self.tool_names = [tool.name for tool in self.get_all_tools(self.toolkits)]
         tool_prompt = format_tool_prompt(toolkit_strings, ", ".join(self.tool_names))
         self.tool_prompt = tool_prompt
         return tool_prompt
@@ -85,9 +88,9 @@ class LLMGroundingEngine(Evaluator):
     def _get_current_toolkit_descriptions(self, tool_name: str) -> str:
         # NOTE: assume only one toolkit has the tool with tool_name
         for toolkit in self.toolkits:
-            for tool in toolkit.tools:  # type: ignore
+            for tool in toolkit.tools:
                 if tool.name == tool_name:
-                    return toolkit.create_description(detail_level="low")  # type: ignore
+                    return toolkit.create_description(detail_level="low")
         raise ValueError(f"Tool {tool_name} not found in any of the toolkits.")
 
     def __call__(
@@ -183,5 +186,11 @@ class LLMGroundingEngine(Evaluator):
                     ),
                     temperature=temperature,
                 )
+                # Validate and correct the observation
+                is_valid, corrected_observation_string = await validate_observation(
+                    observation, self.tool_parser[tool.name]
+                )
+                if not is_valid:
+                    observation.observation = corrected_observation_string
                 return [observation]
         return [SimulatedObservation(observation="", thought_summary="", log="")]
