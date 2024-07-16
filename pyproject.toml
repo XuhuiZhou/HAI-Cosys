@@ -8,7 +8,7 @@ packages = [{include = "haicosystem"}]
 
 [tool.poetry.dependencies]
 python = ">=3.11, <3.13"
-sotopia = "0.0.11"
+sotopia = "^0.0.9"
 types-requests = "^2.31"
 
 [tool.poetry.group.dev.dependencies]
@@ -16,7 +16,7 @@ pre-commit = "*"
 nbmake = "*"
 types-setuptools = "*"
 ruff = "*"
-#sotopia = { git = "https://github.com/sotopia-lab/sotopia.git", branch = "feature/ready-for-bridge" }
+sotopia = { git = "https://github.com/sotopia-lab/sotopia.git", branch = "feature/background_as_parameter" }
 #sotopia = { path = "../sotopia" }
 
 [tool.poetry.group.test.dependencies]

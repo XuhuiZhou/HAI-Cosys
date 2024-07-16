@@ -1,31 +1,32 @@
-from sotopia.envs import ParallelSotopiaEnv
-from typing import Literal, Any
-from sotopia.envs.evaluators import Evaluator
-from sotopia.database import EnvironmentProfile
-from haicosystem.envs.database import HaiEnvironmentProfile
-from sotopia.envs.evaluators import unweighted_aggregate_evaluate
-from sotopia.envs.parallel import _actions_to_natural_language, render_text_for_agent
 import asyncio
 import itertools
 import random
+import logging
+from collections import defaultdict
+from typing import Literal, Any
 
+from beartype import beartype
+from pydantic import Field
+
+from sotopia.envs import ParallelSotopiaEnv
+from sotopia.envs.evaluators import (
+    Evaluator,
+    unweighted_aggregate_evaluate,
+    _reduce,
+)
+from sotopia.envs.parallel import _actions_to_natural_language, render_text_for_agent
+from sotopia.database import EnvironmentProfile
 from sotopia.messages import (
     ActionType,
     AgentAction,
     Observation,
     SimpleMessage,
+    ScriptEnvironmentResponse,
 )
 
-from beartype import beartype
-
-# TODO: fix the import error
-from sotopia.envs.evaluators import ScriptEnvironmentResponse, _reduce  # type: ignore
-from collections import defaultdict
-import logging
-from haicosystem.envs.messages import SimulatedObservation
-from haicosystem.envs.llm_engine import LlmGroundingEngine
-
-from pydantic import Field
+from haicosystem.protocols import HaiEnvironmentProfile, SimulatedObservation
+from haicosystem.grounding_engine import LLMGroundingEngine
+from haicosystem.protocols import HaiScriptBackground
 
 log = logging.getLogger("evaluators")
 
@@ -151,12 +152,13 @@ class ParellelHaicosystemEnv(ParallelSotopiaEnv):
             evaluators=evaluators,
             terminal_evaluators=terminal_evaluators,
             uuid_str=uuid_str,
+            background_class=HaiScriptBackground,
         )
         self.profile: HaiEnvironmentProfile = env_profile  # type: ignore
         assert (
             len(grounding_engines) == 1
         )  # temp implementation; only one grounding engine is supported
-        self.grounding_engine: LlmGroundingEngine = grounding_engines[0]  # type: ignore
+        self.grounding_engine: LLMGroundingEngine = grounding_engines[0]  # type: ignore
         self.engines_and_evaluators = grounding_engines + evaluators
         self.profile.scenario = self.prepare_scenario(self.profile)
 
@@ -166,10 +168,10 @@ class ParellelHaicosystemEnv(ParallelSotopiaEnv):
             ">", "&gt;"
         )  # TODO: temp fix for the bug in the xml renderer
         environment_info = "\n".join(
-            f"### {key}:\n" + " ".join(getattr(env_profile, key))
+            f"[{key}]:\n" + " ".join(getattr(env_profile, key))
             for key in [
                 "user_intention",
-                "disired_outcome",
+                "desired_outcome",
                 "risky_outcome",
             ]
         )
@@ -179,7 +181,7 @@ class ParellelHaicosystemEnv(ParallelSotopiaEnv):
             + f"<extra_info viewer='environment'>{environment_info}</extra_info>"
             + "\n"
             + f"<extra_info viewer='agent_1'>{tool_prompt}</extra_info>"
-        )  # temp implementation; only agent_0 is able to use the tools
+        )  # temp implementation; only agent_1 is able to use the tools
         return new_scenario
 
     @beartype
