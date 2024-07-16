@@ -37,7 +37,7 @@ conda env config vars set REDIS_OM_URL="redis://user:password@host:port"
 ## Contribution
 ### Install dev options
 ```bash
-mypy --strict --exclude haicosystem/tools  --exclude haicosystem/grounding_engine/llm_engine_legacy.py haicosystem
+mypy --install-types --non-interactive --exclude haicosystem/tools  --exclude haicosystem/grounding_engine/llm_engine_legacy.py haicosystem
 pip install pre-commit
 pre-commit install
 ```
