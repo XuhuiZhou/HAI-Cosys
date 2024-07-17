@@ -1,5 +1,4 @@
 import asyncio
-import json
 import rich
 import gin
 import logging
@@ -53,10 +52,9 @@ class BridgeSampler(BaseSampler[ObsType, ActType]):
         assert (
             len(agents_params) == n_agent
         ), f"agents_params should be a list of length {n_agent}"
-        filename = "./data/example_scenarios.json"
-        with open(filename, "r") as file:
-            env_profiles_json = json.load(file)
-        env_profile = HaiEnvironmentProfile.parse_obj(env_profiles_json["official_122"])
+        assert self.env_candidates is not None
+        env_profile = self.env_candidates[0]
+        assert isinstance(env_profile, HaiEnvironmentProfile)
         env = ParellelHaicosystemEnv(env_profile=env_profile, **env_params)
         agent_profiles = [
             AgentProfile.parse_obj(
