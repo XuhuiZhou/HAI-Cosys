@@ -26,7 +26,9 @@ logging.basicConfig(
 filename = "./data/example_scenarios.json"
 with open(filename, "r") as file:
     env_profiles_json = json.load(file)
-env_profile = HaiEnvironmentProfile.parse_obj(env_profiles_json["official_122"])
+env_profile = HaiEnvironmentProfile.parse_obj(
+    env_profiles_json["TeladocRequestPrescription_0"]
+)
 asyncio.run(
     run_server(
         sampler=BridgeSampler(env_candidates=[env_profile]),
