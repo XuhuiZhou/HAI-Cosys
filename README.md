@@ -31,7 +31,7 @@ conda env config vars set REDIS_OM_URL="redis://user:password@host:port"
 ```
 
 > [!IMPORTANT]
-> Let's **temporarily** use `REDIS_OM_URL="redis://:AtSeeDFtZvFkYFwSPbZVDMx3@windhoek.sp.cs.cmu.edu:6379"
+> Let's **temporarily** use `conda env config vars set REDIS_OM_URL=redis://:QzmCUD3C3RdsR@54.146.206.168:6379"
 `
 
 ## Contribution
