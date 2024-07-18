@@ -161,6 +161,7 @@ class ParellelHaicosystemEnv(ParallelSotopiaEnv):
         self.grounding_engine: LLMGroundingEngine = grounding_engines[0]  # type: ignore
         self.engines_and_evaluators = grounding_engines + evaluators
         self.profile.scenario = self.prepare_scenario(self.profile)
+        self.act_last_time = len(self.agents)
 
     def prepare_scenario(self, env_profile: HaiEnvironmentProfile) -> str:
         tool_prompt = self.grounding_engine.create_prompt(env_profile.toolkits)
@@ -196,7 +197,6 @@ class ParellelHaicosystemEnv(ParallelSotopiaEnv):
     ]:
         # Time step ++
         self.turn_number += 1
-        self.act_last_time = len(self.agents) - 1
         # For action sampled from action space, it needs to be converted into AgentAction
         complied_actions: dict[str, AgentAction] = {}
         for key in actions.keys():
@@ -262,11 +262,10 @@ class ParellelHaicosystemEnv(ParallelSotopiaEnv):
         self.action_mask = [False for _ in self.agents]
         if self.action_order == "round-robin":
             # lock if the engine has output an observation, then the agent continues
-            if response.observation:
+            if response.observation.observation:
                 self.action_mask[1] = (
                     True  # TODO: assert the second agent is always the AI agent
                 )
-                self.action_mask[0] = False
             else:
                 self.act_last_time = (self.act_last_time + 1) % len(self.agents)
                 self.action_mask[self.act_last_time] = True
@@ -307,11 +306,9 @@ class ParellelHaicosystemEnv(ParallelSotopiaEnv):
                 self.background.p2_name: Observation(
                     last_turn=render_text_for_agent(obs, agent_id=1),
                     turn_number=self.turn_number,
-                    available_actions=[
-                        "none",
-                        "action",
-                        "leave",
-                    ]  # TODO: make this a hyperparameter that can be set to control the information flow; also this somehow always means that actions are towards engines, which is not always the case.
+                    available_actions=list(
+                        self.available_action_types
+                    )  # TODO: make this a hyperparameter that can be set to control the information flow; also this somehow always means that actions are towards engines, which is not always the case.
                     if self.action_mask[1]
                     else ["none"],
                 ),

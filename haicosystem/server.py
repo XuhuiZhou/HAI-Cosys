@@ -1,6 +1,7 @@
 import asyncio
-import json
 import rich
+from rich import print
+from rich.panel import Panel
 import gin
 import logging
 import itertools
@@ -53,10 +54,9 @@ class BridgeSampler(BaseSampler[ObsType, ActType]):
         assert (
             len(agents_params) == n_agent
         ), f"agents_params should be a list of length {n_agent}"
-        filename = "./data/example_scenarios.json"
-        with open(filename, "r") as file:
-            env_profiles_json = json.load(file)
-        env_profile = HaiEnvironmentProfile.parse_obj(env_profiles_json["official_122"])
+        assert self.env_candidates is not None
+        env_profile = self.env_candidates[0]
+        assert isinstance(env_profile, HaiEnvironmentProfile)
         env = ParellelHaicosystemEnv(env_profile=env_profile, **env_params)
         agent_profiles = [
             AgentProfile.parse_obj(
@@ -87,40 +87,42 @@ class BridgeSampler(BaseSampler[ObsType, ActType]):
             yield env, agents
 
 
-def render_for_humans(episode: EpisodeLog) -> list[str]:
-    """Generate a human readable version of the episode log.
-
-    Returns:
-        A tuple of (a list of agent_profiles, a list of str): The agent profiles, and the messages and rewards in each turn.
-    """
-
-    messages_and_rewards = []
+def render_for_humans(episode: EpisodeLog) -> None:
+    """Generate a human readable version of the episode log."""
     for idx, turn in enumerate(episode.messages):
-        messages_in_this_turn = []
         if idx == 0:
             assert (
                 len(turn) >= 2
-            ), "The first turn should have at least environemnt messages"
-            messages_in_this_turn.append(turn[0][2])
-            messages_in_this_turn.append(turn[1][2])
+            ), "The first turn should have at least environment messages"
+            print(Panel(turn[0][2], title="Background Info", style="blue"))
+            print(Panel(turn[1][2], title="Background Info", style="blue"))
         for sender, receiver, message in turn:
+            if "Observation:" in message and idx != 0:
+                extract_observation = message.split("Observation:")[1].strip()
+                if extract_observation:
+                    print(
+                        Panel(
+                            f"Observation: {extract_observation}",
+                            title="Observation",
+                            style="yellow",
+                        )
+                    )
             if receiver == "Environment":
                 if sender != "Environment":
                     if "did nothing" in message:
                         continue
                     else:
                         if "said:" in message:
-                            messages_in_this_turn.append(f"{sender} {message}")
+                            print(Panel(f"{sender} {message}", style="green"))
                         else:
-                            messages_in_this_turn.append(f"{sender}: {message}")
+                            print(Panel(f"{sender}: {message}", style="blue"))
                 else:
-                    messages_in_this_turn.append(message)
-        messages_and_rewards.append("\n".join(messages_in_this_turn))
-    messages_and_rewards.append(f"The reasoning is:\n{episode.reasoning}")
-    messages_and_rewards.append(
+                    print(Panel(message, style="blue"))
+
+    print(f"The reasoning is:\n{episode.reasoning}")
+    print(
         f"The rewards are:\nAgent 1: {episode.rewards[0]}\nAgent 2: {episode.rewards[1]}"
     )
-    return messages_and_rewards
 
 
 @gin.configurable
@@ -215,9 +217,7 @@ async def arun_one_episode(
         rewards_prompt=info["rewards_prompt"]["overall_prompt"],
     )
     rich.print(epilog.rewards_prompt)
-    conversation = render_for_humans(epilog)
-    for message in conversation:
-        rich.print(message)
+    render_for_humans(epilog)
 
     if push_to_db:
         try:

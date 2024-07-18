@@ -16,7 +16,7 @@ pre-commit = "*"
 nbmake = "*"
 types-setuptools = "*"
 ruff = "*"
-sotopia = { git = "https://github.com/sotopia-lab/sotopia.git", branch = "feature/background_as_parameter" }
+sotopia = { git = "https://github.com/sotopia-lab/sotopia.git"}
 #sotopia = { path = "../sotopia" }
 
 [tool.poetry.group.test.dependencies]
