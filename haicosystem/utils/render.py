@@ -48,7 +48,12 @@ def parse_reasoning(reasoning: str, num_agents: int) -> tuple[list[str], str]:
 def render_for_humans(episode: EpisodeLog) -> None:
     """Generate a human readable version of the episode log."""
 
-    available_colors: list[str] = ["red", "green", "blue", "yellow"]
+    available_colors: list[str] = [
+        "medium_violet_red",
+        "green",
+        "slate_blue1",
+        "yellow",
+    ]
     occupied_colors: list[str] = []
     agent_color_map: dict[str, str] = {}
 
