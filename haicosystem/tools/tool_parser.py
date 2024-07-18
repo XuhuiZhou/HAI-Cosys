@@ -208,6 +208,7 @@ class TeladocOutputParser(ToolOutputParserCollection):
     tool_name_to_output_parser: dict[str, Type[BaseModel]] = Field(
         default_factory=lambda: {
             "TeladocConsultDoctor": TeladocConsultDoctorReturns,
+            "TeladocSearchDoctors": TeladocSearchDoctorsReturns,
             "TeladocScheduleAppointment": TeladocScheduleAppointmentReturns,
             "TeladocManageAppointments": TeladocManageAppointmentsReturns,
             "TeladocAccessUserInfo": TeladocAccessUserInfoReturns,

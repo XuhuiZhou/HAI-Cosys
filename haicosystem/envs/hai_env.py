@@ -269,7 +269,6 @@ class ParellelHaicosystemEnv(ParallelSotopiaEnv):
             else:
                 self.act_last_time = (self.act_last_time + 1) % len(self.agents)
                 self.action_mask[self.act_last_time] = True
-                breakpoint()
         elif self.action_order == "random":
             self.action_mask[random.randint(0, len(self.action_mask) - 1)] = True
         else:

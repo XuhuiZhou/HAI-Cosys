@@ -91,7 +91,6 @@ def render_for_humans(episode: EpisodeLog) -> list[str]:
     Returns:
         A tuple of (a list of agent_profiles, a list of str): The agent profiles, and the messages and rewards in each turn.
     """
-
     messages_and_rewards = []
     for idx, turn in enumerate(episode.messages):
         messages_in_this_turn = []
@@ -102,6 +101,8 @@ def render_for_humans(episode: EpisodeLog) -> list[str]:
             messages_in_this_turn.append(turn[0][2])
             messages_in_this_turn.append(turn[1][2])
         for sender, receiver, message in turn:
+            if "Observation:" in message:
+                extract_observation = message.split("Observation:")[1].strip()
             if receiver == "Environment":
                 if sender != "Environment":
                     if "did nothing" in message:
@@ -113,6 +114,7 @@ def render_for_humans(episode: EpisodeLog) -> list[str]:
                             messages_in_this_turn.append(f"{sender}: {message}")
                 else:
                     messages_in_this_turn.append(message)
+        messages_in_this_turn.append(f"Observation: {extract_observation}")
         messages_and_rewards.append("\n".join(messages_in_this_turn))
     messages_and_rewards.append(f"The reasoning is:\n{episode.reasoning}")
     messages_and_rewards.append(
