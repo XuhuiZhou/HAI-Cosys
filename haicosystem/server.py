@@ -1,8 +1,6 @@
 import asyncio
 import rich
 from rich import print
-from rich.panel import Panel
-from rich.json import JSON
 import gin
 import logging
 import itertools
@@ -17,7 +15,6 @@ from sotopia.agents.base_agent import BaseAgent
 from sotopia.envs.evaluators import (
     RuleBasedTerminatedEvaluator,
 )
-from sotopia.generation_utils.generate import LLM_Name
 from sotopia.messages import AgentAction, Message, Observation
 from sotopia.database import AgentProfile
 from sotopia.samplers import BaseSampler, EnvAgentCombo
@@ -28,6 +25,7 @@ from haicosystem.protocols import HaiEnvironmentProfile
 from haicosystem.agents import LLMAgentX
 from haicosystem.envs.evaluators import SafetyLLMEvaluator
 from haicosystem.grounding_engine import LLMGroundingEngine
+from haicosystem.utils.render import render_for_humans
 
 ObsType = TypeVar("ObsType")
 ActType = TypeVar("ActType")
@@ -86,179 +84,6 @@ class BridgeSampler(BaseSampler[ObsType, ActType]):
             for agent, goal in zip(agents, env.profile.agent_goals):
                 agent.goal = goal
             yield env, agents
-
-
-def pick_color_for_agent(
-    agent_name: str,
-    available_colors: list[str],
-    occupied_colors: list[str],
-    agent_color_map: dict[str, str],
-) -> tuple[list[str], list[str], dict[str, str], str]:
-    """Pick a color for the agent based on the agent name and the available colors."""
-
-    if agent_name in agent_color_map:
-        return (
-            available_colors,
-            occupied_colors,
-            agent_color_map,
-            agent_color_map[agent_name],
-        )
-    else:
-        if available_colors:
-            color = available_colors.pop(0)
-            agent_color_map[agent_name] = color
-            occupied_colors.append(color)
-            return available_colors, occupied_colors, agent_color_map, color
-        else:
-            return available_colors, occupied_colors, agent_color_map, "white"
-
-
-def parse_reasoning(reasoning: str, num_agents: int) -> tuple[list[str], str]:
-    """Parse the reasoning string into a dictionary."""
-    sep_token = "SEPSEP"
-    for i in range(1, num_agents + 1):
-        reasoning = (
-            reasoning.replace(f"Agent {i} comments:\n", sep_token)
-            .strip(" ")
-            .strip("\n")
-        )
-    all_chunks = reasoning.split(sep_token)
-    general_comment = all_chunks[0].strip(" ").strip("\n")
-    comment_chunks = all_chunks[-num_agents:]
-
-    return comment_chunks, general_comment
-
-
-def render_for_humans(episode: EpisodeLog) -> None:
-    """Generate a human readable version of the episode log."""
-
-    available_colors = ["red", "green", "blue", "yellow"]
-    occupied_colors = []
-    agent_color_map = {}
-
-    for idx, turn in enumerate(episode.messages):
-        is_observation_printed = False
-
-        if idx == 0:
-            assert (
-                len(turn) >= 2
-            ), "The first turn should have at least environment messages"
-
-            print(
-                Panel(
-                    turn[0][2],
-                    title="Background Info",
-                    style="blue",
-                    title_align="left",
-                )
-            )
-            print(
-                Panel(
-                    turn[1][2],
-                    title="Background Info",
-                    style="blue",
-                    title_align="left",
-                )
-            )
-            print("=" * 100)
-            print("Start Simulation")
-            print("=" * 100)
-
-        for sender, receiver, message in turn:
-            # "Observation" indicates the agent takes an action
-            if not is_observation_printed and "Observation:" in message and idx != 0:
-                extract_observation = message.split("Observation:")[1].strip()
-                if extract_observation:
-                    print(
-                        Panel(
-                            JSON(extract_observation, highlight=False),
-                            title="Observation",
-                            style="yellow",
-                            title_align="left",
-                        )
-                    )
-                is_observation_printed = True
-
-            if receiver == "Environment":
-                if sender != "Environment":
-                    if "did nothing" in message:
-                        continue
-                    else:
-                        # Conversation
-                        if "said:" in message:
-                            (
-                                available_colors,
-                                occupied_colors,
-                                agent_color_map,
-                                sender_color,
-                            ) = pick_color_for_agent(
-                                sender,
-                                available_colors,
-                                occupied_colors,
-                                agent_color_map,
-                            )
-                            message = message.split("said:")[1].strip()
-                            print(
-                                Panel(
-                                    f"{message}",
-                                    title=f"{sender} (Said)",
-                                    style=sender_color,
-                                    title_align="left",
-                                )
-                            )
-                        # Action
-                        else:
-                            (
-                                available_colors,
-                                occupied_colors,
-                                agent_color_map,
-                                sender_color,
-                            ) = pick_color_for_agent(
-                                sender,
-                                available_colors,
-                                occupied_colors,
-                                agent_color_map,
-                            )
-                            message = message.replace("[action]", "")
-                            print(
-                                Panel(
-                                    JSON(message, highlight=False),
-                                    title=f"{sender} (Action)",
-                                    style=sender_color,
-                                    title_align="left",
-                                )
-                            )
-                else:
-                    print(Panel(message, style="white"))
-    print("=" * 100)
-    print("End Simulation")
-    print("=" * 100)
-
-    reasoning_per_agent, general_comment = parse_reasoning(
-        episode.reasoning, len(agent_color_map)
-    )
-
-    print(
-        Panel(
-            general_comment,
-            title="General (Comments)",
-            style="blue",
-            title_align="left",
-        )
-    )
-
-    for idx, reasoning in enumerate(reasoning_per_agent):
-        print(
-            Panel(
-                f"{reasoning}\n"
-                + "=" * 100
-                + "\nRewards: "
-                + str(episode.rewards[idx]),
-                title=f"Agent {idx + 1} (Comments)",
-                style="blue",
-                title_align="left",
-            )
-        )
 
 
 @gin.configurable
@@ -376,7 +201,7 @@ def get_agent_class(
 
 @beartype
 async def run_server(
-    model_dict: dict[str, LLM_Name],
+    model_dict: dict[str, str],
     agents_roles: dict[str, str],
     sampler: BaseSampler[Observation, AgentAction] = BridgeSampler(),
     action_order: Literal["simutaneous", "round-robin", "random"] = "round-robin",
@@ -436,7 +261,7 @@ async def run_server(
             n_agent=len(agents_model_dict),
             env_params=env_params,
             agents_params=[
-                # type: ignore
+                # {"model_name": model_name} if model_name != "bridge" else {} for model_name in agents_model_dict.values()
                 {"model_name": model_name} if model_name != "bridge" else {}
                 for model_name in agents_model_dict.values()
             ],

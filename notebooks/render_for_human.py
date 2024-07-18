@@ -1,4 +1,4 @@
-from haicosystem.server import render_for_humans
+from haicosystem.utils.render import render_for_humans
 from sotopia.database import EpisodeLog
 
 episode = EpisodeLog.find(EpisodeLog.tag == "haicosystem_debug")[1]  # type: ignore
