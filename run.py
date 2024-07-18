@@ -41,5 +41,7 @@ asyncio.run(
             "agent1": "human",
             "agent2": "ai",
         },
+        push_to_db=True,
+        tag="haicosystem_debug",
     )
 )
