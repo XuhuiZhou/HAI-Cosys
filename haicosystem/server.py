@@ -1,7 +1,6 @@
 import asyncio
 import rich
 from rich import print
-from rich.panel import Panel
 import gin
 import logging
 import itertools
@@ -16,7 +15,6 @@ from sotopia.agents.base_agent import BaseAgent
 from sotopia.envs.evaluators import (
     RuleBasedTerminatedEvaluator,
 )
-from sotopia.generation_utils.generate import LLM_Name
 from sotopia.messages import AgentAction, Message, Observation
 from sotopia.database import AgentProfile
 from sotopia.samplers import BaseSampler, EnvAgentCombo
@@ -27,6 +25,7 @@ from haicosystem.protocols import HaiEnvironmentProfile
 from haicosystem.agents import LLMAgentX
 from haicosystem.envs.evaluators import SafetyLLMEvaluator
 from haicosystem.grounding_engine import LLMGroundingEngine
+from haicosystem.utils.render import render_for_humans
 
 ObsType = TypeVar("ObsType")
 ActType = TypeVar("ActType")
@@ -85,44 +84,6 @@ class BridgeSampler(BaseSampler[ObsType, ActType]):
             for agent, goal in zip(agents, env.profile.agent_goals):
                 agent.goal = goal
             yield env, agents
-
-
-def render_for_humans(episode: EpisodeLog) -> None:
-    """Generate a human readable version of the episode log."""
-    for idx, turn in enumerate(episode.messages):
-        if idx == 0:
-            assert (
-                len(turn) >= 2
-            ), "The first turn should have at least environment messages"
-            print(Panel(turn[0][2], title="Background Info", style="blue"))
-            print(Panel(turn[1][2], title="Background Info", style="blue"))
-        for sender, receiver, message in turn:
-            if "Observation:" in message and idx != 0:
-                extract_observation = message.split("Observation:")[1].strip()
-                if extract_observation:
-                    print(
-                        Panel(
-                            f"Observation: {extract_observation}",
-                            title="Observation",
-                            style="yellow",
-                        )
-                    )
-            if receiver == "Environment":
-                if sender != "Environment":
-                    if "did nothing" in message:
-                        continue
-                    else:
-                        if "said:" in message:
-                            print(Panel(f"{sender} {message}", style="green"))
-                        else:
-                            print(Panel(f"{sender}: {message}", style="blue"))
-                else:
-                    print(Panel(message, style="blue"))
-
-    print(f"The reasoning is:\n{episode.reasoning}")
-    print(
-        f"The rewards are:\nAgent 1: {episode.rewards[0]}\nAgent 2: {episode.rewards[1]}"
-    )
 
 
 @gin.configurable
@@ -240,7 +201,7 @@ def get_agent_class(
 
 @beartype
 async def run_server(
-    model_dict: dict[str, LLM_Name],
+    model_dict: dict[str, str],
     agents_roles: dict[str, str],
     sampler: BaseSampler[Observation, AgentAction] = BridgeSampler(),
     action_order: Literal["simutaneous", "round-robin", "random"] = "round-robin",
@@ -300,7 +261,8 @@ async def run_server(
             n_agent=len(agents_model_dict),
             env_params=env_params,
             agents_params=[
-                {"model_name": model_name} if model_name != "bridge" else {}  # type: ignore
+                # {"model_name": model_name} if model_name != "bridge" else {} for model_name in agents_model_dict.values()
+                {"model_name": model_name} if model_name != "bridge" else {}
                 for model_name in agents_model_dict.values()
             ],
         )
