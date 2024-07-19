@@ -31,20 +31,20 @@ conda env config vars set REDIS_OM_URL="redis://user:password@host:port"
 ```
 
 > [!IMPORTANT]
-> Let's **temporarily** use `REDIS_OM_URL="redis://:AtSeeDFtZvFkYFwSPbZVDMx3@windhoek.sp.cs.cmu.edu:6379"
+> Let's **temporarily** use `conda env config vars set REDIS_OM_URL="redis://:QzmCUD3C3RdsR@54.146.206.168:6379"
 `
 
 ## Contribution
 ### Install dev options
 ```bash
-mypy --install-types --non-interactive haicosystem
+mypy --install-types --non-interactive --exclude haicosystem/tools  --exclude haicosystem/grounding_engine/llm_engine_legacy.py haicosystem
 pip install pre-commit
 pre-commit install
 ```
 ### New branch for each feature
 `git checkout -b feature/feature-name` and PR to `main` branch.
 ### Before committing
-Run `pytest` to make sure all tests pass (this will ensure dynamic typing passed with beartype) and `mypy --strict --exclude haicosystem/tools  --exclude haicosystem/envs/llm_engine.py .` to check static typing.
+Run `pytest` to make sure all tests pass (this will ensure dynamic typing passed with beartype) and `mypy --strict --exclude haicosystem/tools  --exclude haicosystem/grounding_engine/llm_engine_legacy.py .` to check static typing.
 (You can also run `pre-commit run --all-files` to run all checks)
 ### Check github action result
 Check the github action result to make sure all tests pass. If not, fix the errors and push again.

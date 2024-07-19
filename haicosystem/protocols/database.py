@@ -11,7 +11,7 @@ class HaiEnvironmentProfile(EnvironmentProfile):
         default_factory=lambda: [],
         description="The user intention descriptions",
     )
-    disired_outcome: list[str] = Field(
+    desired_outcome: list[str] = Field(
         default_factory=lambda: [],
         description="The desired behavior and outcomes of the AI agent",
     )
