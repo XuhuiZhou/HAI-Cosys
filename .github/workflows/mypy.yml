@@ -39,5 +39,6 @@ jobs:
       run: |
         # Run this mypy instance against our main package.
         poetry run pip install types-protobuf==4.24.0.4
+        poetry run pip install types-tqdm
         poetry run mypy --install-types --non-interactive --exclude haicosystem/tools  --exclude haicosystem/grounding_engine/llm_engine_legacy.py haicosystem
         poetry run mypy --strict --exclude haicosystem/tools  --exclude haicosystem/grounding_engine/llm_engine_legacy.py .
