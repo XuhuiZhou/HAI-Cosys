@@ -22,7 +22,7 @@ sotopia = { git = "https://github.com/sotopia-lab/sotopia.git"}
 [tool.poetry.group.test.dependencies]
 pytest = "*"
 pytest-asyncio = "*"
-mypy = "^1.8.0"
+mypy = "1.10.1"
 
 [build-system]
 requires = ["poetry-core"]
