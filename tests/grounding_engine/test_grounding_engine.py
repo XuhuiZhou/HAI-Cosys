@@ -127,18 +127,9 @@ async def test_input_validator() -> None:
             "log": "",
         }
     )
-    error = None
-    try:
+    with pytest.raises(ValueError, match="Invalid type for amount"):
         # params = load_dict(raw_inputs)
         validate_inputs(tool.parameters, tool_action.tool_input)  # type: ignore
-    except Exception as e:
-        error = SimulatedObservation(
-            log="",
-            thought_summary="",
-            observation=f'{{"error": "InvalidRequestException: {e}"}}',
-        )
-        print(error.observation)
-    assert error
 
 
 @pytest.mark.asyncio
