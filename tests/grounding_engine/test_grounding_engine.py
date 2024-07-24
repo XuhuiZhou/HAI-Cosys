@@ -10,7 +10,8 @@ from sotopia.messages import AgentAction, SimpleMessage
 from haicosystem.agents.llm_agent import LLMAgentX
 from haicosystem.envs import ParellelHaicosystemEnv
 from haicosystem.generation_utils import validate_observation
-from haicosystem.grounding_engine import LLMGroundingEngine, validate_inputs
+from haicosystem.grounding_engine import LLMGroundingEngine
+from haicosystem.grounding_engine.tool import validate_inputs
 from haicosystem.protocols import (
     HaiEnvironmentProfile,
     SimulatedObservation,
