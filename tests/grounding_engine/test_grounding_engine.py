@@ -18,7 +18,6 @@ from haicosystem.protocols import (
     LangchainAgentAction,
 )
 from haicosystem.tools import get_toolkits_by_names, get_toolkit_output_parser_by_names
-from haicosystem.tools.utils import DummyToolWithMessage
 
 
 @pytest.mark.asyncio
@@ -115,7 +114,6 @@ async def test_llm_grounding_engine_async() -> None:
 
 @pytest.mark.asyncio
 async def test_input_validator() -> None:
-    tool_run_kwargs = {"llm_prefix": "Thought:", "observation_prefix": "Observation: "}
     tool = get_toolkits_by_names(["Venmo"])[0].tools[0]
     tool_action = LangchainAgentAction(
         **{
@@ -133,13 +131,12 @@ async def test_input_validator() -> None:
         # params = load_dict(raw_inputs)
         validate_inputs(tool.parameters, tool_action.tool_input)  # type: ignore
     except Exception as e:
-        error_observation = await DummyToolWithMessage().arun(
-            f'{{"error": "InvalidRequestException: {e}"}}',
-            **tool_run_kwargs,  # type: ignore
-        )
         error = SimulatedObservation(
-            log="", thought_summary="", observation=error_observation
+            log="",
+            thought_summary="",
+            observation=f'{{"error": "InvalidRequestException: {e}"}}',
         )
+        print(error.observation)
     assert error
 
 

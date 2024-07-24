@@ -12,7 +12,6 @@ from haicosystem.protocols import SimulatedObservation, LangchainAgentAction
 from haicosystem.envs.utils import format_tool_prompt
 from haicosystem.tools import get_toolkit_output_parser_by_names, get_toolkits_by_names
 from haicosystem.tools.tool_interface import BaseToolkit
-from haicosystem.tools.utils import DummyToolWithMessage
 
 from langchain.tools.base import BaseTool
 
@@ -74,7 +73,12 @@ class LLMGroundingEngine(Evaluator):
         """Create prompt in the style of the zero shot agent."""
         # initialize the engine
         self.toolkits = get_toolkits_by_names(toolkits_names)
-        self.tool_parser = get_toolkit_output_parser_by_names(toolkits_names)
+        # TODO: get rid of the try-except block here
+        try:
+            self.tool_parser = get_toolkit_output_parser_by_names(toolkits_names)
+        except Exception as e:
+            log.error(f"Error in getting tool parsers: {e}")
+            self.tool_parser = {}
         self.name_to_tool_map = {
             tool.name: tool for tool in self.get_all_tools(self.toolkits)
         }
@@ -86,13 +90,6 @@ class LLMGroundingEngine(Evaluator):
         tool_prompt = format_tool_prompt(toolkit_strings, ", ".join(self.tool_names))
         self.tool_prompt = tool_prompt
         return tool_prompt
-
-    def tool_run_logging_kwargs(
-        self,
-    ) -> dict[
-        str, str
-    ]:  # copied from langchain, hard-coded for now; still not sure why we need this
-        return {"llm_prefix": "Thought:", "observation_prefix": "Observation: "}
 
     def parse_action(self, action: str) -> LangchainAgentAction:
         json_action = json.loads(action)
@@ -142,20 +139,17 @@ class LLMGroundingEngine(Evaluator):
                             log="",
                         )
                     ]
-                tool_run_kwargs = self.tool_run_logging_kwargs()
                 try:
                     # params = load_dict(raw_inputs)
                     validate_inputs(tool.parameters, tool_action.tool_input)  # type: ignore
                 except Exception as e:
-                    error_observation = await DummyToolWithMessage().arun(
-                        f'{{"error": "InvalidRequestException: {e}"}}',
-                        **tool_run_kwargs,  # type: ignore
+                    error_observation = SimulatedObservation(
+                        log="",
+                        thought_summary="",
+                        observation=f'{{"error": "InvalidRequestException: {e}"}}',
                     )
-                    error = SimulatedObservation(
-                        log="", thought_summary="", observation=error_observation
-                    )
-                    assert isinstance(error, SimulatedObservation)
-                    return [error]
+                    assert isinstance(error_observation, SimulatedObservation)
+                    return [error_observation]
                 observation = await agenerate_simulated_observation(
                     model_name=self.model_name,
                     history=history,
@@ -168,7 +162,7 @@ class LLMGroundingEngine(Evaluator):
                 )
                 # Validate and correct the observation
                 is_valid, corrected_observation_string = await validate_observation(
-                    observation, self.tool_parser[tool.name], tool
+                    observation, self.tool_parser.get(tool.name, None), tool
                 )
                 if not is_valid:
                     observation.observation = corrected_observation_string
