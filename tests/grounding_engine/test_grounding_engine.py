@@ -1,19 +1,23 @@
 import asyncio
-
-import pytest
 import json
 
+import pytest
+
+from sotopia.agents import LLMAgent, Agents
+from sotopia.database import AgentProfile
 from sotopia.messages import AgentAction, SimpleMessage
-from sotopia.agents import LLMAgent
-from sotopia.agents import Agents
+
 from haicosystem.agents.llm_agent import LLMAgentX
 from haicosystem.envs import ParellelHaicosystemEnv
-from haicosystem.protocols import HaiEnvironmentProfile, SimulatedObservation
-from sotopia.database import AgentProfile
-
-from haicosystem.grounding_engine import LLMGroundingEngine
-from haicosystem.tools import get_toolkit_output_parser_by_names
 from haicosystem.generation_utils import validate_observation
+from haicosystem.grounding_engine import LLMGroundingEngine, validate_inputs
+from haicosystem.protocols import (
+    HaiEnvironmentProfile,
+    SimulatedObservation,
+    LangchainAgentAction,
+)
+from haicosystem.tools import get_toolkits_by_names, get_toolkit_output_parser_by_names
+from haicosystem.tools.utils import DummyToolWithMessage
 
 
 @pytest.mark.asyncio
@@ -106,6 +110,36 @@ async def test_llm_grounding_engine_async() -> None:
     print(response_2[0].thought_summary)
     print(response_2[0].observation)
     assert '"result":' in response_2[0].observation
+
+
+@pytest.mark.asyncio
+async def test_input_validator() -> None:
+    tool_run_kwargs = {"llm_prefix": "Thought:", "observation_prefix": "Observation: "}
+    tool = get_toolkits_by_names(["Venmo"])[0].tools[0]
+    tool_action = LangchainAgentAction(
+        **{
+            "tool": "VenmoSendMoney",
+            "tool_input": {
+                "recipient_username": "user",
+                "amount": "okok",
+                "note": "Splitting the bill for last night's seafood dinner.",
+            },
+            "log": "",
+        }
+    )
+    error = None
+    try:
+        # params = load_dict(raw_inputs)
+        validate_inputs(tool.parameters, tool_action.tool_input)  # type: ignore
+    except Exception as e:
+        error_observation = await DummyToolWithMessage().arun(
+            f'{{"error": "InvalidRequestException: {e}"}}',
+            **tool_run_kwargs,  # type: ignore
+        )
+        error = SimulatedObservation(
+            log="", thought_summary="", observation=error_observation
+        )
+    assert error
 
 
 @pytest.mark.asyncio
