@@ -101,11 +101,12 @@ async def test_llm_grounding_engine_async() -> None:
             ],
         ),
     )
+    print("+++++++++++++++++++++++++++++Response 1+++++++++++++++++++++++++++++")
     print(response_1[0].log)
     print(response_1[0].thought_summary)
     print(response_1[0].observation)
     assert '"error":' in response_1[0].observation
-
+    print("+++++++++++++++++++++++++++++Response 2+++++++++++++++++++++++++++++")
     print(response_2[0].log)
     print(response_2[0].thought_summary)
     print(response_2[0].observation)
@@ -164,3 +165,6 @@ async def test_observation_validator() -> None:
     print(f"the validated observation: {result_2[1]}")
     assert not result_2[0]
     json.loads(result_2[1])
+
+
+# asyncio.run(test_llm_grounding_engine_async())
