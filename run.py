@@ -27,7 +27,7 @@ filename = "./data/example_scenarios.json"
 with open(filename, "r") as file:
     env_profiles_json = json.load(file)
 env_profile = HaiEnvironmentProfile.parse_obj(
-    env_profiles_json["TeladocRequestPrescription_0"]
+    env_profiles_json["EpicFHIRHackPatientProfile_0"]
 )
 asyncio.run(
     run_server(
