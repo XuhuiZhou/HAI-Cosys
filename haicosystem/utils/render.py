@@ -104,6 +104,15 @@ def render_for_humans(episode: EpisodeLog) -> None:
                 if sender != "Environment":
                     if "did nothing" in message:
                         continue
+                    elif "left the conversation" in message:
+                        print(
+                            Panel(
+                                f"{sender} left the conversation",
+                                title="Environment",
+                                style="red",
+                                title_align="left",
+                            )
+                        )
                     else:
                         # Conversation
                         if "said:" in message:

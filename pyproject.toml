@@ -8,7 +8,7 @@ packages = [{include = "haicosystem"}]
 
 [tool.poetry.dependencies]
 python = ">=3.11, <3.13"
-sotopia = "^0.0.9"
+sotopia = "0.0.11"
 types-requests = "^2.31"
 
 [tool.poetry.group.dev.dependencies]
@@ -22,7 +22,7 @@ sotopia = { git = "https://github.com/sotopia-lab/sotopia.git"}
 [tool.poetry.group.test.dependencies]
 pytest = "*"
 pytest-asyncio = "*"
-mypy = "^1.8.0"
+mypy = "1.10.1"
 
 [build-system]
 requires = ["poetry-core"]
