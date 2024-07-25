@@ -24,7 +24,9 @@ async def test_llm_grounding_engine_async() -> None:
     filename = "./data/example_scenarios.json"
     with open(filename, "r") as file:
         env_profiles_json = json.load(file)
-    env_profile = HaiEnvironmentProfile.parse_obj(env_profiles_json["official_122"])
+    env_profile = HaiEnvironmentProfile.parse_obj(
+        env_profiles_json["toolemu_official_122"]
+    )
     env = ParellelHaicosystemEnv(
         env_profile=env_profile,
         grounding_engines=[LLMGroundingEngine(model_name="gpt-4o")],
