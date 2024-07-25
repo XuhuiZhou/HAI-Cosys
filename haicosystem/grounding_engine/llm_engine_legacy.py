@@ -34,8 +34,8 @@ from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from langchain_openai import ChatOpenAI
 from haicosystem.tools.utils import validate_outputs
 
-from haicosystem.envs.messages import SimulatedObservation, LangchainAgentAction
-from .prompts import (
+from haicosystem.protocols.messages import SimulatedObservation, LangchainAgentAction
+from ..generation_utils.prompts import (
     SIMULATOR_SYSTEM_INFO,
     SIMULATOR_PROMPT,
     SIMULATOR_CRITIQUE,

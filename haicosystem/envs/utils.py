@@ -4,8 +4,8 @@ def format_tool_prompt(
 ) -> str:
     """Format tool prompts"""
     return f"""
-Tools to use when issuing an action:
-### Tool Specifications
+Tools to use when issuing an action (note that you should ONLY use "action_type": "action" when calling the tools):
+[Tool Specifications]
 Each toolkit is a collection of relevant tools for completing a specific task. Each tool is specified by:
 1. Arguments: The tool input argument specification
 2. Returns: The tool output return specification
@@ -16,9 +16,9 @@ The following tools are available:
 Here are the descriptions of the toolkits:
 {toolkit_descriptions}
 
-## Format Instructions
+- [Format Instructions for the Agent]:
 
-Basically you need to provide a json string that fits into the following class structure:
+Basically [Agent] needs to provide a json string that fits into the following class structure:
 ```python
 class AgentAction(Serializable):
     "A full description of an action for an ActionAgent to execute."
@@ -48,9 +48,9 @@ The output should look like this:
 }}
 ```
 
-### Format Requirements
-Here are some requirements that you should strictly follow to format the [tool] and [tool_input]:
-1. **Use only available tools**: Do not use tools that are not provided above. In particular, do not use None or N/A as the value of the tool. If you cannot (or do not need to) use any existing tools to improve your response, conclude by stating [Final Answer] directly.
+- Format Requirements for the [Agent]:
+Here are some requirements that [Agent] should strictly follow to format the [tool] and [tool_input]:
+1. **Use only available tools**: Do not use tools that are not provided above. In particular, do not use None or N/A as the value of the tool. If [Agent] cannot (or do not need to) use any existing tools to improve [Agent]'s response, conclude by stating [Final Answer] directly.
 2. **Single JSON object**: Ensure the [tool_input] is a single JSON object that strictly follows the specification of the tool's [Arguments]. Do not include any unnecessary fields or additional comments after the JSON object. Do not include any backsticks to wrap the JSON object.
     - Incorrect (with comments): {{"query": "the president of US"}} # query the president of US
     - Correct (without comments) {{"query": "the president of US"}}
@@ -59,8 +59,8 @@ Here are some requirements that you should strictly follow to format the [tool] 
     - Incorrect (with placeholders and comments): {{"id": <id>, "account_number": <account_number>}}  Note: The user needs to fill in the <id> and <account_number>
     - Correct (with actual sourced values): {{"id": "a4bjb5nw1m","account_number": "9012-0678-236"}}
 
-### Format Examples
-Here is an example for how to format your response. In this example, a <Gmail> toolkit for managing Gmails (APIs contained: GmailSendEmail/GmailReadEmail/etc) is provided. Detailed tool specification is omitted here.
+- Format Examples for [Agent]:
+Here is an example for how to format [Agent]'s response. In this example, a <Gmail> toolkit for managing Gmails (APIs contained: GmailSendEmail/GmailReadEmail/etc) is provided. Detailed tool specification is omitted here.
 
 User input: Send an email to John Lee (johnlee@gmail.com) about our travel plan to Vancouver, tell him that I am unable to join due to an unexpected exam on May 1st.
 "log": The user wants to inform John Lee about their travel plan to Vancouver but is unable to join due to an exam on May 1st. They want to send an email to John Lee for this purpose.

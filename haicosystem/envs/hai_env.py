@@ -1,31 +1,32 @@
-from sotopia.envs import ParallelSotopiaEnv
-from typing import Literal, Any
-from sotopia.envs.evaluators import Evaluator
-from sotopia.database import EnvironmentProfile
-from haicosystem.envs.database import HaiEnvironmentProfile
-from sotopia.envs.evaluators import unweighted_aggregate_evaluate
-from sotopia.envs.parallel import _actions_to_natural_language, render_text_for_agent
 import asyncio
 import itertools
 import random
+import logging
+from collections import defaultdict
+from typing import Literal, Any
 
+from beartype import beartype
+from pydantic import Field
+
+from sotopia.envs import ParallelSotopiaEnv
+from sotopia.envs.evaluators import (
+    Evaluator,
+    unweighted_aggregate_evaluate,
+    _reduce,
+)
+from sotopia.envs.parallel import _actions_to_natural_language, render_text_for_agent
+from sotopia.database import EnvironmentProfile
 from sotopia.messages import (
     ActionType,
     AgentAction,
     Observation,
     SimpleMessage,
+    ScriptEnvironmentResponse,
 )
 
-from beartype import beartype
-
-# TODO: fix the import error
-from sotopia.envs.evaluators import ScriptEnvironmentResponse, _reduce  # type: ignore
-from collections import defaultdict
-import logging
-from haicosystem.envs.messages import SimulatedObservation
-from haicosystem.envs.llm_engine import LlmGroundingEngine
-
-from pydantic import Field
+from haicosystem.protocols import HaiEnvironmentProfile, SimulatedObservation
+from haicosystem.grounding_engine import LLMGroundingEngine
+from haicosystem.protocols import HaiScriptBackground
 
 log = logging.getLogger("evaluators")
 
@@ -151,14 +152,16 @@ class ParellelHaicosystemEnv(ParallelSotopiaEnv):
             evaluators=evaluators,
             terminal_evaluators=terminal_evaluators,
             uuid_str=uuid_str,
+            background_class=HaiScriptBackground,
         )
         self.profile: HaiEnvironmentProfile = env_profile  # type: ignore
         assert (
             len(grounding_engines) == 1
         )  # temp implementation; only one grounding engine is supported
-        self.grounding_engine: LlmGroundingEngine = grounding_engines[0]  # type: ignore
+        self.grounding_engine: LLMGroundingEngine = grounding_engines[0]  # type: ignore
         self.engines_and_evaluators = grounding_engines + evaluators
         self.profile.scenario = self.prepare_scenario(self.profile)
+        self.act_last_time = len(self.agents)
 
     def prepare_scenario(self, env_profile: HaiEnvironmentProfile) -> str:
         tool_prompt = self.grounding_engine.create_prompt(env_profile.toolkits)
@@ -166,10 +169,10 @@ class ParellelHaicosystemEnv(ParallelSotopiaEnv):
             ">", "&gt;"
         )  # TODO: temp fix for the bug in the xml renderer
         environment_info = "\n".join(
-            f"### {key}:\n" + " ".join(getattr(env_profile, key))
+            f"[{key}]:\n" + " ".join(getattr(env_profile, key))
             for key in [
                 "user_intention",
-                "disired_outcome",
+                "desired_outcome",
                 "risky_outcome",
             ]
         )
@@ -179,7 +182,7 @@ class ParellelHaicosystemEnv(ParallelSotopiaEnv):
             + f"<extra_info viewer='environment'>{environment_info}</extra_info>"
             + "\n"
             + f"<extra_info viewer='agent_1'>{tool_prompt}</extra_info>"
-        )  # temp implementation; only agent_0 is able to use the tools
+        )  # temp implementation; only agent_1 is able to use the tools
         return new_scenario
 
     @beartype
@@ -194,7 +197,6 @@ class ParellelHaicosystemEnv(ParallelSotopiaEnv):
     ]:
         # Time step ++
         self.turn_number += 1
-        self.act_last_time = len(self.agents) - 1
         # For action sampled from action space, it needs to be converted into AgentAction
         complied_actions: dict[str, AgentAction] = {}
         for key in actions.keys():
@@ -260,11 +262,10 @@ class ParellelHaicosystemEnv(ParallelSotopiaEnv):
         self.action_mask = [False for _ in self.agents]
         if self.action_order == "round-robin":
             # lock if the engine has output an observation, then the agent continues
-            if response.observation:
+            if response.observation.observation:
                 self.action_mask[1] = (
                     True  # TODO: assert the second agent is always the AI agent
                 )
-                self.action_mask[0] = False
             else:
                 self.act_last_time = (self.act_last_time + 1) % len(self.agents)
                 self.action_mask[self.act_last_time] = True
@@ -305,11 +306,9 @@ class ParellelHaicosystemEnv(ParallelSotopiaEnv):
                 self.background.p2_name: Observation(
                     last_turn=render_text_for_agent(obs, agent_id=1),
                     turn_number=self.turn_number,
-                    available_actions=[
-                        "none",
-                        "action",
-                        "leave",
-                    ]  # TODO: make this a hyperparameter that can be set to control the information flow; also this somehow always means that actions are towards engines, which is not always the case.
+                    available_actions=list(
+                        self.available_action_types
+                    )  # TODO: make this a hyperparameter that can be set to control the information flow; also this somehow always means that actions are towards engines, which is not always the case.
                     if self.action_mask[1]
                     else ["none"],
                 ),
