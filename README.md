@@ -37,7 +37,11 @@ conda env config vars set REDIS_OM_URL="redis://user:password@host:port"
 ## Usage
 To run a simulation, you can use the following command:
 ```bash
-python run.py
+python run.py --codename="TeladocRequestPrescription_0"
+```
+To learn more about the command line arguments, you can use the following command:
+```bash
+python run.py --help
 ```
 
 
