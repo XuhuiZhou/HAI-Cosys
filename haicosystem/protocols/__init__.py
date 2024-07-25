@@ -1,5 +1,5 @@
 from .database import HaiEnvironmentProfile
-from .messages import SimulatedObservation, LangchainAgentAction, HaiScriptBackground
+from .messages import HaiScriptBackground, LangchainAgentAction, SimulatedObservation
 
 __all__ = [
     "HaiEnvironmentProfile",

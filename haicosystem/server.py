@@ -1,30 +1,27 @@
 import asyncio
-import rich
-from rich import print
-import gin
-import logging
 import itertools
-from sotopia.database import EpisodeLog
-from typing import Literal, Type, cast, Any, Generator, TypeVar, Sequence
+import logging
+from typing import Any, Generator, Literal, Sequence, Type, TypeVar, cast
 
+import gin
+import rich
 from beartype import beartype
-from tqdm.asyncio import tqdm_asyncio
-
-from sotopia.agents import LLMAgent
+from rich import print
+from sotopia.agents import Agents, LLMAgent
 from sotopia.agents.base_agent import BaseAgent
+from sotopia.database import AgentProfile, EpisodeLog
 from sotopia.envs.evaluators import (
     RuleBasedTerminatedEvaluator,
 )
 from sotopia.messages import AgentAction, Message, Observation
-from sotopia.database import AgentProfile
 from sotopia.samplers import BaseSampler, EnvAgentCombo
-from sotopia.agents import Agents
+from tqdm.asyncio import tqdm_asyncio
 
-from haicosystem.envs import ParellelHaicosystemEnv
-from haicosystem.protocols import HaiEnvironmentProfile
 from haicosystem.agents import LLMAgentX
+from haicosystem.envs import ParellelHaicosystemEnv
 from haicosystem.envs.evaluators import SafetyLLMEvaluator
 from haicosystem.grounding_engine import LLMGroundingEngine
+from haicosystem.protocols import HaiEnvironmentProfile
 from haicosystem.utils.render import render_for_humans
 
 ObsType = TypeVar("ObsType")

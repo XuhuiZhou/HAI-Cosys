@@ -1,11 +1,15 @@
-import json
 import asyncio
-from haicosystem.protocols.database import HaiEnvironmentProfile
-from haicosystem.server import run_server
+import json
 import logging
-from rich.logging import RichHandler
 import subprocess
-from haicosystem.server import BridgeSampler
+
+from rich.logging import RichHandler
+from typer import Typer
+
+from haicosystem.protocols.database import HaiEnvironmentProfile
+from haicosystem.server import BridgeSampler, run_server
+
+app = Typer()
 
 # date and message only
 FORMAT = "%(asctime)s - %(levelname)s - %(name)s - %(message)s"
@@ -41,7 +45,7 @@ asyncio.run(
             "agent1": "human",
             "agent2": "ai",
         },
-        push_to_db=True,
+        push_to_db=False,
         tag="haicosystem_debug",
     )
 )

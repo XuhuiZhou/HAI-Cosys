@@ -1,5 +1,5 @@
-from sotopia.database import EnvironmentProfile
 from redis_om.model.model import Field
+from sotopia.database import EnvironmentProfile
 
 
 class HaiEnvironmentProfile(EnvironmentProfile):

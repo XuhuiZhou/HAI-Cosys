@@ -32,7 +32,14 @@ conda env config vars set REDIS_OM_URL="redis://user:password@host:port"
 
 > [!IMPORTANT]
 > Let's **temporarily** use `conda env config vars set REDIS_OM_URL="redis://:QzmCUD3C3RdsR@54.146.206.168:6379"
-`
+
+
+## Usage
+To run a simulation, you can use the following command:
+```bash
+python run.py
+```
+
 
 ## Contribution
 ### Install dev options

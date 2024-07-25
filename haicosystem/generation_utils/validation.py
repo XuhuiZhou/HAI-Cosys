@@ -1,10 +1,12 @@
-from pydantic import BaseModel
 from typing import Type
+
 from beartype import beartype
-from sotopia.generation_utils import agenerate
 from langchain.output_parsers import PydanticOutputParser
-from langchain_core.output_parsers import JsonOutputParser
 from langchain.tools.base import BaseTool
+from langchain_core.output_parsers import JsonOutputParser
+from pydantic import BaseModel
+from sotopia.generation_utils import agenerate
+
 from haicosystem.generation_utils import SIMULATOR_CRITIQUE
 from haicosystem.protocols import SimulatedObservation
 

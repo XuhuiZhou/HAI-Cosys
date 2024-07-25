@@ -1,6 +1,6 @@
+from langchain.schema import AgentAction
 from pydantic import Field
 from sotopia.messages import Message, ScriptBackground
-from langchain.schema import AgentAction
 from sotopia.utils import format_docstring
 
 

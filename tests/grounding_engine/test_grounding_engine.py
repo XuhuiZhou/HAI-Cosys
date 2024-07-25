@@ -2,8 +2,7 @@ import asyncio
 import json
 
 import pytest
-
-from sotopia.agents import LLMAgent, Agents
+from sotopia.agents import Agents, LLMAgent
 from sotopia.database import AgentProfile
 from sotopia.messages import AgentAction, SimpleMessage
 
@@ -14,10 +13,10 @@ from haicosystem.grounding_engine import LLMGroundingEngine
 from haicosystem.grounding_engine.tool import validate_inputs
 from haicosystem.protocols import (
     HaiEnvironmentProfile,
-    SimulatedObservation,
     LangchainAgentAction,
+    SimulatedObservation,
 )
-from haicosystem.tools import get_toolkits_by_names, get_toolkit_output_parser_by_names
+from haicosystem.tools import get_toolkit_output_parser_by_names, get_toolkits_by_names
 
 
 @pytest.mark.asyncio

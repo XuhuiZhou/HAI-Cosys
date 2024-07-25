@@ -1,3 +1,6 @@
+import json
+import random
+import re
 from typing import (
     Any,
     Callable,
@@ -6,14 +9,8 @@ from typing import (
     NamedTuple,
 )
 
-from typing_extensions import TypedDict
-
-
-import json
-import random
-import re
-
 from langchain.tools import BaseTool
+from typing_extensions import TypedDict
 
 PRIMITIVE_TYPES = {
     "integer": int,

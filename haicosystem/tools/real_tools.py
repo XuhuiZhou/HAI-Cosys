@@ -6,6 +6,8 @@ import subprocess
 from langchain.agents import load_tools
 from langchain.tools import BaseTool
 from langchain.utilities.bash import BashProcess
+
+from .register import register_toolkit
 from .tool_interface import (
     ArgException,
     ArgParameter,
@@ -14,8 +16,6 @@ from .tool_interface import (
     FunctionToolkit,
 )
 from .utils import Any, Dict, List, Tuple
-
-from .register import register_toolkit
 
 __ALL__ = ["RealTerminal", "RealPythonInterpreter", "RealWikipedia", "RealHuman"]
 

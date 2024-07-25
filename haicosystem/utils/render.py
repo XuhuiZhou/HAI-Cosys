@@ -1,6 +1,6 @@
 from rich import print
-from rich.panel import Panel
 from rich.json import JSON
+from rich.panel import Panel
 from sotopia.database import EpisodeLog
 
 

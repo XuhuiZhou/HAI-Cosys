@@ -1,46 +1,45 @@
 import json
-import re
-from beartype import beartype
-from sotopia.envs.evaluators import Evaluator
-from sotopia.messages import Message, AgentAction
 import logging
-from langchain.tools.base import BaseTool, StructuredTool
+import re
+from typing import Any, Optional, Sequence
+
+from beartype import beartype
+from langchain.callbacks.manager import (
+    CallbackManager,
+)
+from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from langchain.chains import LLMChain
+from langchain.prompts.base import BasePromptTemplate
+from langchain.prompts.chat import (
+    ChatPromptTemplate,
+    HumanMessagePromptTemplate,
+)
+from langchain.prompts.prompt import PromptTemplate
 from langchain.schema import (
     AIMessage,
     HumanMessage,
     SystemMessage,
 )
-from langchain.prompts.chat import (
-    ChatPromptTemplate,
-    HumanMessagePromptTemplate,
-)
-from langchain.prompts.base import BasePromptTemplate
-from langchain.prompts.prompt import PromptTemplate
-from langchain.callbacks.manager import (
-    CallbackManager,
-)
-from typing import Sequence
-from haicosystem.tools.tool_interface import BaseToolkit
-from pydantic import BaseModel
-from typing import Any, Optional
-from .tool import arun_with_input_validation
-
-from haicosystem.tools import get_toolkits_by_names
-from haicosystem.envs.utils import format_tool_prompt
+from langchain.tools.base import BaseTool, StructuredTool
 from langchain_core.utils.input import get_color_mapping
-
-from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from langchain_openai import ChatOpenAI
+from pydantic import BaseModel
+from sotopia.envs.evaluators import Evaluator
+from sotopia.messages import AgentAction, Message
+
+from haicosystem.envs.utils import format_tool_prompt
+from haicosystem.protocols.messages import LangchainAgentAction, SimulatedObservation
+from haicosystem.tools import get_toolkits_by_names
+from haicosystem.tools.tool_interface import BaseToolkit
 from haicosystem.tools.utils import validate_outputs
 
-from haicosystem.protocols.messages import SimulatedObservation, LangchainAgentAction
 from ..generation_utils.prompts import (
-    SIMULATOR_SYSTEM_INFO,
-    SIMULATOR_PROMPT,
     SIMULATOR_CRITIQUE,
     SIMULATOR_CRITIQUE_REPEAT,
+    SIMULATOR_PROMPT,
+    SIMULATOR_SYSTEM_INFO,
 )
+from .tool import arun_with_input_validation
 
 log = logging.getLogger("evaluators")
 

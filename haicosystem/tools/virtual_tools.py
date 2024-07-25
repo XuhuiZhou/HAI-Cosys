@@ -1,5 +1,6 @@
 """Virtual tools created from json files."""
 
+from .register import register_toolkit
 from .tool_interface import (
     ArgException,
     ArgParameter,
@@ -8,8 +9,6 @@ from .tool_interface import (
     VirtualFunctionTool,
 )
 from .utils import List
-
-from .register import register_toolkit
 
 #################### Terminal ####################
 
