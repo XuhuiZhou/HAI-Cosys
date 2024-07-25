@@ -21,8 +21,9 @@ async def validate_agentAction(
         print(f"Error: {e}")
         try:
             reformat_action_argument = format_bad_output(
-                action.argument, format_instructions=output_parser.get_format_instructions()
-            ) 
+                action.argument,
+                format_instructions=output_parser.get_format_instructions(),
+            )
             output_parser.invoke(reformat_action_argument)
             action.argument = reformat_action_argument
         except Exception as e:

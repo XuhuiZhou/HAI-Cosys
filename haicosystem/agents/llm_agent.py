@@ -100,7 +100,9 @@ class LLMAgentBot(LLMAgent):
                 script_like=self.script_like,
             )
             if action.action_type == "action":
-                action = await validate_agentAction(action, tool_output_parser=langchain_core.agents.AgentAction)
+                action = await validate_agentAction(
+                    action, tool_output_parser=langchain_core.agents.AgentAction
+                )
 
             # Temporary fix for mixtral-moe model for incorrect generation format
             if "Mixtral-8x7B-Instruct-v0.1" in self.model_name:
