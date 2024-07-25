@@ -4,6 +4,7 @@ from beartype import beartype
 from langchain.output_parsers import PydanticOutputParser
 from sotopia.generation_utils.generate import format_bad_output
 from sotopia.messages import AgentAction
+from langchain_core.messages.base import BaseMessage
 
 
 @beartype
@@ -21,11 +22,12 @@ async def validate_agentAction(
         print(f"Error: {e}")
         try:
             reformat_action_argument = format_bad_output(
-                action.argument,
+                BaseMessage(content=action.argument),
                 format_instructions=output_parser.get_format_instructions(),
             )
             output_parser.invoke(reformat_action_argument)
-            action.argument = reformat_action_argument
+            assert isinstance(reformat_action_argument.content, str)
+            action.argument = reformat_action_argument.content
         except Exception as e:
             pass
     return action

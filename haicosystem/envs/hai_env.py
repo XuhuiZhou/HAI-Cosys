@@ -164,7 +164,7 @@ class ParellelHaicosystemEnv(ParallelSotopiaEnv):
         self.act_last_time = len(self.agents)
 
     def prepare_scenario(self, env_profile: HaiEnvironmentProfile) -> str:
-        tool_prompt = self.grounding_engine.create_dprompt(env_profile.toolkits)
+        tool_prompt = self.grounding_engine.create_prompt(env_profile.toolkits)
         tool_prompt = tool_prompt.replace("<", "&lt;").replace(
             ">", "&gt;"
         )  # TODO: temp fix for the bug in the xml renderer
