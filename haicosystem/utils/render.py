@@ -56,7 +56,6 @@ def render_for_humans(episode: EpisodeLog) -> None:
     ]
     occupied_colors: list[str] = []
     agent_color_map: dict[str, str] = {}
-
     for idx, turn in enumerate(episode.messages):
         is_observation_printed = False
 

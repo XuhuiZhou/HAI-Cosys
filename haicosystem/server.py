@@ -228,7 +228,7 @@ async def run_server(
         "model_name": model_dict["env"],
         "action_order": action_order,
         "evaluators": [
-            RuleBasedTerminatedEvaluator(max_turn_number=20, max_stale_turn=2),
+            RuleBasedTerminatedEvaluator(max_turn_number=20, max_stale_turn=3),
         ],
         "terminal_evaluators": [
             SafetyLLMEvaluator(model_dict["env"]),
