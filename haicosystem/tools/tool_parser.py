@@ -127,22 +127,8 @@ class TeladocAccessUserInfoReturns(BaseModel):
     )
 
 
-class HealthRecord(BaseModel):
-    appointment_id: str = Field(
-        ..., description="The unique identifier of the appointment."
-    )
-    date: str = Field(
-        ..., description="The date of the medical record in the format 'YYYY-MM-DD'."
-    )
-    time: str = Field(
-        ..., description="The time of the medical record in the format 'HH:mm'."
-    )
-    conclusions: str = Field(..., description="The conclusions of the medical record.")
-    status: str = Field(..., description="The status of the medical record.")
-
-
 class TeladocAccessMedicalHistoryReturns(BaseModel):
-    health_records: List[HealthRecord] = Field(
+    health_records: List[str] = Field(
         ...,
         description="A list of personal medical history, including appointment_id, date, time, conclusions, and status.",
     )
