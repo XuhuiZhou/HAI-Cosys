@@ -1,15 +1,16 @@
 import logging
 
-import langchain_core
-import langchain_core.agents
 from sotopia.agents import LLMAgent
 from sotopia.database import AgentProfile
-from sotopia.generation_utils.generate import agenerate_action
 from sotopia.generation_utils.langchain_callback_handler import LoggingCallbackHandler
-from sotopia.messages import AgentAction, Observation
+from sotopia.messages import Observation
 
-from haicosystem.agents.validation import validate_agentAction
-from haicosystem.generation_utils import agenerate_action_x
+from haicosystem.generation_utils import (
+    agenerate_action_bot,
+    agenerate_action_human,
+    validate_agentAction,
+)
+from haicosystem.protocols import HaiAgentAction, LangchainAgentAction
 
 log = logging.getLogger("llm_agent")
 logging_handler = LoggingCallbackHandler("langchain")
@@ -36,13 +37,13 @@ class LLMAgentHuman(LLMAgent):
             script_like=script_like,
         )
 
-    async def aact(self, obs: Observation) -> AgentAction:
+    async def aact(self, obs: Observation) -> HaiAgentAction:
         self.recv_message("Environment", obs)
 
         if len(obs.available_actions) == 1 and "none" in obs.available_actions:
-            return AgentAction(action_type="none", argument="")
+            return HaiAgentAction(action_type="none", argument="")
         else:
-            action = await agenerate_action_x(
+            action = await agenerate_action_human(
                 self.model_name,
                 history="\n".join(f"{y.to_natural_language()}" for x, y in self.inbox),
                 turn_number=obs.turn_number,
@@ -86,12 +87,12 @@ class LLMAgentBot(LLMAgent):
             script_like=script_like,
         )
 
-    async def aact(self, obs: Observation) -> AgentAction:
+    async def aact(self, obs: Observation) -> HaiAgentAction:
         self.recv_message("Environment", obs)
         if len(obs.available_actions) == 1 and "none" in obs.available_actions:
-            return AgentAction(action_type="none", argument="")
+            return HaiAgentAction(action_type="none", argument="")
         else:
-            action = await agenerate_action(
+            action = await agenerate_action_bot(
                 self.model_name,
                 history="\n".join(f"{y.to_natural_language()}" for x, y in self.inbox),
                 turn_number=obs.turn_number,
@@ -101,9 +102,11 @@ class LLMAgentBot(LLMAgent):
                 script_like=self.script_like,
             )
             if action.action_type == "action":
-                action = await validate_agentAction(
-                    action, tool_output_parser=langchain_core.agents.AgentAction
+                is_valid, corrected_action_argument = await validate_agentAction(
+                    action, tool_output_parser=LangchainAgentAction
                 )
+                if not is_valid:
+                    action.argument = corrected_action_argument
 
             # Temporary fix for mixtral-moe model for incorrect generation format
             if "Mixtral-8x7B-Instruct-v0.1" in self.model_name:
