@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="MypyConfigService">
-    <option name="customMypyPath" value="$USER_HOME$/anaconda3/envs/haicosystem/bin/mypy" />
-    <option name="mypyArguments" value="--verbose" />
-  </component>
-</project>
