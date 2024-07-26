@@ -1,5 +1,6 @@
-from typer import Typer
 from sotopia.database import EpisodeLog
+from typer import Typer
+
 from haicosystem.utils.render import render_for_humans
 
 app = Typer()

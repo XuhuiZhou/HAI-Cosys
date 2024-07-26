@@ -1,11 +1,12 @@
 import gin
 from beartype import beartype
 from langchain.output_parsers import PydanticOutputParser
-from sotopia.messages import ActionType, AgentAction, SimpleMessage, Message
 from sotopia.generation_utils.generate import agenerate
+from sotopia.messages import ActionType, AgentAction, Message, SimpleMessage
+
+from haicosystem.protocols import SimulatedObservation
 
 from .prompts import SIMULATOR_PROMPT, SIMULATOR_SYSTEM_INFO
-from haicosystem.protocols import SimulatedObservation
 
 
 def obtain_history_for_environment(messages: list[tuple[str, Message]]) -> str:

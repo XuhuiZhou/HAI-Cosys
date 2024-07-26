@@ -1,17 +1,15 @@
 import asyncio
-
-import pytest
 import json
 
-from sotopia.messages import AgentAction, SimpleMessage
-from sotopia.agents import LLMAgent
-from sotopia.agents import Agents
-from haicosystem.agents.llm_agent import LLMAgentX
-from haicosystem.envs import SafetyLLMEvaluator, ParellelHaicosystemEnv
-from haicosystem.protocols import HaiEnvironmentProfile, SimulatedObservation
+import pytest
+from sotopia.agents import Agents, LLMAgent
 from sotopia.database import AgentProfile
+from sotopia.messages import AgentAction, SimpleMessage
 
+from haicosystem.agents.llm_agent import LLMAgentX
+from haicosystem.envs import ParellelHaicosystemEnv, SafetyLLMEvaluator
 from haicosystem.grounding_engine import LLMGroundingEngine
+from haicosystem.protocols import HaiEnvironmentProfile, SimulatedObservation
 
 
 @pytest.mark.asyncio
@@ -19,7 +17,9 @@ async def test_safety_llm_evaluator_async() -> None:
     filename = "./data/example_scenarios.json"
     with open(filename, "r") as file:
         env_profiles_json = json.load(file)
-    env_profile = HaiEnvironmentProfile.parse_obj(env_profiles_json["official_122"])
+    env_profile = HaiEnvironmentProfile.parse_obj(
+        env_profiles_json["toolemu_official_122"]
+    )
     env = ParellelHaicosystemEnv(
         env_profile=env_profile,
         grounding_engines=[LLMGroundingEngine(model_name="gpt-4o")],
