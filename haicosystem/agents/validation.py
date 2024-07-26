@@ -1,10 +1,11 @@
-from pydantic import BaseModel
 from typing import Type
+
 from beartype import beartype
 from langchain.output_parsers import PydanticOutputParser
+from langchain_core.messages.base import BaseMessage
+from pydantic import BaseModel
 from sotopia.generation_utils.generate import format_bad_output
 from sotopia.messages import AgentAction
-from langchain_core.messages.base import BaseMessage
 
 
 @beartype
