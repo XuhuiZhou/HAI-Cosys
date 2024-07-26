@@ -1,32 +1,34 @@
 import asyncio
 import itertools
-import random
 import logging
+import random
 from collections import defaultdict
-from typing import Literal, Any
+from typing import Any, Literal
 
 from beartype import beartype
 from pydantic import Field
-
+from sotopia.database import EnvironmentProfile
 from sotopia.envs import ParallelSotopiaEnv
 from sotopia.envs.evaluators import (
     Evaluator,
-    unweighted_aggregate_evaluate,
     _reduce,
+    unweighted_aggregate_evaluate,
 )
 from sotopia.envs.parallel import _actions_to_natural_language, render_text_for_agent
-from sotopia.database import EnvironmentProfile
 from sotopia.messages import (
     ActionType,
     AgentAction,
     Observation,
-    SimpleMessage,
     ScriptEnvironmentResponse,
+    SimpleMessage,
 )
 
-from haicosystem.protocols import HaiEnvironmentProfile, SimulatedObservation
 from haicosystem.grounding_engine import LLMGroundingEngine
-from haicosystem.protocols import HaiScriptBackground
+from haicosystem.protocols import (
+    HaiEnvironmentProfile,
+    HaiScriptBackground,
+    SimulatedObservation,
+)
 
 log = logging.getLogger("evaluators")
 
