@@ -157,6 +157,3 @@ async def test_observation_validator() -> None:
     print(f"the validated observation: {result_2[1]}")
     assert not result_2[0]
     json.loads(result_2[1])
-
-
-# asyncio.run(test_llm_grounding_engine_async())
