@@ -6,7 +6,6 @@ from typing import Any, Callable, Generic, Literal, TypeVar, cast
 from pydantic import BaseModel, ValidationError
 from pydantic.generics import GenericModel
 
-
 logger = logging.getLogger(__name__)
 
 T_input = TypeVar("T_input", bound=BaseModel)
@@ -44,7 +43,9 @@ class BaseTool(Generic[T_input, T_output, T_exception]):
         raise NotImplementedError
 
     @classmethod
-    def call(cls, input: T_input | str | bytes | dict[str, Any]) -> Result[T_output, T_exception]:
+    def call(
+        cls, input: T_input | str | bytes | dict[str, Any]
+    ) -> Result[T_output, T_exception]:
         if not isinstance(input, cls.input_type):
             try:
                 if isinstance(input, dict):

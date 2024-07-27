@@ -47,7 +47,7 @@ class PythonREPL(BaseModel):
         command: str,
         globals: Optional[dict[str, Any]],
         locals: Optional[dict[str, Any]],
-        queue: multiprocessing.queues.Queue, # type: ignore[type-arg]
+        queue: multiprocessing.queues.Queue,  # type: ignore[type-arg]
     ) -> None:
         old_stdout = sys.stdout
         sys.stdout = mystdout = StringIO()
@@ -67,7 +67,7 @@ class PythonREPL(BaseModel):
         # Warn against dangers of PythonREPL
         warn_once()
 
-        queue: multiprocessing.queues.Queue = multiprocessing.Queue() # type: ignore[type-arg]
+        queue: multiprocessing.queues.Queue = multiprocessing.Queue()  # type: ignore[type-arg]
 
         # Only use multiprocessing if we are enforcing a timeout
         if timeout is not None:
@@ -88,4 +88,4 @@ class PythonREPL(BaseModel):
         else:
             self.worker(command, self.globals, self.locals, queue)
         # get the result from the worker function
-        return queue.get() # type: ignore[no-any-return]
+        return queue.get()  # type: ignore[no-any-return]
