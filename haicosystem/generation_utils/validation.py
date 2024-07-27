@@ -7,7 +7,7 @@ from langchain_core.output_parsers import JsonOutputParser
 from pydantic import BaseModel
 from sotopia.generation_utils import agenerate
 
-from haicosystem.generation_utils import SIMULATOR_CRITIQUE
+from haicosystem.generation_utils import ACTION_CRITIQUE, SIMULATOR_CRITIQUE
 from haicosystem.protocols import (
     HaiAgentAction,
     LangchainAgentAction,
@@ -77,7 +77,7 @@ async def validate_agentAction(
         try:
             corrected_action = await agenerate(
                 model_name=model_name,
-                template=SIMULATOR_CRITIQUE,
+                template=ACTION_CRITIQUE,
                 input_values=dict(
                     action_type=action.action_type,
                     action_argument=action.argument,

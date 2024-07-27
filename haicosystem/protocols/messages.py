@@ -70,5 +70,5 @@ class LangchainAgentAction(LAgentAction):
 class HaiAgentAction(AgentAction):
     action_type: ActionType = Field(description="the type of action to take")
     argument: str = Field(
-        description="the utterance if choose 'speak', the expression or gesture if choose 'non-verbal communication', or the tool calling action if choose 'action'"  # TODO: assumption whenerver the action_type is 'action', the argument is the tool calling action
+        description="the utterance if choose 'speak' (which should be a string instead of a JSON), the expression or gesture if choose 'non-verbal communication', or the tool calling action if choose 'action'"  # TODO: assumption whenerver the action_type is 'action', the argument is the tool calling action
     )

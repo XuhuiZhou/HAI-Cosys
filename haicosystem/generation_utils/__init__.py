@@ -5,6 +5,7 @@ from .generate import (
     obtain_history_for_environment,
 )
 from .prompts import (
+    ACTION_CRITIQUE,
     SIMULATOR_CRITIQUE,
     SIMULATOR_CRITIQUE_REPEAT,
     SIMULATOR_PROMPT,
@@ -21,6 +22,7 @@ __all__ = [
     "SIMULATOR_SYSTEM_INFO",
     "SIMULATOR_CRITIQUE",
     "SIMULATOR_CRITIQUE_REPEAT",
+    "ACTION_CRITIQUE",
     "validate_observation",
     "validate_agentAction",
 ]

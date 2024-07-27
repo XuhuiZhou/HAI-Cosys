@@ -21,7 +21,7 @@ process = subprocess.Popen(
 git_head_hash = process.communicate()[0].strip()
 
 logging.basicConfig(
-    level=15,
+    level=20,
     format=FORMAT,
     datefmt="[%X]",
     handlers=[
