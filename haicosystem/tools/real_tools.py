@@ -112,15 +112,16 @@ class PythonInterpreterInput(BaseModel):
     script: str = Field(..., description="The python script to execute.")
 
 
-@ToolRegistry.register("real_python_interpreter_execute", "python_interpreter")
-class RealPythonInterpreterExecute(BaseTool[PythonInterpreterInput, str, Exception]):
-    name = "PythonInterpreterExecute"
-    summary = "Execute a Python script."
-    description = "Execute a Python script."
-    input_type = PythonInterpreterInput
-    output_type = str
-    exception_type = Exception
-
+@ToolRegistry.register(
+    tool_name="real_python_interpreter_execute",
+    toolkit_name="python_interpreter",
+    input_type=PythonInterpreterInput,
+    output_type=str,
+    exception_type=None,
+    tool_summary="Execute a Python script.",
+    tool_description="Execute a Python script.",
+)
+class RealPythonInterpreterExecute(BaseTool[PythonInterpreterInput, str, None]):
     @classmethod
     def run(cls, input: PythonInterpreterInput) -> str:
         return PythonREPL().run(input.script)
