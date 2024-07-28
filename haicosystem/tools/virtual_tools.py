@@ -11,7 +11,9 @@
 # from .utils import List
 
 from typing import Optional, TypeAlias
+
 from pydantic import BaseModel, Field
+
 from .tool_interface import BaseTool, ToolRegistry
 
 # #################### Terminal ####################
@@ -3762,21 +3764,31 @@ from .tool_interface import BaseTool, ToolRegistry
 # #################### Venmo ####################
 class VenmoSendMoneyInput(BaseModel):
     recipient_username: str = Field(..., description="The username of the recipient.")
-    amount: float = Field(..., description="The amount of money to send, must be positive.")
-    note: Optional[str] = Field(..., description="A note to include with the payment. Default is an empty string.")
+    amount: float = Field(
+        ..., description="The amount of money to send, must be positive."
+    )
+    note: Optional[str] = Field(
+        ...,
+        description="A note to include with the payment. Default is an empty string.",
+    )
+
 
 class VenmoSendMoneyOutput(BaseModel):
-    success: bool = Field(..., description="Indicates whether the transaction was successful.")
-    transaction_id: Optional[str] = Field(..., description="The unique identifier of the transaction, if successful.")
+    success: bool = Field(
+        ..., description="Indicates whether the transaction was successful."
+    )
+    transaction_id: Optional[str] = Field(
+        ..., description="The unique identifier of the transaction, if successful."
+    )
     error_message: Optional[str] = Field(..., description="If unsuccessful.")
 
 
 class InvalidRequestException(Exception):
     value: str = "Invalid request"
 
+
 class NotFoundException(Exception):
     value: str = "Not found"
-
 
 
 @ToolRegistry.register(
@@ -3787,11 +3799,19 @@ class NotFoundException(Exception):
     exception_type=InvalidRequestException | NotFoundException,
     tool_summary="Send money to another Venmo user.",
 )
-class VenmoSendMoney(BaseTool[VenmoSendMoneyInput, VenmoSendMoneyOutput, InvalidRequestException | NotFoundException]):
+class VenmoSendMoney(
+    BaseTool[
+        VenmoSendMoneyInput,
+        VenmoSendMoneyOutput,
+        InvalidRequestException | NotFoundException,
+    ]
+):
     @classmethod
     def run(cls, input: VenmoSendMoneyInput) -> VenmoSendMoneyOutput:
         # Send money to another Venmo user
-        return VenmoSendMoneyOutput(success=True, transaction_id="123456", error_message=None)
+        return VenmoSendMoneyOutput(
+            success=True, transaction_id="123456", error_message=None
+        )
 
 
 # class VenmoSendMoney(VirtualFunctionTool):

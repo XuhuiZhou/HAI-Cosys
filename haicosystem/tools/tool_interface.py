@@ -88,7 +88,8 @@ class ToolRegistry:
         tool_summary: str = "",
         tool_description: str = "",
     ) -> Callable[
-        [type[BaseTool[T_input, T_output, T_exception]]], type[BaseTool[T_input, T_output, T_exception]]
+        [type[BaseTool[T_input, T_output, T_exception]]],
+        type[BaseTool[T_input, T_output, T_exception]],
     ]:
         def register_tool(
             tool: type[BaseTool[T_input, T_output, T_exception]],
@@ -104,26 +105,26 @@ class ToolRegistry:
             # because the tools' call method is dynamically type checked
             # Since tool instantiation is done in the import time,
             # we will be able to dynamically type check the tools
-            cls.registry[toolkit_name][tool_name] = tool # type: ignore[assignment]
+            cls.registry[toolkit_name][tool_name] = tool  # type: ignore[assignment]
             tool.name = tool_name
             tool.toolkit = toolkit_name
             tool.summary = tool_summary
             tool.description = tool_description
             tool.input_type = input_type
             tool.output_type = output_type
-            tool.ok_type = Ok[output_type] # type: ignore[valid-type]
+            tool.ok_type = Ok[output_type]  # type: ignore[valid-type]
             if exception_type is None:
-                tool.exception_type = None # type: ignore[assignment]
+                tool.exception_type = None  # type: ignore[assignment]
             elif isinstance(exception_type, UnionType):
                 if all(issubclass(t, Exception) for t in exception_type.__args__):
                     tool.exception_type = exception_type
                 else:
                     raise ValueError("Exception type must be a Union of Exceptions.")
             elif issubclass(exception_type, Exception):
-                tool.exception_type = exception_type # type: ignore[assignment]
+                tool.exception_type = exception_type  # type: ignore[assignment]
             else:
                 raise ValueError(f"Invalid exception type: {exception_type}")
-            tool.err_type = Err[exception_type] # type: ignore[valid-type]
+            tool.err_type = Err[exception_type]  # type: ignore[valid-type]
             return tool
 
         return register_tool

@@ -1,5 +1,6 @@
 from haicosystem.tools import ToolRegistry
 
+
 def test_venmo_send_money() -> None:
     venmo_send_money = ToolRegistry.registry["venmo"]["venmo_send_money"]
 
@@ -12,4 +13,7 @@ def test_venmo_send_money() -> None:
     )
 
     assert result.result.status == "ok"
-    assert result.result.output.json() == "{\"success\": true, \"transaction_id\": \"123456\", \"error_message\": null}"
+    assert (
+        result.result.output.json()
+        == '{"success": true, "transaction_id": "123456", "error_message": null}'
+    )

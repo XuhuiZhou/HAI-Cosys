@@ -1,13 +1,17 @@
 import pytest
-from haicosystem.tools import ToolRegistry, BaseTool
 from pydantic import BaseModel
+
+from haicosystem.tools import BaseTool, ToolRegistry
+
 
 class DivisionInput(BaseModel):
     dividend: int | str
     divisor: int | str
 
+
 class UncaughtError(Exception):
     pass
+
 
 @ToolRegistry.register(
     tool_name="division",
@@ -22,7 +26,8 @@ class Division(BaseTool[DivisionInput, int, ZeroDivisionError | ValueError]):
         if input.divisor == "uncaught error":
             raise UncaughtError("You got an uncaught error.")
         return int(input.dividend) // int(input.divisor)
-    
+
+
 def test_tool_registry() -> None:
     DivisionExecutor = ToolRegistry.registry["math"]["division"]
 
