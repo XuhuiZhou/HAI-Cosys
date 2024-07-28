@@ -102,6 +102,8 @@ class ToolRegistry:
             # Note on ignoring the static type check:
             # We ignore the static type checking of the tools
             # because the tools' call method is dynamically type checked
+            # Since tool instantiation is done in the import time,
+            # we will be able to dynamically type check the tools
             cls.registry[toolkit_name][tool_name] = tool # type: ignore[assignment]
             tool.name = tool_name
             tool.toolkit = toolkit_name
