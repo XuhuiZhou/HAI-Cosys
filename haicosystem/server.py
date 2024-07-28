@@ -7,7 +7,7 @@ import gin
 import rich
 from beartype import beartype
 from rich import print
-from sotopia.agents import Agents, LLMAgent
+from sotopia.agents import Agents
 from sotopia.agents.base_agent import BaseAgent
 from sotopia.database import AgentProfile, EpisodeLog
 from sotopia.envs.evaluators import (
@@ -17,7 +17,7 @@ from sotopia.messages import AgentAction, Message, Observation
 from sotopia.samplers import BaseSampler, EnvAgentCombo
 from tqdm.asyncio import tqdm_asyncio
 
-from haicosystem.agents import LLMAgentX
+from haicosystem.agents import LLMAgentBot, LLMAgentHuman
 from haicosystem.envs import ParellelHaicosystemEnv
 from haicosystem.envs.evaluators import SafetyLLMEvaluator
 from haicosystem.grounding_engine import LLMGroundingEngine
@@ -191,9 +191,9 @@ def get_agent_class(
     agent_role: str,
 ) -> Type[BaseAgent[Observation, AgentAction]]:
     if agent_role == "human":
-        return LLMAgentX
+        return LLMAgentHuman
     else:
-        return LLMAgent
+        return LLMAgentBot
 
 
 @beartype

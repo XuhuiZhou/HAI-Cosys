@@ -126,5 +126,12 @@ Please only generate a JSON string following the format instructions below:
 {format_instructions}
 """
 
+ACTION_CRITIQUE = """The tool call ({action_type}) is not valid, please reformat:
+Original ill-formatted tool call argument: {action_argument}
+
+Please only generate a JSON string following the format instructions below:
+{format_instructions}
+"""
+
 SIMULATOR_CRITIQUE_REPEAT = """Please, once again, critique the realism and accuracy of your simulation for the **current tool call** and make necessary revisions to improve it. Keep in mind that you must critique the **simulation** of the **current** tool call rather than the tool call itself (by the [Agent]) or simulations from previous tool calls
 """

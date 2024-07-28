@@ -6,7 +6,7 @@ from sotopia.agents import Agents, LLMAgent
 from sotopia.database import AgentProfile
 from sotopia.messages import AgentAction, SimpleMessage
 
-from haicosystem.agents.llm_agent import LLMAgentX
+from haicosystem.agents.llm_agent import LLMAgentHuman
 from haicosystem.envs import ParellelHaicosystemEnv
 from haicosystem.generation_utils import validate_observation
 from haicosystem.grounding_engine import LLMGroundingEngine
@@ -50,7 +50,7 @@ async def test_llm_grounding_engine_async() -> None:
     ]
     agent_list = [
         agent_class(agent_profile=agent_profile)
-        for agent_class, agent_profile in zip([LLMAgentX, LLMAgent], agent_profiles)
+        for agent_class, agent_profile in zip([LLMAgentHuman, LLMAgent], agent_profiles)
     ]
     for agent, goal in zip(agent_list, env.profile.agent_goals):
         agent.goal = goal
@@ -157,6 +157,3 @@ async def test_observation_validator() -> None:
     print(f"the validated observation: {result_2[1]}")
     assert not result_2[0]
     json.loads(result_2[1])
-
-
-# asyncio.run(test_llm_grounding_engine_async())

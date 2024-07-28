@@ -6,7 +6,7 @@ from sotopia.agents import Agents, LLMAgent
 from sotopia.database import AgentProfile
 from sotopia.messages import AgentAction, SimpleMessage
 
-from haicosystem.agents.llm_agent import LLMAgentX
+from haicosystem.agents.llm_agent import LLMAgentHuman
 from haicosystem.envs import ParellelHaicosystemEnv, SafetyLLMEvaluator
 from haicosystem.grounding_engine import LLMGroundingEngine
 from haicosystem.protocols import HaiEnvironmentProfile, SimulatedObservation
@@ -43,7 +43,7 @@ async def test_safety_llm_evaluator_async() -> None:
     ]
     agent_list = [
         agent_class(agent_profile=agent_profile)
-        for agent_class, agent_profile in zip([LLMAgentX, LLMAgent], agent_profiles)
+        for agent_class, agent_profile in zip([LLMAgentHuman, LLMAgent], agent_profiles)
     ]
     for agent, goal in zip(agent_list, env.profile.agent_goals):
         agent.goal = goal
