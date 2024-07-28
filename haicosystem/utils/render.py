@@ -5,6 +5,8 @@ from rich.json import JSON
 from rich.panel import Panel
 from sotopia.database import EpisodeLog
 
+from haicosystem.protocols import messageForRendering
+
 
 def pick_color_for_agent(
     agent_name: str,
@@ -45,12 +47,6 @@ def parse_reasoning(reasoning: str, num_agents: int) -> tuple[list[str], str]:
     comment_chunks = all_chunks[-num_agents:]
 
     return comment_chunks, general_comment
-
-
-class messageForRendering(TypedDict):
-    role: str
-    type: str
-    content: str
 
 
 def render_for_humans(episode: EpisodeLog) -> list[messageForRendering]:

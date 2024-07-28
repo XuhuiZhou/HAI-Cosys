@@ -4,6 +4,7 @@ from .messages import (
     HaiScriptBackground,
     LangchainAgentAction,
     SimulatedObservation,
+    messageForRendering,
 )
 
 __all__ = [
@@ -12,4 +13,5 @@ __all__ = [
     "LangchainAgentAction",
     "HaiScriptBackground",
     "HaiAgentAction",
+    "messageForRendering",
 ]

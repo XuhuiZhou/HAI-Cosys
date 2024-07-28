@@ -1,8 +1,6 @@
+from typing import TypedDict
+
 from langchain.schema import AgentAction as LAgentAction
-from langchain_core.load.serializable import (
-    SerializedConstructor,
-    SerializedNotImplemented,
-)
 from pydantic import Field
 from sotopia.messages import ActionType, AgentAction, Message, ScriptBackground
 from sotopia.utils import format_docstring
@@ -72,3 +70,9 @@ class HaiAgentAction(AgentAction):
     argument: str = Field(
         description="the utterance if choose 'speak' (which should be a string instead of a JSON), the expression or gesture if choose 'non-verbal communication', or the tool calling action if choose 'action'"  # TODO: assumption whenerver the action_type is 'action', the argument is the tool calling action
     )
+
+
+class messageForRendering(TypedDict):
+    role: str
+    type: str
+    content: str
