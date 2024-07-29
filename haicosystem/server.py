@@ -22,7 +22,7 @@ from haicosystem.envs import ParellelHaicosystemEnv
 from haicosystem.envs.evaluators import SafetyLLMEvaluator
 from haicosystem.grounding_engine import LLMGroundingEngine
 from haicosystem.protocols import HaiEnvironmentProfile
-from haicosystem.utils.render import render_for_humans
+from haicosystem.utils import render_for_humans, rich_rendering
 
 ObsType = TypeVar("ObsType")
 ActType = TypeVar("ActType")
@@ -175,7 +175,8 @@ async def arun_one_episode(
         rewards_prompt=info["rewards_prompt"]["overall_prompt"],
     )
     rich.print(epilog.rewards_prompt)
-    render_for_humans(epilog)
+    messagesForHuman = render_for_humans(epilog)
+    rich_rendering(messagesForHuman)
 
     if push_to_db:
         try:
