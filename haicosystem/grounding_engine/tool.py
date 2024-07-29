@@ -1,9 +1,6 @@
 import json
 import random
 import re
-
-from langchain.tools import BaseTool
-
 from typing import (
     Any,
     Callable,
@@ -11,6 +8,7 @@ from typing import (
     List,
 )
 
+from langchain.tools import BaseTool
 from typing_extensions import TypedDict
 
 PRIMITIVE_TYPES = {

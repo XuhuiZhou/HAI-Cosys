@@ -1,7 +1,11 @@
-from rich import print
-from rich.panel import Panel
+from typing import TypedDict
+
+from rich.console import Console
 from rich.json import JSON
+from rich.panel import Panel
 from sotopia.database import EpisodeLog
+
+from haicosystem.protocols import messageForRendering
 
 
 def pick_color_for_agent(
@@ -45,8 +49,109 @@ def parse_reasoning(reasoning: str, num_agents: int) -> tuple[list[str], str]:
     return comment_chunks, general_comment
 
 
-def render_for_humans(episode: EpisodeLog) -> None:
-    """Generate a human readable version of the episode log."""
+def render_for_humans(episode: EpisodeLog) -> list[messageForRendering]:
+    """Generate a list of messages for human-readable version of the episode log."""
+
+    messages_for_rendering: list[messageForRendering] = []
+
+    for idx, turn in enumerate(episode.messages):
+        is_observation_printed = False
+
+        if idx == 0:
+            assert (
+                len(turn) >= 2
+            ), "The first turn should have at least environment messages"
+
+            messages_for_rendering.append(
+                {"role": "Background Info", "type": "info", "content": turn[0][2]}
+            )
+            messages_for_rendering.append(
+                {"role": "Background Info", "type": "info", "content": turn[1][2]}
+            )
+            messages_for_rendering.append(
+                {"role": "System", "type": "divider", "content": "Start Simulation"}
+            )
+
+        for sender, receiver, message in turn:
+            if not is_observation_printed and "Observation:" in message and idx != 0:
+                extract_observation = message.split("Observation:")[1].strip()
+                if extract_observation:
+                    messages_for_rendering.append(
+                        {
+                            "role": "Observation",
+                            "type": "observation",
+                            "content": extract_observation,
+                        }
+                    )
+                is_observation_printed = True
+
+            if receiver == "Environment":
+                if sender != "Environment":
+                    if "did nothing" in message:
+                        continue
+                    elif "left the conversation" in message:
+                        messages_for_rendering.append(
+                            {
+                                "role": "Environment",
+                                "type": "leave",
+                                "content": f"{sender} left the conversation",
+                            }
+                        )
+                    else:
+                        if "said:" in message:
+                            message = message.split("said:")[1].strip()
+                            messages_for_rendering.append(
+                                {"role": sender, "type": "said", "content": message}
+                            )
+                        else:
+                            message = message.replace("[action]", "")
+                            messages_for_rendering.append(
+                                {"role": sender, "type": "action", "content": message}
+                            )
+                else:
+                    messages_for_rendering.append(
+                        {
+                            "role": "Environment",
+                            "type": "environment",
+                            "content": message,
+                        }
+                    )
+
+    messages_for_rendering.append(
+        {"role": "System", "type": "divider", "content": "End Simulation"}
+    )
+
+    reasoning_per_agent, general_comment = parse_reasoning(
+        episode.reasoning,
+        len(
+            set(
+                msg["role"]
+                for msg in messages_for_rendering
+                if msg["type"] in {"said", "action"}
+            )
+        ),
+    )
+
+    messages_for_rendering.append(
+        {"role": "General", "type": "comment", "content": general_comment}
+    )
+
+    for idx, reasoning in enumerate(reasoning_per_agent):
+        messages_for_rendering.append(
+            {
+                "role": f"Agent {idx + 1}",
+                "type": "comment",
+                "content": f"{reasoning}\n{'=' * 100}\nRewards: {str(episode.rewards[idx])}",
+            }
+        )
+
+    return messages_for_rendering
+
+
+def rich_rendering(messages: list[messageForRendering]) -> None:
+    """Render the list of messages using rich library."""
+
+    console = Console()
 
     available_colors: list[str] = [
         "medium_violet_red",
@@ -57,135 +162,67 @@ def render_for_humans(episode: EpisodeLog) -> None:
     occupied_colors: list[str] = []
     agent_color_map: dict[str, str] = {}
 
-    for idx, turn in enumerate(episode.messages):
-        is_observation_printed = False
+    def pick_color_for_agent(agent: str) -> str:
+        if agent not in agent_color_map:
+            if available_colors:
+                color = available_colors.pop(0)
+                occupied_colors.append(color)
+            else:
+                color = occupied_colors.pop(0)
+                available_colors.append(color)
+            agent_color_map[agent] = color
+        return agent_color_map[agent]
 
-        if idx == 0:
-            assert (
-                len(turn) >= 2
-            ), "The first turn should have at least environment messages"
+    for message in messages:
+        role = message["role"]
+        msg_type = message["type"]
+        content = message["content"]
 
-            print(
+        if msg_type == "info":
+            console.print(Panel(content, title=role, style="blue", title_align="left"))
+        elif msg_type == "divider":
+            console.print("=" * 100)
+            console.print(content)
+            console.print("=" * 100)
+        elif msg_type == "observation":
+            console.print(
                 Panel(
-                    turn[0][2],
-                    title="Background Info",
+                    JSON(content, highlight=False),
+                    title=role,
+                    style="yellow",
+                    title_align="left",
+                )
+            )
+        elif msg_type == "leave":
+            console.print(Panel(content, title=role, style="red", title_align="left"))
+        elif msg_type == "said":
+            sender_color = pick_color_for_agent(role)
+            console.print(
+                Panel(
+                    content,
+                    title=f"{role} (Said)",
+                    style=sender_color,
+                    title_align="left",
+                )
+            )
+        elif msg_type == "action":
+            sender_color = pick_color_for_agent(role)
+            console.print(
+                Panel(
+                    JSON(content, highlight=False),
+                    title=f"{role} (Action)",
+                    style=sender_color,
+                    title_align="left",
+                )
+            )
+        elif msg_type == "environment":
+            console.print(Panel(content, style="white"))
+        elif msg_type == "comment":
+            console.print(
+                Panel(
+                    content,
+                    title=f"{role} (Comments)",
                     style="blue",
                     title_align="left",
                 )
             )
-            print(
-                Panel(
-                    turn[1][2],
-                    title="Background Info",
-                    style="blue",
-                    title_align="left",
-                )
-            )
-            print("=" * 100)
-            print("Start Simulation")
-            print("=" * 100)
-
-        for sender, receiver, message in turn:
-            # "Observation" indicates the agent takes an action
-            if not is_observation_printed and "Observation:" in message and idx != 0:
-                extract_observation = message.split("Observation:")[1].strip()
-                if extract_observation:
-                    print(
-                        Panel(
-                            JSON(extract_observation, highlight=False),
-                            title="Observation",
-                            style="yellow",
-                            title_align="left",
-                        )
-                    )
-                is_observation_printed = True
-
-            if receiver == "Environment":
-                if sender != "Environment":
-                    if "did nothing" in message:
-                        continue
-                    elif "left the conversation" in message:
-                        print(
-                            Panel(
-                                f"{sender} left the conversation",
-                                title="Environment",
-                                style="red",
-                                title_align="left",
-                            )
-                        )
-                    else:
-                        # Conversation
-                        if "said:" in message:
-                            (
-                                available_colors,
-                                occupied_colors,
-                                agent_color_map,
-                                sender_color,
-                            ) = pick_color_for_agent(
-                                sender,
-                                available_colors,
-                                occupied_colors,
-                                agent_color_map,
-                            )
-                            message = message.split("said:")[1].strip()
-                            print(
-                                Panel(
-                                    f"{message}",
-                                    title=f"{sender} (Said)",
-                                    style=sender_color,
-                                    title_align="left",
-                                )
-                            )
-                        # Action
-                        else:
-                            (
-                                available_colors,
-                                occupied_colors,
-                                agent_color_map,
-                                sender_color,
-                            ) = pick_color_for_agent(
-                                sender,
-                                available_colors,
-                                occupied_colors,
-                                agent_color_map,
-                            )
-                            message = message.replace("[action]", "")
-                            print(
-                                Panel(
-                                    JSON(message, highlight=False),
-                                    title=f"{sender} (Action)",
-                                    style=sender_color,
-                                    title_align="left",
-                                )
-                            )
-                else:
-                    print(Panel(message, style="white"))
-    print("=" * 100)
-    print("End Simulation")
-    print("=" * 100)
-
-    reasoning_per_agent, general_comment = parse_reasoning(
-        episode.reasoning, len(agent_color_map)
-    )
-
-    print(
-        Panel(
-            general_comment,
-            title="General (Comments)",
-            style="blue",
-            title_align="left",
-        )
-    )
-
-    for idx, reasoning in enumerate(reasoning_per_agent):
-        print(
-            Panel(
-                f"{reasoning}\n"
-                + "=" * 100
-                + "\nRewards: "
-                + str(episode.rewards[idx]),
-                title=f"Agent {idx + 1} (Comments)",
-                style="blue",
-                title_align="left",
-            )
-        )

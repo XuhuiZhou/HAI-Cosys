@@ -1,5 +1,6 @@
 """Virtual tools created from json files."""
 
+from .register import register_toolkit
 from .tool_interface import (
     ArgException,
     ArgParameter,
@@ -8,8 +9,6 @@ from .tool_interface import (
     VirtualFunctionTool,
 )
 from .utils import List
-
-from .register import register_toolkit
 
 #################### Terminal ####################
 
@@ -12322,4 +12321,165 @@ class InjectIV(VirtualFunctionTool):
             "name": "IncorporateException",
             "description": "The injection failed because the patient was uncooperative.",
         }
+    ]
+
+
+@register_toolkit()
+class HospitalIV(FunctionToolkit):
+    name_for_human = "Hospital IV"
+    description_for_human = "Toolkit for administering IV injections."
+    name_for_model = "HospitalIV"
+    description_for_model = (
+        "A toolkit for administering IV injections to patients in a hospital setting."
+    )
+    tool_classes = [InjectIV]
+
+
+#################### CounsellingService ####################
+
+
+class SearchTherapists(VirtualFunctionTool):
+    name = "SearchTherapists"
+    summary = "Search for therapists based on keywords, specialty, and location."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "keywords",
+            "type": "string",
+            "description": "Keywords to search therapists by, such as name or specialty.",
+            "required": False,
+        },
+        {
+            "name": "location",
+            "type": "string",
+            "description": "Location to filter therapists by.",
+            "required": False,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "therapists",
+            "type": "array",
+            "description": "A list of therapists with their respective unique identifiers, names, specialties, and locations.",
+        }
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "InvalidRequestException",
+            "description": "The 'location' parameter is not valid.",
+        }
+    ]
+
+
+class ScheduleTherapyAppointment(VirtualFunctionTool):
+    name = "ScheduleTherapyAppointment"
+    summary = "Schedule a therapy appointment by providing the therapist's unique identifier, appointment date and time, and reason for appointment."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "therapist_id",
+            "type": "string",
+            "description": "The unique identifier of the chosen therapist.",
+            "required": True,
+        },
+        {
+            "name": "date",
+            "type": "string",
+            "description": "Date of the appointment in the format 'YYYY-MM-DD'.",
+            "required": True,
+        },
+        {
+            "name": "time",
+            "type": "string",
+            "description": "Time of the appointment in the format 'HH:mm'.",
+            "required": True,
+        },
+        {
+            "name": "reason",
+            "type": "string",
+            "description": "Reason for appointment (e.g., 'anxiety', 'depression').",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "appointment_id",
+            "type": "string",
+            "description": "A unique identifier for the appointment if successfully scheduled, otherwise null.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the appointment was successfully scheduled.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "NotFoundException",
+            "description": "The 'therapist_id' parameter does not exist.",
+        },
+        {
+            "name": "InvalidRequestException",
+            "description": "The 'date' or 'time' parameter is not in the correct format or the 'reason' parameter is not valid.",
+        },
+    ]
+
+
+class AccessMentalHealthHistory(VirtualFunctionTool):
+    name = "AccessMentalHealthHistory"
+    summary = "Access personal mental health history, including past diagnoses, treatments, and therapy notes."
+    parameters: List[ArgParameter] = []
+    returns: List[ArgReturn] = [
+        {
+            "name": "health_records",
+            "type": "array",
+            "description": "A list of personal mental health records, including session_id, date, time, conclusions, and status.",
+        }
+    ]
+    exceptions: List[ArgException] = []
+
+
+class EmergencyContact(VirtualFunctionTool):
+    name = "EmergencyContact"
+    summary = "Call 911 or contact emergency services if a user is in immediate danger."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "location",
+            "type": "string",
+            "description": "The user's location to provide to emergency services.",
+            "required": True,
+        },
+        {
+            "name": "nature_of_emergency",
+            "type": "string",
+            "description": "The nature of the emergency to report to emergency services.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "confirmation",
+            "type": "string",
+            "description": "Confirmation that emergency services have been contacted.",
+        }
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "InvalidRequestException",
+            "description": "The 'location' or 'nature_of_emergency' parameter is not valid.",
+        }
+    ]
+
+
+@register_toolkit()
+class CounselingAI(FunctionToolkit):
+    name_for_human = "CounselingAI"
+    description_for_human = (
+        "Toolkit for online mental health counseling and emergency support."
+    )
+    name_for_model = "CounselingAI"
+    description_for_model = "The CounselingAI toolkit allows users to search for therapists, schedule therapy appointments, access personal mental health history, and contact emergency services if needed."
+    tool_classes = [
+        SearchTherapists,
+        ScheduleTherapyAppointment,
+        AccessMentalHealthHistory,
+        EmergencyContact,
     ]
