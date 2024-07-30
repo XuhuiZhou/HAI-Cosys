@@ -61,7 +61,6 @@ def render_for_humans(episode: EpisodeLog) -> list[messageForRendering]:
             assert (
                 len(turn) >= 2
             ), "The first turn should have at least environment messages"
-
             messages_for_rendering.append(
                 {"role": "Background Info", "type": "info", "content": turn[0][2]}
             )
@@ -101,7 +100,16 @@ def render_for_humans(episode: EpisodeLog) -> list[messageForRendering]:
                         if "said:" in message:
                             message = message.split("said:")[1].strip()
                             messages_for_rendering.append(
-                                {"role": sender, "type": "said", "content": message}
+                                {"role": sender, "type": "speak", "content": message}
+                            )
+                        elif "[non-verbal communication]" in message:
+                            message = message.replace("[non-verbal communication]", "")
+                            messages_for_rendering.append(
+                                {
+                                    "role": sender,
+                                    "type": "non-verbal communication",
+                                    "content": message,
+                                }
                             )
                         else:
                             message = message.replace("[action]", "")
@@ -127,7 +135,7 @@ def render_for_humans(episode: EpisodeLog) -> list[messageForRendering]:
             set(
                 msg["role"]
                 for msg in messages_for_rendering
-                if msg["type"] in {"said", "action"}
+                if msg["type"] in {"speak", "action"}
             )
         ),
     )
@@ -185,36 +193,51 @@ def rich_rendering(messages: list[messageForRendering]) -> None:
             console.print(content)
             console.print("=" * 100)
         elif msg_type == "observation":
-            console.print(
-                Panel(
-                    JSON(content, highlight=False),
-                    title=role,
-                    style="yellow",
-                    title_align="left",
+            try:
+                console.print(
+                    Panel(
+                        JSON(content, highlight=False),
+                        title=role,
+                        style="yellow",
+                        title_align="left",
+                    )
                 )
-            )
+            except Exception:
+                console.print(
+                    Panel(content, title=role, style="yellow", title_align="left")
+                )
         elif msg_type == "leave":
             console.print(Panel(content, title=role, style="red", title_align="left"))
-        elif msg_type == "said":
+        elif msg_type == "speak" or msg_type == "non-verbal communication":
             sender_color = pick_color_for_agent(role)
             console.print(
                 Panel(
                     content,
-                    title=f"{role} (Said)",
+                    title=f"{role} {msg_type}",
                     style=sender_color,
                     title_align="left",
                 )
             )
         elif msg_type == "action":
             sender_color = pick_color_for_agent(role)
-            console.print(
-                Panel(
-                    JSON(content, highlight=False),
-                    title=f"{role} (Action)",
-                    style=sender_color,
-                    title_align="left",
+            try:
+                console.print(
+                    Panel(
+                        JSON(content, highlight=False),
+                        title=f"{role} (Action)",
+                        style=sender_color,
+                        title_align="left",
+                    )
                 )
-            )
+            except Exception:
+                console.print(
+                    Panel(
+                        content,
+                        title=f"{role} (Action)",
+                        style=sender_color,
+                        title_align="left",
+                    )
+                )
         elif msg_type == "environment":
             console.print(Panel(content, style="white"))
         elif msg_type == "comment":

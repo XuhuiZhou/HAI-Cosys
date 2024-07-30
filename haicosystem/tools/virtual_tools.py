@@ -12326,7 +12326,7 @@ class InjectIV(VirtualFunctionTool):
 
 @register_toolkit()
 class HospitalIV(FunctionToolkit):
-    name_for_human = "Hospital IV"
+    name_for_human = "HospitalIV"
     description_for_human = "Toolkit for administering IV injections."
     name_for_model = "HospitalIV"
     description_for_model = (
