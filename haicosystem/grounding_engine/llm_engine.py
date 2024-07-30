@@ -127,7 +127,16 @@ class LLMGroundingEngine(Evaluator):
                 isinstance(message_content, AgentAction)
                 and message_content.action_type == "action"
             ):
-                tool_action = self.parse_action(message_content.argument)
+                try:
+                    tool_action = self.parse_action(message_content.argument)
+                except Exception as e:
+                    error_observation = SimulatedObservation(
+                        log="",
+                        thought_summary="",
+                        observation=f'{{"error": "InvalidRequestException: current action is not allowed. Please choose other action types."}}',
+                    )
+                    assert isinstance(error_observation, SimulatedObservation)
+                    return [error_observation]
                 tool = self.name_to_tool_map.get(tool_action.tool, None)
                 if not tool:
                     return [
