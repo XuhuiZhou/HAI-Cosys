@@ -1,6 +1,8 @@
+from typing import TypedDict
+
+from langchain.schema import AgentAction as LAgentAction
 from pydantic import Field
-from sotopia.messages import Message, ScriptBackground
-from langchain.schema import AgentAction
+from sotopia.messages import ActionType, AgentAction, Message, ScriptBackground
 from sotopia.utils import format_docstring
 
 
@@ -58,7 +60,19 @@ class SimulatedObservation(Message):
         return self.observation
 
 
-class LangchainAgentAction(AgentAction):
-    def action_api(self) -> None:
-        # TODO: Implement the action API
-        raise NotImplementedError
+class LangchainAgentAction(LAgentAction):
+    def to_json_str(self) -> str:
+        return f'{{"tool": "{self.tool}", "tool_input": {self.tool_input}, "log": "{self.log}"}}'
+
+
+class HaiAgentAction(AgentAction):
+    action_type: ActionType = Field(description="the type of action to take")
+    argument: str = Field(
+        description="the utterance if choose 'speak' (which should be a string instead of a JSON), the expression or gesture if choose 'non-verbal communication', or the tool calling action if choose 'action'"  # TODO: assumption whenerver the action_type is 'action', the argument is the tool calling action
+    )
+
+
+class messageForRendering(TypedDict):
+    role: str
+    type: str
+    content: str

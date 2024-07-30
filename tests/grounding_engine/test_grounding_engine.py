@@ -1,19 +1,22 @@
 import asyncio
-
-import pytest
 import json
 
-from sotopia.messages import AgentAction, SimpleMessage
-from sotopia.agents import LLMAgent
-from sotopia.agents import Agents
-from haicosystem.agents.llm_agent import LLMAgentX
-from haicosystem.envs import ParellelHaicosystemEnv
-from haicosystem.protocols import HaiEnvironmentProfile, SimulatedObservation
+import pytest
+from sotopia.agents import Agents, LLMAgent
 from sotopia.database import AgentProfile
+from sotopia.messages import AgentAction, SimpleMessage
 
-from haicosystem.grounding_engine import LLMGroundingEngine
-from haicosystem.tools import get_toolkit_output_parser_by_names
+from haicosystem.agents.llm_agent import LLMAgentHuman
+from haicosystem.envs import ParellelHaicosystemEnv
 from haicosystem.generation_utils import validate_observation
+from haicosystem.grounding_engine import LLMGroundingEngine
+from haicosystem.grounding_engine.tool import validate_inputs
+from haicosystem.protocols import (
+    HaiEnvironmentProfile,
+    LangchainAgentAction,
+    SimulatedObservation,
+)
+from haicosystem.tools import get_toolkit_output_parser_by_names, get_toolkits_by_names
 
 
 @pytest.mark.asyncio
@@ -21,7 +24,9 @@ async def test_llm_grounding_engine_async() -> None:
     filename = "./data/example_scenarios.json"
     with open(filename, "r") as file:
         env_profiles_json = json.load(file)
-    env_profile = HaiEnvironmentProfile.parse_obj(env_profiles_json["official_122"])
+    env_profile = HaiEnvironmentProfile.parse_obj(
+        env_profiles_json["toolemu_official_122"]
+    )
     env = ParellelHaicosystemEnv(
         env_profile=env_profile,
         grounding_engines=[LLMGroundingEngine(model_name="gpt-4o")],
@@ -45,7 +50,7 @@ async def test_llm_grounding_engine_async() -> None:
     ]
     agent_list = [
         agent_class(agent_profile=agent_profile)
-        for agent_class, agent_profile in zip([LLMAgentX, LLMAgent], agent_profiles)
+        for agent_class, agent_profile in zip([LLMAgentHuman, LLMAgent], agent_profiles)
     ]
     for agent, goal in zip(agent_list, env.profile.agent_goals):
         agent.goal = goal
@@ -110,6 +115,25 @@ async def test_llm_grounding_engine_async() -> None:
 
 
 @pytest.mark.asyncio
+async def test_input_validator() -> None:
+    tool = get_toolkits_by_names(["Venmo"])[0].tools[0]
+    tool_action = LangchainAgentAction(
+        **{
+            "tool": "VenmoSendMoney",
+            "tool_input": {
+                "recipient_username": "user",
+                "amount": "okok",
+                "note": "Splitting the bill for last night's seafood dinner.",
+            },
+            "log": "",
+        }
+    )
+    with pytest.raises(ValueError, match="Invalid type for amount"):
+        # params = load_dict(raw_inputs)
+        validate_inputs(tool.parameters, tool_action.tool_input)  # type: ignore
+
+
+@pytest.mark.asyncio
 async def test_observation_validator() -> None:
     name_to_tool_parser_map = get_toolkit_output_parser_by_names(["Venmo"])
     venmo_send_money_tool = name_to_tool_parser_map["VenmoSendMoney"]
@@ -133,6 +157,3 @@ async def test_observation_validator() -> None:
     print(f"the validated observation: {result_2[1]}")
     assert not result_2[0]
     json.loads(result_2[1])
-
-
-# asyncio.run(test_llm_grounding_engine_async())

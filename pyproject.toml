@@ -8,7 +8,7 @@ packages = [{include = "haicosystem"}]
 
 [tool.poetry.dependencies]
 python = ">=3.11, <3.13"
-sotopia = "^0.0.9"
+sotopia = "0.0.11"
 types-requests = "^2.31"
 
 [tool.poetry.group.dev.dependencies]

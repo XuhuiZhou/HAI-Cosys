@@ -1,6 +1,7 @@
-from typer import Typer
 from sotopia.database import EpisodeLog
-from haicosystem.utils.render import render_for_humans
+from typer import Typer
+
+from haicosystem.utils.render import render_for_humans, rich_rendering
 
 app = Typer()
 
@@ -12,7 +13,8 @@ def print_episode(episode_number: int) -> None:
     """
     episode = EpisodeLog.find(EpisodeLog.tag == "haicosystem_debug")[episode_number]  # type: ignore
     assert isinstance(episode, EpisodeLog)
-    render_for_humans(episode)
+    messages = render_for_humans(episode)
+    rich_rendering(messages)
 
 
 if __name__ == "__main__":

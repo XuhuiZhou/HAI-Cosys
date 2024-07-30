@@ -4,10 +4,9 @@ import gin
 from beartype import beartype
 from langchain.output_parsers import PydanticOutputParser
 from pydantic import BaseModel, Field, validator
-
+from sotopia.envs.evaluators import Evaluator
 from sotopia.generation_utils.generate import agenerate
 from sotopia.messages import Message
-from sotopia.envs.evaluators import Evaluator
 
 from haicosystem.generation_utils import obtain_history_for_environment
 
