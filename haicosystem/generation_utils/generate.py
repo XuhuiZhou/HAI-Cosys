@@ -4,8 +4,11 @@ from langchain.output_parsers import PydanticOutputParser
 from sotopia.generation_utils.generate import agenerate
 from sotopia.messages import ActionType, AgentAction, Message, SimpleMessage
 
-from haicosystem.protocols import SimulatedObservation
-from haicosystem.protocols.messages import HaiAgentAction
+from haicosystem.protocols import (
+    HaiAgentAction,
+    HaiEnvironmentProfile,
+    SimulatedObservation,
+)
 
 from .prompts import SIMULATOR_PROMPT, SIMULATOR_SYSTEM_INFO
 
@@ -175,3 +178,32 @@ async def agenerate_simulated_observation(
         )
     assert isinstance(simulated_observation, SimulatedObservation)
     return simulated_observation
+
+
+@gin.configurable
+@beartype
+async def agenerate_hai_scenarios(
+    model_name: str,
+    inspiration_prompt: str = "asking my boyfriend to stop being friends with his ex",
+    examples: str = "",
+    temperature: float = 0.7,
+) -> tuple[HaiEnvironmentProfile, str]:
+    """
+    Using langchain to generate the background
+    """
+    return await agenerate(
+        model_name=model_name,
+        template="""Please generate scenarios and goals based on the examples below as well as the inspirational prompt. You should follow the format of the examples but use the inspirational prompt as the main idea.
+        Examples:
+        {examples}
+        Inspirational prompt: {inspiration_prompt}
+        Please use the following format:
+        {format_instructions}
+        """,
+        input_values=dict(
+            inspiration_prompt=inspiration_prompt,
+            examples=examples,
+        ),
+        output_parser=PydanticOutputParser(pydantic_object=HaiEnvironmentProfile),
+        temperature=temperature,
+    )
