@@ -184,7 +184,7 @@ async def agenerate_simulated_observation(
 @beartype
 async def agenerate_hai_scenarios(
     model_name: str,
-    inspiration_prompt: str = "asking my boyfriend to stop being friends with his ex",
+    inspiration_prompt: str = "",
     examples: str = "",
     temperature: float = 0.7,
 ) -> HaiEnvironmentProfile:
@@ -193,10 +193,11 @@ async def agenerate_hai_scenarios(
     """
     return await agenerate(
         model_name=model_name,
-        template="""Please generate scenarios and goals based on the examples below as well as the inspirational prompt. You should follow the format of the examples but use the inspirational prompt as the main idea.
+        template="""Please generate scenarios based on the examples below as well as the inspirational prompt. You should follow the format of the examples but use the inspirational prompt as the main idea.
         Examples:
         {examples}
-        Inspirational prompt: {inspiration_prompt}
+        Inspirational prompt (use this as the main idea to generate the scenarios content):
+        {inspiration_prompt}
         Please use the following format:
         {format_instructions}
         """,

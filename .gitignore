@@ -165,3 +165,4 @@ PromptCoder/*
 data/*
 !data/example_scenarios.json
 !data/title.png
+!data/healthcare

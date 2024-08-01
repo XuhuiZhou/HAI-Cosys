@@ -43,6 +43,7 @@ def generate_scenarios(
         for entry in toolemu_data:
             if inspiration == entry["name"]:
                 scenario_exist = True
+                break
         assert scenario_exist, f"Prompt {inspiration} not found in the ToolEmu data"
         inspiration = json.dumps(entry, indent=4)
 
@@ -57,7 +58,7 @@ def generate_scenarios(
             temperature=1.2,
         )
     )
-    rich.print(hai_env_profile.json())
+    rich.print(hai_env_profile.json(indent=4))
 
 
 if __name__ == "__main__":
