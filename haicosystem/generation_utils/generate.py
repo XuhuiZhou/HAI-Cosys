@@ -187,7 +187,7 @@ async def agenerate_hai_scenarios(
     inspiration_prompt: str = "asking my boyfriend to stop being friends with his ex",
     examples: str = "",
     temperature: float = 0.7,
-) -> tuple[HaiEnvironmentProfile, str]:
+) -> HaiEnvironmentProfile:
     """
     Using langchain to generate the background
     """
