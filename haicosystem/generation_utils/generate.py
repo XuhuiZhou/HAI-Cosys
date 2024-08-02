@@ -152,6 +152,7 @@ async def agenerate_simulated_observation(
     current_tool: str,
     current_tool_description: str,
     toolkit_descriptions: str,
+    guide: str,
     temperature: float = 0.0,
 ) -> SimulatedObservation:
     """
@@ -166,6 +167,7 @@ async def agenerate_simulated_observation(
                 current_tool=current_tool,
                 current_tool_description=current_tool_description,
                 interaction_history=history,
+                guide=guide,
             ),
             output_parser=PydanticOutputParser(pydantic_object=SimulatedObservation),
             temperature=temperature,

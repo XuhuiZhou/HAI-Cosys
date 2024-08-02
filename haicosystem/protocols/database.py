@@ -24,6 +24,10 @@ class HaiEnvironmentProfile(EnvironmentProfile):
         default_factory=lambda: [],
         description="The toolkits that are available in the environment for the agents to use, if a toolkit is assigned in the inspiration prompt, it should be included in the toolkits list",
     )
+    grounding_engine_guide: str = Field(
+        default_factory=lambda: "",
+        description="The guide for the grounding engine to generate certain observation when the agent is interacting with the environment",
+    )
     agent_intent_labels: list[str] = Field(
         default_factory=lambda: [],
         description="The intention categories of the agents, the first agent is always the human agent, and the second agent is always the AI agent, their intentions could be either `benign` or `malicious`",

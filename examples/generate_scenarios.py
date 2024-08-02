@@ -47,6 +47,9 @@ def generate_scenarios(
         assert scenario_exist, f"Prompt {inspiration} not found in the ToolEmu data"
         inspiration = json.dumps(entry, indent=4)
 
+    elif ".txt" in inspiration:
+        inspiration = open(inspiration).read()
+
     examples_dict = json.load(open("data/example_scenarios.json"))
     examples = "\n\n".join([json.dumps(ex, indent=4) for ex in examples_dict.values()])
 

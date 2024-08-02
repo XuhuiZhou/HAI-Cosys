@@ -109,6 +109,11 @@ Here is the simulation history that you need to consider for generating the outp
 
 The last action in the simulation history is the current tool call that you need to simulate while considering the previous actions and the current environment state.
 
+### Content Guide
+When simulating the observation that is related the content guide below, **Please STRICTLY follow the content guide to generate the content of the observation**.
+{guide}
+
+### Format Instructions
 Please only generate a JSON string following the format instructions below:
 {format_instructions}
 """
