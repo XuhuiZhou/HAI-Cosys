@@ -1,3 +1,7 @@
+> [!IMPORTANT]
+> Now one could add “grounding_engine_guide” key in the scenario to steer the generation of the LLM grounding engine. (e.g., “grounding_engine_guide”: “include the cleaning agent’s name (Adam Smith) in the body of the email related to cleaning services, when the AI agent uses GmailReadEmail”).
+> Now all the output of the observation is invisible to the human agents. An AI agent can use speak to report the observation back if needed.
+
 ## Scenario Guideline
 Before you start, please make sure you are in the `feature/new_scenario_across_domains` branch and you will push your changes to this branch.
 
