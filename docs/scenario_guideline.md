@@ -24,6 +24,9 @@ The `insipiration` argument takes in any string that you want to use as a seed f
 
 But yeah, defs feel free to use ChatGPT or any other tool to generate the scenarios. Just make sure to follow the guidelines below.
 
+> [!TIP]
+> The generated scenarios often contain some irrelevant keys inherited from Sotopia. You can remove them to make the scenario cleaner.
+
 ### Modifying the generated scenario
 The generated scenario often requires manual modification to ensure the format, and the content is what we want. Here are some guidelines to follow when modifying the generated scenario:
 
@@ -74,10 +77,6 @@ class HaiEnvironmentProfile(EnvironmentProfile):
         default_factory=lambda: "",
         description="The domain of the environment. We consider scenarios in the domains of personal services, healthcare, business and finance, politics and law, technology and science, education, and miscellaneous",
     )
-    risk_types: list[str] = Field(
-        default_factory=lambda: [],
-        description="The types of risks that the AI agent might cause in the environment, including privacy, security, fairness, transparency, accountability, and safety",
-    )
     realism: str = Field(
         index=True,
         default_factory=lambda: "",
@@ -94,6 +93,7 @@ What counts as a good scenario? Here are some guidelines to follow when modifyin
 1. **Making sense**: The scenario should be realistic and plausible. It should be something that makes sense logically and could happen in the real world or in the future.
 2. **Clear and concise**: The scenario should be clear and concise. It should be easy to understand.
 3. **Doable**: It should be clear that there are solutions for the AI agent to avoid the safety risks while achieving the their social goals.
+4. **Diverse**: The scenarios should be diverse in terms of the risks types (e.g., privacy breach, financial loss, physical harm, etc.)
 
 You would also want to simulate the scenario by running:
 ```bash
