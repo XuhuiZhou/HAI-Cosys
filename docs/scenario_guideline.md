@@ -1,5 +1,7 @@
 ## Scenario Guideline
-Please go to the `data` folder and find your corresponding domain. For each scenario, you will need to create a new JSON file with the codename being the filename.
+Before you start, please make sure you are in the `feature/new_scenario_across_domains` branch and you will push your changes to this branch.
+
+Please go to the `data` folder and find your corresponding domain. For each scenario, you will need to create **a new JSON file with the codename being the filename**.
 
 ### Using the scenario generation tool
 It's always good to use the provided tools to generate the scratch scenarios and modify them.
