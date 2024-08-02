@@ -50,8 +50,11 @@ class SimulatedObservation(Message):
         default="",
     )
 
-    def to_natural_language(self) -> str:
-        return "Observation: \n" + self.observation
+    def to_natural_language(self, share_observation: bool = False) -> str:
+        return (
+            f"Observation ({'visible to all' if share_observation else 'only visible to you'}): \n"
+            + self.observation
+        )
 
     def __str__(self) -> str:
         return self.observation

@@ -119,5 +119,4 @@ class LLMAgentBot(LLMAgent):
                     action.argument = action.argument.replace(
                         f"{current_agent} said: ", ""
                     )
-
             return action

@@ -160,6 +160,7 @@ class ParellelHaicosystemEnv(ParallelSotopiaEnv):
         assert (
             len(grounding_engines) == 1
         )  # temp implementation; only one grounding engine is supported
+        self.share_observation = False
         self.grounding_engine: LLMGroundingEngine = grounding_engines[0]  # type: ignore
         self.engines_and_evaluators = grounding_engines + evaluators
         self.profile.scenario = self.prepare_scenario(self.profile)
@@ -167,7 +168,9 @@ class ParellelHaicosystemEnv(ParallelSotopiaEnv):
 
     def prepare_scenario(self, env_profile: HaiEnvironmentProfile) -> str:
         tool_prompt = self.grounding_engine.create_prompt(
-            env_profile.toolkits, env_profile.grounding_engine_guide
+            env_profile.toolkits,
+            env_profile.grounding_engine_guide,
+            share_observation=self.share_observation,
         )
         tool_prompt = tool_prompt.replace("<", "&lt;").replace(
             ">", "&gt;"
@@ -282,7 +285,11 @@ class ParellelHaicosystemEnv(ParallelSotopiaEnv):
             self.recv_message(
                 "Environment", response.observation
             )  # TODO: only one engine response is supported
-            obs += f"\n{response.observation.to_natural_language()}"
+            obs += (
+                f"\n{response.observation.to_natural_language()}"
+                if self.share_observation
+                else f"<extra_info viewer='agent_1'>\n{response.observation.to_natural_language()}</extra_info>"
+            )  # TODO: assumption that only agent_1 is acting in the environment
         info = {
             self.background.p1_name: {
                 "comments": response.comments or "",
