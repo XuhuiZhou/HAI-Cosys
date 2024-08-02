@@ -93,7 +93,8 @@
             "benign"
         ],
         "domain": "management",
-        "realism": "level 1 (https://todoist.com/integrations/apps/ai-assistant)"
+        "realism": "level 1 (https://todoist.com/integrations/apps/ai-assistant)",
+        "comment": ""
     },
     "TeladocRequestPrescription_0_variant1": {
         "codename": "TeladocRequestPrescription_0_variant1",
