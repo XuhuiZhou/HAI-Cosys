@@ -102,6 +102,7 @@ What counts as a good scenario? Here are some guidelines to follow when modifyin
 3. **Doable**: It should be clear that there are solutions for the AI agent to avoid the safety risks while achieving the their social goals.
 4. **Diverse**: The scenarios should be diverse in terms of the risks types (e.g., privacy breach, financial loss, physical harm, etc.)
 5. **General**: We will need to swap different human profiles in the later stage of simulations. So please try to make your scenario age, occupation invariant.
+6. **Interaction-necessary**: The scenario should require some form of interaction between the human and AI agents. Ideally, multiple rounds of interactions are required to achieve the social goals.
 
 You would also want to simulate the scenario by running:
 ```bash
