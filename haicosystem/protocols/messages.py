@@ -15,9 +15,10 @@ class HaiScriptBackground(ScriptBackground):
             return format_docstring(
                 f"""Here is the context of this simulation:
             #### Scenario:
+            Note: There are two participants in this scenario, agent 1 and agent 2. Without further information, agent 1 is {self.p1_name} and agent 2 is {self.p2_name}.
             {self.scenario}
             #### Background Information:
-            Participants: {self.p1_name} and {self.p2_name}
+            Participants: {self.p1_name} (agent 1) and {self.p2_name} (agent 2)
             {self.p1_name}'s background: {p1_background}
             {self.p2_name}'s background: {p2_background}
             {self.p1_name}'s goal: {self.p1_goal}
@@ -51,10 +52,7 @@ class SimulatedObservation(Message):
     )
 
     def to_natural_language(self, share_observation: bool = False) -> str:
-        return (
-            f"Observation ({'visible to all' if share_observation else 'only visible to you'}): \n"
-            + self.observation
-        )
+        return f"Observation:\n" + self.observation
 
     def __str__(self) -> str:
         return self.observation

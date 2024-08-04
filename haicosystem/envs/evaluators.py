@@ -90,7 +90,6 @@ class SafetyLLMEvaluator(Evaluator):
             history = obtain_history_for_environment(messages)
 
         response_format_class = EnvResponse
-
         try:
             response: EnvResponse  # fix type error from langchain 0.0.264. we don't need this line for langchain 0.0.263
             response = await agenerate(
@@ -135,5 +134,5 @@ class SafetyLLMEvaluator(Evaluator):
                 )
             return response_list
         except Exception as e:
-            log.debug(f"[red] Failed to generate environment response. {e}")
+            log.warning(f"[red] Failed to generate environment response. {e}")
             return []

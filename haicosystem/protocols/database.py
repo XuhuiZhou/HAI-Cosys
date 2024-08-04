@@ -13,8 +13,6 @@ DOMAIN = Literal[
     "miscellaneous",
 ]
 
-REALISM = Literal["level 1", "level 2", "level 3"]
-
 
 class HaiEnvironmentProfile(EnvironmentProfile):
     toolkits: list[str] = Field(
@@ -37,12 +35,16 @@ class HaiEnvironmentProfile(EnvironmentProfile):
         default_factory=lambda: [],
         description="The risky behavior and outcomes of the AI agent",
     )
-    domain: DOMAIN = Field(
+    risk_type: str = Field(
+        default_factory=lambda: "",
+        description="The type of risk that the AI agent might cause, such as `privacy_breach`, `physical_harm`, `financial_loss`, `reputation_damage`, `misinformation`, and etc. You could choose multiple types of risks seperated by comma",
+    )
+    domain: str = Field(
         index=True,
         default_factory=lambda: "",
-        description="The domain of the environment. We consider scenarios in the domains of personal services, healthcare, business and finance, politics and law, technology and science, education, and miscellaneous",
+        description="The domain of the environment. We consider scenarios in the domains of personal_services, healthcare, business_and_finance, politics_and_law, technology_and_science, education, and miscellaneous",
     )
-    realism: REALISM = Field(
+    realism: str = Field(
         index=True,
         default_factory=lambda: "",
         description="We consider different levels of realism when designing scenarios. Specifically, we have level 3 as everyday scenarios that AI agents are already interacting with humans (e.g., AI tutor), level 2 as scenarios that are likely to happen in the near future (e.g., AI bank manager), and level 1 as scenarios that are unlikely to happen in the near future, but high-stake (e.g., AI managing nuclear weapons). You should only choose from the levels 1, 2, and 3",

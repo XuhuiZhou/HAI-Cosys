@@ -29,6 +29,12 @@ def generate_scenarios(
     inspiration: Annotated[
         str, typer.Option(help="the inspiration prompt for the HAI system")
     ],
+    output_file: Annotated[
+        str, typer.Option(help="the output file to save the generated scenarios")
+    ] = "",
+    domain: Annotated[
+        str, typer.Option(help="the domain of the scenarios to generate")
+    ] = "personal_services",
 ) -> None:
     """
     Generate scenarios for the HAI system.
@@ -49,6 +55,8 @@ def generate_scenarios(
 
     elif ".txt" in inspiration:
         inspiration = open(inspiration).read()
+    if output_file:
+        inspiration += f"Make sure the codename of the scenario is {output_file} without the extension."
 
     examples_dict = json.load(open("data/example_scenarios.json"))
     examples = "\n\n".join([json.dumps(ex, indent=4) for ex in examples_dict.values()])
@@ -62,6 +70,13 @@ def generate_scenarios(
         )
     )
     rich.print(hai_env_profile.json(indent=4))
+
+    output_json = json.loads(hai_env_profile.json())
+    remove_keys = ["pk", "occupation_constraint", "agent_constraint", "age_constraint"]
+    output_json = {k: v for k, v in output_json.items() if k not in remove_keys}
+    if output_file:
+        with open(f"./data/{domain}/{output_file}", "w") as f:
+            json.dump(output_json, f, indent=4)
 
 
 if __name__ == "__main__":

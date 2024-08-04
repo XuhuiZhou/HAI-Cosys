@@ -1,3 +1,4 @@
+import logging
 from typing import Type
 
 from beartype import beartype
@@ -13,6 +14,8 @@ from haicosystem.protocols import (
     LangchainAgentAction,
     SimulatedObservation,
 )
+
+log = logging.getLogger("generate")
 
 
 @beartype
@@ -39,6 +42,7 @@ async def validate_observation(
             output_parser.invoke(obs.observation)
         return True, obs.observation
     except Exception:
+        log.warning(f"Failed to parse the observation: {obs.observation}")
         if tool_output_parser:
             output_parser = PydanticOutputParser(pydantic_object=tool_output_parser)
         try:
@@ -73,7 +77,7 @@ async def validate_agentAction(
     try:
         output_parser.invoke(action.argument)
     except Exception as e:
-        print(f"Error: {e}")
+        log.warning(f"Failed to parse the agent's action: {e}")
         try:
             corrected_action = await agenerate(
                 model_name=model_name,

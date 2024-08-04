@@ -11,6 +11,7 @@ from .prompts import (
     SIMULATOR_CRITIQUE_REPEAT,
     SIMULATOR_PROMPT,
     SIMULATOR_SYSTEM_INFO,
+    format_tool_prompt,
 )
 from .validation import validate_agentAction, validate_observation
 
@@ -25,6 +26,7 @@ __all__ = [
     "SIMULATOR_CRITIQUE",
     "SIMULATOR_CRITIQUE_REPEAT",
     "ACTION_CRITIQUE",
+    "format_tool_prompt",
     "validate_observation",
     "validate_agentAction",
 ]

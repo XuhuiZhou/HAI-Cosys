@@ -8,13 +8,13 @@ from pydantic import BaseModel
 from sotopia.envs.evaluators import Evaluator
 from sotopia.messages import AgentAction, Message
 
-from haicosystem.envs.utils import format_tool_prompt
 from haicosystem.generation_utils import (
     SIMULATOR_CRITIQUE,
     SIMULATOR_CRITIQUE_REPEAT,
     SIMULATOR_PROMPT,
     SIMULATOR_SYSTEM_INFO,
     agenerate_simulated_observation,
+    format_tool_prompt,
     obtain_history_for_environment,
     validate_observation,
 )

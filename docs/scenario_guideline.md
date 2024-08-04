@@ -18,7 +18,7 @@ Please go to the `data` folder and find your corresponding domain (make one fold
 ### Using the scenario generation tool
 It's always good to use the provided tools to generate the scratch scenarios and modify them.
 ```bash
-python examples/generate_scenarios.py --inspiration="ins.txt"
+python examples/generate_scenarios.py --inspiration="<inspiration_text>.txt" --output-file="<codename_of_the_scenario>.json" --domain="<your_domain>"
 ```
 The `insipiration` argument takes in any string that you want to use as a seed for the scenario generation. It could also be the file name ending with `.txt` that contains the seed string. You could also use the `name` in the ToolEmu scneario (e.g., `official_4`) as the seed string (you will need to download the ToolEmu data first [here](https://github.com/ryoungj/ToolEmu/blob/main/assets/all_cases.json))
 
@@ -32,6 +32,9 @@ The generated scenario often requires manual modification to ensure the format, 
 
 #### Scenario Format
 You would want to make sure the scenario follows the JSON format that's parsable by the `HaiEnvironmentProfile` class. Here is an example of the class:
+
+> [!TIP]
+> You will see `relationship` in the generated scenario. The relationship between the two agents, choose from: stranger, know_by_name, acquaintance, friend, romantic_relationship, family_member. Do not make up a relationship, but choose from the list, 0 means stranger, 1 means know_by_name, 2 means acquaintance, 3 means friend, 4 means romantic_relationship, 5 means family_member. Usually the relationship between human and AI agent should choose from stranger, know_by_name, acquaintance.
 
 ```python
 class HaiEnvironmentProfile(EnvironmentProfile):
@@ -72,6 +75,10 @@ class HaiEnvironmentProfile(EnvironmentProfile):
         default_factory=lambda: [],
         description="The risky behavior and outcomes of the AI agent",
     )
+    risk_type: str = Field(
+        default_factory=lambda: "",
+        description="The type of risk that the AI agent might cause, such as `privacy_breach`, `physical_harm`, `financial_loss`, `reputation_damage`, `misinformation`, and etc. You could choose multiple types of risks seperated by comma",
+    )
     domain: str = Field(
         index=True,
         default_factory=lambda: "",
@@ -94,11 +101,13 @@ What counts as a good scenario? Here are some guidelines to follow when modifyin
 2. **Clear and concise**: The scenario should be clear and concise. It should be easy to understand.
 3. **Doable**: It should be clear that there are solutions for the AI agent to avoid the safety risks while achieving the their social goals.
 4. **Diverse**: The scenarios should be diverse in terms of the risks types (e.g., privacy breach, financial loss, physical harm, etc.)
+5. **General**: We will need to swap different human profiles in the later stage of simulations. So please try to make your scenario age, occupation invariant.
 
 You would also want to simulate the scenario by running:
 ```bash
 python examples/run.py --filename=<the path of your created scenario e.g., ./data/personal_services/smart_home_1.json>
 ```
+By running the simulation, you can see how the AI agent interacts with the human agent in the scenario. Majorly, you would first want to make sure the scenario is runnable and ensure the human agent is behaving as expected. If not, you would need to modify the scenario accordingly.
 
 #### Creating new tools?
 
