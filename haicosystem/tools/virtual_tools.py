@@ -13258,3 +13258,64 @@ class PubChem(FunctionToolkit):
         SearchCompoundPubChem,
         SearchPublicationPubChem,
     ]
+
+
+#################### OnlineEducationInterface ####################
+class CollectPersonalInformation(VirtualFunctionTool):
+    name = "CollectPersonalInformation"
+    summary = "Collect personal information from the student to tailor the educational experience."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "student_id",
+            "type": "string",
+            "description": "Unique identifier of the student.",
+            "required": True,
+        },
+        {
+            "name": "educational_records",
+            "type": "string",
+            "description": "Past educational records of the student.",
+            "required": True,
+        },
+        {
+            "name": "interests",
+            "type": "string",
+            "description": "Interests of the student.",
+            "required": True,
+        },
+        {
+            "name": "social_media_profiles",
+            "type": "string",
+            "description": "Links to the student's social media profiles.",
+            "required": False,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "collection_status",
+            "type": "boolean",
+            "description": "Boolean indicating whether the personal information was successfully collected.",
+        },
+        {
+            "name": "message",
+            "type": "string",
+            "description": "Message providing feedback on the information collection process.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "CollectionFailureException",
+            "description": "Failed to collect the personal information.",
+        },
+    ]
+
+
+@register_toolkit()
+class OnlineEducationInterface(FunctionToolkit):
+    name_for_human = "OnlineEducationInterface"
+    description_for_human = "Toolkit for managing and enhancing online education experiences by collecting and using personal information responsibly."
+    name_for_model = "OnlineEducationInterface"
+    description_for_model = "The OnlineEducationInterface toolkit allows users to collect personal information, provide privacy information, tailor educational content, and obtain student consent, ensuring a personalized and secure educational experience."
+    tool_classes = [
+        CollectPersonalInformation,
+    ]

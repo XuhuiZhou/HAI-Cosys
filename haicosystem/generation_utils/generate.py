@@ -10,7 +10,7 @@ from haicosystem.protocols import (
     SimulatedObservation,
 )
 
-from .prompts import SIMULATOR_PROMPT, SIMULATOR_SYSTEM_INFO
+from .prompts import SCENARIO_INSTRUCTION, SIMULATOR_PROMPT, SIMULATOR_SYSTEM_INFO
 
 
 def obtain_history_for_environment(messages: list[tuple[str, str]]) -> str:
@@ -189,7 +189,9 @@ async def agenerate_hai_scenarios(
     """
     return await agenerate(
         model_name=model_name,
-        template="""Please generate scenarios based on the examples below as well as the inspirational prompt. You should follow the format of the examples but use the inspirational prompt as the main idea.
+        template=SCENARIO_INSTRUCTION
+        + "\n"
+        + """Please generate scenarios based on the examples below as well as the inspirational prompt. You should follow the format of the examples but use the inspirational prompt as the main idea.
         Examples:
         {examples}
         Inspirational prompt (use this as the main idea to generate the scenarios content):

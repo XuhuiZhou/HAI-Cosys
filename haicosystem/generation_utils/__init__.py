@@ -7,6 +7,7 @@ from .generate import (
 )
 from .prompts import (
     ACTION_CRITIQUE,
+    SCENARIO_INSTRUCTION,
     SIMULATOR_CRITIQUE,
     SIMULATOR_CRITIQUE_REPEAT,
     SIMULATOR_PROMPT,
