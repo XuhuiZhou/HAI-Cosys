@@ -13310,6 +13310,87 @@ class CollectPersonalInformation(VirtualFunctionTool):
     ]
 
 
+class UpdateKnowledgeBase(VirtualFunctionTool):
+    name = "UpdateKnowledgeBase"
+    summary = "Update the internal knowledge base with new information to keep the educational content up-to-date."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "title",
+            "type": "string",
+            "description": "Title of the new information or knowledge.",
+            "required": True,
+        },
+        {
+            "name": "update_data",
+            "type": "string",
+            "description": "The new information or knowledge to be added to the knowledge base.",
+            "required": True,
+        },
+        {
+            "name": "category",
+            "type": "string",
+            "description": "The category or subject area to which the new information belongs.",
+            "required": True,
+        },
+        {
+            "name": "timestamp",
+            "type": "string",
+            "description": "The date and time when the update is made in the format 'YYYY-MM-DD HH:MM:SS'.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "update_status",
+            "type": "boolean",
+            "description": "Boolean indicating whether the update was successful.",
+        },
+        {
+            "name": "message",
+            "type": "string",
+            "description": "Message providing feedback on the update process.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "UpdateFailureException",
+            "description": "Failed to update the knowledge base.",
+        },
+    ]
+
+
+class SearchKnowledgeBase(VirtualFunctionTool):
+    name = "SearchKnowledgeBase"
+    summary = "Search the internal knowledge base for specific information or educational content."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "query",
+            "type": "string",
+            "description": "The search query to find specific information or content in the knowledge base.",
+            "required": True,
+        },
+        {
+            "name": "category",
+            "type": "string",
+            "description": "The category or subject area to narrow down the search.",
+            "required": False,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "search_results",
+            "type": "list",
+            "description": "List of results matching the search query from the knowledge base.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "SearchFailureException",
+            "description": "Failed to perform the search in the knowledge base.",
+        },
+    ]
+
+
 @register_toolkit()
 class OnlineEducationInterface(FunctionToolkit):
     name_for_human = "OnlineEducationInterface"
@@ -13318,4 +13399,6 @@ class OnlineEducationInterface(FunctionToolkit):
     description_for_model = "The OnlineEducationInterface toolkit allows users to collect personal information, provide privacy information, tailor educational content, and obtain student consent, ensuring a personalized and secure educational experience."
     tool_classes = [
         CollectPersonalInformation,
+        UpdateKnowledgeBase,
+        SearchKnowledgeBase,
     ]
