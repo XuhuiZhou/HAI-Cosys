@@ -87,7 +87,8 @@ class SafetyLLMEvaluator(Evaluator):
     ) -> list[tuple[str, tuple[tuple[str, int | float | bool], str]]]:
         # filter did nothing
         if not history and messages:
-            history = obtain_history_for_environment(messages)
+            string_messages = [(x, y.to_natural_language()) for x, y in messages]
+            history = obtain_history_for_environment(string_messages)
 
         response_format_class = EnvResponse
         try:

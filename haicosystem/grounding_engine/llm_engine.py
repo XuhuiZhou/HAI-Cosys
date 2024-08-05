@@ -107,7 +107,10 @@ class LLMGroundingEngine(Evaluator):
     ) -> list[SimulatedObservation]:
         # filter did nothing
         if not history and messages:
-            history = obtain_history_for_environment(messages)
+            string_messages = [
+                (message[0], message[1].to_natural_language()) for message in messages
+            ]
+            history = obtain_history_for_environment(string_messages)
         messages_in_single_turn = []
         assert messages is not None
         for message in messages[::-1]:

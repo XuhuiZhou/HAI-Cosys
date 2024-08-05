@@ -13,25 +13,19 @@ from haicosystem.protocols import (
 from .prompts import SIMULATOR_PROMPT, SIMULATOR_SYSTEM_INFO
 
 
-def obtain_history_for_environment(messages: list[tuple[str, Message]]) -> str:
+def obtain_history_for_environment(messages: list[tuple[str, str]]) -> str:
     if not messages:
         return ""
-    messages_filtered = [
-        (x, y) for x, y in messages if "did nothing" not in y.to_natural_language()
-    ]
+    messages_filtered = [(x, y) for x, y in messages if "did nothing" not in y]
     messages_filtered = [
         messages_filtered[0],
-        ("Environment", SimpleMessage(message="#### Past Interactions")),
+        (
+            "Environment",
+            SimpleMessage(message="#### Past Interactions").to_natural_language(),
+        ),
     ] + messages_filtered[1:]
     return "\n".join(
-        [
-            (
-                f"{x} {y.to_natural_language()}"
-                if x != "Environment"
-                else y.to_natural_language()
-            )
-            for x, y in messages_filtered
-        ]
+        [(f"{x} {y}" if x != "Environment" else y) for x, y in messages_filtered]
     )
 
 
