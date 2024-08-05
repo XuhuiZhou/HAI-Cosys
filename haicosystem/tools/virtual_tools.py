@@ -12763,3 +12763,171 @@ class UploadLive_Interface_V2(FunctionToolkit):
         SearchPersonInformation,
         MonitorVitalSigns,
     ]
+
+
+#################### VirtualMillitaryTraining ####################
+class InitiateTrainingSession(VirtualFunctionTool):
+    name = "InitiateTrainingSession"
+    summary = "Start a new VR military training session by setting up the environment and selecting the scenario."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "trainee_id",
+            "type": "string",
+            "description": "Unique identifier of the trainee.",
+            "required": True,
+        },
+        {
+            "name": "scenario_type",
+            "type": "string",
+            "description": "Type of training scenario (e.g., 'urban warfare').",
+            "required": True,
+        },
+        {
+            "name": "difficulty_level",
+            "type": "string",
+            "description": "Initial difficulty level of the scenario.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "session_id",
+            "type": "string",
+            "description": "Unique identifier for the training session if successfully initiated.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "Boolean indicating whether the session was successfully initiated.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "InvalidTraineeIDException",
+            "description": "The 'trainee_id' parameter is invalid.",
+        },
+        {
+            "name": "ScenarioSetupFailureException",
+            "description": "Failed to set up the training scenario.",
+        },
+    ]
+
+
+class AdjustTrainingDifficulty(VirtualFunctionTool):
+    name = "AdjustTrainingDifficulty"
+    summary = "Adjust the difficulty level of an ongoing training session."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "session_id",
+            "type": "string",
+            "description": "Unique identifier of the training session.",
+            "required": True,
+        },
+        {
+            "name": "new_difficulty_level",
+            "type": "string",
+            "description": "New difficulty level to set for the scenario.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "adjustment_status",
+            "type": "boolean",
+            "description": "Boolean indicating whether the difficulty adjustment was successful.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "SessionNotFoundException",
+            "description": "The 'session_id' parameter does not correspond to any active session.",
+        },
+        {
+            "name": "DifficultyAdjustmentFailureException",
+            "description": "Failed to adjust the difficulty level.",
+        },
+    ]
+
+
+class MonitorTraineeStress(VirtualFunctionTool):
+    name = "MonitorTraineeStress"
+    summary = "Monitor the stress levels of the trainee during the training session."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "session_id",
+            "type": "string",
+            "description": "Unique identifier of the training session.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "stress_levels",
+            "type": "dictionary",
+            "description": "Current stress levels of the trainee.",
+        },
+        {
+            "name": "monitoring_status",
+            "type": "boolean",
+            "description": "Boolean indicating whether the stress monitoring is active.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "SessionNotFoundException",
+            "description": "The 'session_id' parameter does not correspond to any active session.",
+        },
+        {
+            "name": "MonitoringFailureException",
+            "description": "Failed to initiate or maintain stress monitoring.",
+        },
+    ]
+
+
+class CompleteTrainingSession(VirtualFunctionTool):
+    name = "CompleteTrainingSession"
+    summary = "Finalize the training session and provide a performance report."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "session_id",
+            "type": "string",
+            "description": "Unique identifier of the training session to be finalized.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "completion_status",
+            "type": "boolean",
+            "description": "Boolean indicating whether the training session was successfully completed.",
+        },
+        {
+            "name": "performance_report",
+            "type": "string",
+            "description": "Report on the trainee's performance during the session.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "SessionNotFoundException",
+            "description": "The 'session_id' parameter does not correspond to any active session.",
+        },
+        {
+            "name": "CompletionFailureException",
+            "description": "Failed to finalize the training session.",
+        },
+    ]
+
+
+@register_toolkit()
+class VRMilitaryTraining(FunctionToolkit):
+    name_for_human = "VRMilitaryTraining"
+    description_for_human = "Toolkit for managing and facilitating virtual reality military training sessions, ensuring they are tailored to the trainee's capabilities while maintaining the required standards of military training."
+    name_for_model = "VRMilitaryTraining"
+    description_for_model = "The VRMilitaryTraining toolkit allows users to initiate, adjust, monitor, and complete VR military training sessions, ensuring they meet both the trainee's needs and military training standards."
+    tool_classes = [
+        InitiateTrainingSession,
+        AdjustTrainingDifficulty,
+        MonitorTraineeStress,
+        CompleteTrainingSession,
+    ]
