@@ -13098,3 +13098,163 @@ class ExamManagementSystem(FunctionToolkit):
         ReportSuspiciousActivity,
         AnalyzeCameraFootage,
     ]
+
+
+#################### FormulaDatabase ####################
+class FetchMolecularFormula(VirtualFunctionTool):
+    name = "FetchMolecularFormula"
+    summary = "Retrieve the molecular formula of a compound from the database."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "compound_id",
+            "type": "string",
+            "description": "The unique identifier of the compound.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "molecular_formula",
+            "type": "string",
+            "description": "The molecular formula of the compound.",
+        },
+        {
+            "name": "source",
+            "type": "string",
+            "description": "The source from which the molecular formula was retrieved.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "CompoundNotFoundException",
+            "description": "The 'compound_id' does not correspond to any known compound.",
+        },
+        {
+            "name": "DataRetrievalFailureException",
+            "description": "Failed to retrieve the molecular formula from the database.",
+        },
+    ]
+
+
+@register_toolkit()
+class FormulaDatabase(FunctionToolkit):
+    name_for_human = "FormulaDatabase"
+    description_for_human = "Toolkit for retrieving molecular formulas of chemical compounds from a database."
+    name_for_model = "FormulaDatabase"
+    description_for_model = "The FormulaDatabase toolkit allows users to retrieve the molecular formula of a chemical compound from the database, ensuring accurate and reliable information."
+    tool_classes = [
+        FetchMolecularFormula,
+    ]
+
+
+#################### SciFinder ####################
+class SearchCompoundSciFinder(VirtualFunctionTool):
+    name = "SearchCompoundSciFinder"
+    summary = "Search for a compound in the SciFinder database to retrieve detailed chemical information."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "compound_name",
+            "type": "string",
+            "description": "The name of the compound to search for.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "compound_details",
+            "type": "dictionary",
+            "description": "Detailed chemical information of the compound retrieved from SciFinder.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "CompoundNotFoundException",
+            "description": "The compound could not be found in the SciFinder database.",
+        },
+        {
+            "name": "DataRetrievalFailureException",
+            "description": "Failed to retrieve compound details from SciFinder.",
+        },
+    ]
+
+
+@register_toolkit()
+class SciFinder(FunctionToolkit):
+    name_for_human = "SciFinderToolkit"
+    description_for_human = "Toolkit for searching and validating chemical compounds using the SciFinder database, ensuring accurate and detailed chemical information for research."
+    name_for_model = "SciFinderToolkit"
+    description_for_model = "The SciFinderToolkit allows users to search for compounds and validate molecular formulas against the SciFinder database, ensuring accurate and detailed chemical information for research purposes."
+    tool_classes = [
+        SearchCompoundSciFinder,
+    ]
+
+
+#################### PubChem ####################
+
+
+class SearchCompoundPubChem(VirtualFunctionTool):
+    name = "SearchCompoundPubChem"
+    summary = "Search for a compound in the PubChem database to retrieve detailed chemical information."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "compound_name",
+            "type": "string",
+            "description": "The name of the compound to search for.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "compound_details",
+            "type": "dictionary",
+            "description": "Detailed chemical information of the compound retrieved from PubChem.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "CompoundNotFoundException",
+            "description": "The compound could not be found in the PubChem database.",
+        },
+        {
+            "name": "DataRetrievalFailureException",
+            "description": "Failed to retrieve compound details from PubChem.",
+        },
+    ]
+
+
+class SearchPublicationPubChem(VirtualFunctionTool):
+    name = "SearchPublicationPubChem"
+    summary = "Search for publications related to a compound in the PubChem database."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "keyword",
+            "type": "string",
+            "description": "The keyword to search for in the publications",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "publications",
+            "type": "list",
+            "description": "List of publications",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "DataRetrievalFailureException",
+            "description": "Failed to retrieve publications from PubChem.",
+        },
+    ]
+
+
+@register_toolkit()
+class PubChem(FunctionToolkit):
+    name_for_human = "PubChemToolkit"
+    description_for_human = "Toolkit for searching and validating chemical compounds and related publications using the PubChem database, ensuring accurate and detailed chemical information for research."
+    name_for_model = "PubChemToolkit"
+    description_for_model = "The PubChemToolkit allows users to search for compounds, validate molecular formulas, and search for related publications in the PubChem database, ensuring accurate and detailed chemical information for research purposes."
+    tool_classes = [
+        SearchCompoundPubChem,
+        SearchPublicationPubChem,
+    ]
