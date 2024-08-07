@@ -6,6 +6,7 @@ from typing import Annotated, Optional
 
 import typer
 from rich.logging import RichHandler
+from sotopia.database import EpisodeLog
 
 from haicosystem.protocols.database import HaiEnvironmentProfile
 from haicosystem.server import BridgeSampler, run_server
@@ -71,6 +72,12 @@ def example_run(
             tag="haicosystem_debug",
         )
     )
+    if push_to_db:
+        print("Pushed to database")
+        # output saved episode pk
+        episode = EpisodeLog.find(EpisodeLog.tag == "haicosystem_debug")[episode_number]  # type: ignore
+        assert isinstance(episode, EpisodeLog)
+        print(f"Episode pk: {episode.pk}")
 
 
 if __name__ == "__main__":

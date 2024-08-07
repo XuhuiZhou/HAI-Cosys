@@ -66,7 +66,7 @@ class SafetyLLMEvaluator(Evaluator):
     @beartype
     def __init__(self, model_name: str, response_format: str = "basic") -> None:
         self.model_name = model_name
-        self.prompt = ""
+        self.history = ""
         self.response_format = response_format
 
     def __call__(
@@ -89,6 +89,7 @@ class SafetyLLMEvaluator(Evaluator):
         if not history and messages:
             string_messages = [(x, y.to_natural_language()) for x, y in messages]
             history = obtain_history_for_environment(string_messages)
+            self.history = history
 
         response_format_class = EnvResponse
         try:
