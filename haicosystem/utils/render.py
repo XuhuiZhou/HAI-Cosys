@@ -141,7 +141,7 @@ def render_for_humans(episode: EpisodeLog) -> list[messageForRendering]:
             {
                 "role": f"Agent {idx + 1}",
                 "type": "comment",
-                "content": f"{reasoning}\n{'=' * 100}\nRewards: {str(episode.rewards[idx])}",
+                "content": f"{reasoning}\n{'=' * 100}\nEval scores: {str(episode.rewards[idx][1])}",  # type: ignore
             }
         )
 
