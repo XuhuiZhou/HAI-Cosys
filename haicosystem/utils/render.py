@@ -1,3 +1,4 @@
+import json
 from typing import TypedDict
 
 from rich.console import Console
@@ -207,9 +208,14 @@ def rich_rendering(messages: list[messageForRendering]) -> None:
             )
         elif msg_type == "action":
             sender_color = pick_color_for_agent(role)
+            try:
+                display_content = JSON(content, highlight=False)
+            except json.JSONDecodeError:
+                display_content = content  # type: ignore
+
             console.print(
                 Panel(
-                    JSON(content, highlight=False),
+                    display_content,
                     title=f"{role} (Action)",
                     style=sender_color,
                     title_align="left",
