@@ -175,15 +175,15 @@ async def arun_one_episode(
         rewards_prompt=info["rewards_prompt"]["overall_prompt"],
     )
 
-    messages_for_rendering = render_for_humans(epilog)
-    rich_rendering(messages_for_rendering)
-
     if push_to_db:
         try:
             epilog.save()
         except Exception as e:
             logging.error(f"Failed to save episode log: {e}")
     # flatten nested list messages
+
+    messages_for_rendering = render_for_humans(epilog)
+    rich_rendering(messages_for_rendering)
     return list(itertools.chain(*messages))
 
 
