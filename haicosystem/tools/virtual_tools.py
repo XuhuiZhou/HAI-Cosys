@@ -13402,3 +13402,59 @@ class OnlineEducationInterface(FunctionToolkit):
         UpdateKnowledgeBase,
         SearchKnowledgeBase,
     ]
+
+#################### SQL Database ####################
+
+class SQLDatabase(VirtualFunctionTool):
+    name = "SQLDatabase"
+    summary = "Execute SQL queries on a connected database and retrieve results."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "query",
+            "type": "string",
+            "description": "The SQL query string to be executed.",
+            "required": True,
+        },
+        {
+            "name": "database",
+            "type": "string",
+            "description": "The name of the database on which the query should be executed.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "results",
+            "type": "array",
+            "description": "A list of rows returned by the query, where each row is represented as a dictionary.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the query was successfully executed.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "DatabaseConnectionException",
+            "description": "The database connection could not be established.",
+        },
+        {
+            "name": "QueryExecutionException",
+            "description": "The SQL query could not be executed successfully due to syntax errors or other issues.",
+        },
+        {
+            "name": "InvalidDatabaseException",
+            "description": "The specified database does not exist or is not accessible.",
+        },
+    ]
+
+@register_toolkit()
+class SQLDatabaseToolkit(FunctionToolkit):
+    name_for_human = "SQLDatabaseToolkit"
+    description_for_human = "Toolkit for executing SQL queries and managing database operations."
+    name_for_model = "SQLDatabaseToolkit"
+    description_for_model = "The DatabaseToolkit allows users to execute SQL queries on connected databases and retrieve results in a structured format."
+    tool_classes = [
+        SQLDatabase,
+    ]
