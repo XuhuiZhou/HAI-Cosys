@@ -75,7 +75,7 @@ def example_run(
     if push_to_db:
         print("Pushed to database")
         # output saved episode pk
-        episode = EpisodeLog.find(EpisodeLog.tag == "haicosystem_debug")[episode_number]  # type: ignore
+        episode = list(EpisodeLog.find(EpisodeLog.tag == "haicosystem_debug"))[-1]  # type: ignore
         assert isinstance(episode, EpisodeLog)
         print(f"Episode pk: {episode.pk}")
 

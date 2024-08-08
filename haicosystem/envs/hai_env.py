@@ -302,7 +302,7 @@ class ParellelHaicosystemEnv(ParallelSotopiaEnv):
         }
         if response.terminated:
             info["rewards_prompt"] = {
-                "overall_prompt": self.terminal_evaluators[0].prompt  # type: ignore
+                "overall_prompt": ""  # TODO: need to fix on the Sotopia side
             }
 
         return (

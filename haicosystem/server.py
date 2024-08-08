@@ -194,7 +194,6 @@ async def aevaluate_one_episode(
     tag: str | None = None,
     push_to_db: bool = False,
 ) -> None:
-    breakpoint()
     history = episode.rewards_prompt  # TODO: confusing naming here, the rewards_prompt actually only stores the history
     assert len(history) > 0, "The history should not be empty"
     evaluator = SafetyLLMEvaluator(
@@ -245,6 +244,8 @@ async def aevaluate_one_episode(
             epilog.save()
         except Exception as e:
             logging.error(f"Failed to save episode log: {e}")
+    messages_for_rendering = render_for_humans(epilog)
+    rich_rendering(messages_for_rendering)
 
 
 def get_agent_class(

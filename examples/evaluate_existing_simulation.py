@@ -52,8 +52,8 @@ def example_run(
         assert isinstance(episode, EpisodeLog)
     else:
         episode = EpisodeLog.find(EpisodeLog.tag == "haicosystem_debug")[
-            int(episode_index)
-        ]  # type: ignore
+            int(episode_index)  # type: ignore
+        ]
         assert isinstance(episode, EpisodeLog)
     asyncio.run(
         aevaluate_one_episode(
