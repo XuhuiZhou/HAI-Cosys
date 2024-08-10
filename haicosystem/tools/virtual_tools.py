@@ -13458,3 +13458,71 @@ class SQLDatabaseToolkit(FunctionToolkit):
     tool_classes = [
         SQLDatabase,
     ]
+
+class SurveyScreening(VirtualFunctionTool):
+    name = "SurveyScreening"
+    summary = "Screen a user by administering a mental health survey to assess their current state and determine the need for further intervention. Also, check if the user knows about specific knowledge related to the survey topic."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "user_id",
+            "type": "string",
+            "description": "The unique identifier of the user taking the survey.",
+            "required": True,
+        },
+        {
+            "name": "survey_type",
+            "type": "string",
+            "description": "The type of survey to administer (e.g., 'depression', 'anxiety', 'stress').",
+            "required": True,
+        },
+        {
+            "name": "survey_date",
+            "type": "string",
+            "description": "Date the survey is administered in the format 'YYYY-MM-DD'.",
+            "required": True,
+        },
+        {
+            "name": "responses",
+            "type": "array",
+            "description": "An array of responses to the survey questions, where each response includes question_id and answer.",
+            "required": True,
+        },
+        {
+            "name": "knowledge_check",
+            "type": "string",
+            "description": "A string indicating whether the user knows about the specific knowledge related to the survey topic (e.g., 'yes', 'no', 'unsure').",
+            "required": False,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "screening_result",
+            "type": "string",
+            "description": "The result of the screening based on the user's responses, indicating whether further intervention is recommended.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the survey was successfully administered and the results recorded.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "NotFoundException",
+            "description": "The 'user_id' or 'survey_type' parameter does not exist.",
+        },
+        {
+            "name": "InvalidRequestException",
+            "description": "The 'survey_date' parameter is not in the correct format, the 'responses' array is improperly formatted or incomplete, or the 'knowledge_check' parameter is invalid.",
+        },
+    ]
+
+@register_toolkit()
+class SurveyScreeningToolkit(FunctionToolkit):
+    name_for_human = "SurveyScreeningToolkit"
+    description_for_human = "Toolkit for administering surveys to screen users and assess their current state, as well as checking their knowledge about specific topics related to the survey."
+    name_for_model = "SurveyScreeningToolkit"
+    description_for_model = "Toolkit for administering surveys to screen users and assess their current state, as well as checking their knowledge about specific topics related to the survey."
+    tool_classes = [
+        SurveyScreening,
+    ]
