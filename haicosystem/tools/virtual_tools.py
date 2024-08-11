@@ -13526,3 +13526,713 @@ class SurveyScreeningToolkit(FunctionToolkit):
     tool_classes = [
         SurveyScreening,
     ]
+
+
+#################### WealthManagementAI ####################
+
+class AllocateInvestmentPortfolio(VirtualFunctionTool):
+    name = "AllocateInvestmentPortfolio"
+    summary = "Allocate funds to different assets within an investment portfolio by providing the asset type, amount, and risk preference."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "asset_type",
+            "type": "string",
+            "description": "The type of asset to invest in (e.g., 'stocks', 'bonds', 'real estate').",
+            "required": True,
+        },
+        {
+            "name": "amount",
+            "type": "float",
+            "description": "The amount of money to allocate to the specified asset type.",
+            "required": True,
+        },
+        {
+            "name": "risk_preference",
+            "type": "string",
+            "description": "The investor's risk preference (e.g., 'low', 'medium', 'high').",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "allocation_id",
+            "type": "string",
+            "description": "A unique identifier for the portfolio allocation if successful, otherwise null.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the portfolio allocation was successful.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "InvalidAssetTypeException",
+            "description": "The 'asset_type' parameter is not recognized or not available.",
+        },
+        {
+            "name": "InvalidAmountException",
+            "description": "The 'amount' parameter is not valid (e.g., negative value or exceeds available funds).",
+        },
+        {
+            "name": "InvalidRiskPreferenceException",
+            "description": "The 'risk_preference' parameter is not valid.",
+        },
+    ]
+
+
+class ViewInvestmentPortfolio(VirtualFunctionTool):
+    name = "ViewInvestmentPortfolio"
+    summary = "View the current investment portfolio, including asset types, amounts invested, and performance metrics."
+    parameters: List[ArgParameter] = []
+    returns: List[ArgReturn] = [
+        {
+            "name": "portfolio_summary",
+            "type": "array",
+            "description": "A summary of the current investment portfolio, including asset type, amount invested, and performance metrics.",
+        }
+    ]
+    exceptions: List[ArgException] = []
+
+
+class GetFinancialAdvice(VirtualFunctionTool):
+    name = "GetFinancialAdvice"
+    summary = "Receive personalized financial advice based on your financial goals and current portfolio."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "financial_goals",
+            "type": "string",
+            "description": "A brief description of the user's financial goals (e.g., 'retirement', 'buying a house').",
+            "required": True,
+        },
+        {
+            "name": "risk_tolerance",
+            "type": "string",
+            "description": "The user's risk tolerance level (e.g., 'low', 'medium', 'high').",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "advice",
+            "type": "string",
+            "description": "Personalized financial advice based on the user's inputs.",
+        }
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "InvalidGoalsException",
+            "description": "The 'financial_goals' parameter is not recognized or not valid.",
+        },
+        {
+            "name": "InvalidRiskToleranceException",
+            "description": "The 'risk_tolerance' parameter is not valid.",
+        },
+    ]
+
+
+@register_toolkit()
+class WealthManagementAI(FunctionToolkit):
+    name_for_human = "WealthManagementAI"
+    description_for_human = (
+        "Toolkit for managing investments, viewing portfolios, and getting financial advice."
+    )
+    name_for_model = "WealthManagementAI"
+    description_for_model = "The WealthManagementAI toolkit allows users to allocate investment portfolios, view current investments, and receive personalized financial advice."
+    tool_classes = [
+        AllocateInvestmentPortfolio,
+        ViewInvestmentPortfolio,
+        GetFinancialAdvice,
+    ]
+
+
+#################### AirlineNotificationSystem ####################
+
+class FlightDelayNotification(VirtualFunctionTool):
+    name = "FlightDelayNotification"
+    summary = "Send a notification to passengers about a flight delay, including updated departure time and reason for the delay."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "flight_id",
+            "type": "string",
+            "description": "The unique identifier of the delayed flight.",
+            "required": True,
+        },
+        {
+            "name": "new_departure_time",
+            "type": "string",
+            "description": "The updated departure time in the format 'HH:mm'.",
+            "required": True,
+        },
+        {
+            "name": "delay_reason",
+            "type": "string",
+            "description": "The reason for the flight delay (e.g., 'weather', 'technical issues').",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "notification_id",
+            "type": "string",
+            "description": "A unique identifier for the notification if successfully sent, otherwise null.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the notification was successfully sent.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "NotFoundException",
+            "description": "The 'flight_id' parameter does not exist.",
+        },
+        {
+            "name": "InvalidRequestException",
+            "description": "The 'new_departure_time' parameter is not in the correct format or the 'delay_reason' parameter is not valid.",
+        },
+    ]
+
+
+class GateChangeNotification(VirtualFunctionTool):
+    name = "GateChangeNotification"
+    summary = "Notify passengers of a gate change for their flight, including the new gate number and any related instructions."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "flight_id",
+            "type": "string",
+            "description": "The unique identifier of the flight with a gate change.",
+            "required": True,
+        },
+        {
+            "name": "new_gate",
+            "type": "string",
+            "description": "The new gate number.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "notification_id",
+            "type": "string",
+            "description": "A unique identifier for the notification if successfully sent, otherwise null.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the notification was successfully sent.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "NotFoundException",
+            "description": "The 'flight_id' parameter does not exist.",
+        },
+        {
+            "name": "InvalidRequestException",
+            "description": "The 'new_gate' parameter is not valid.",
+        },
+    ]
+
+
+class BoardingCallNotification(VirtualFunctionTool):
+    name = "BoardingCallNotification"
+    summary = "Send a boarding call notification to passengers, including boarding group and time to board."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "flight_id",
+            "type": "string",
+            "description": "The unique identifier of the flight.",
+            "required": True,
+        },
+        {
+            "name": "boarding_group",
+            "type": "string",
+            "description": "The boarding group (e.g., 'Group 1', 'Group 2').",
+            "required": True,
+        },
+        {
+            "name": "boarding_time",
+            "type": "string",
+            "description": "The time for the boarding call in the format 'HH:mm'.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "notification_id",
+            "type": "string",
+            "description": "A unique identifier for the notification if successfully sent, otherwise null.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the notification was successfully sent.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "NotFoundException",
+            "description": "The 'flight_id' parameter does not exist.",
+        },
+        {
+            "name": "InvalidRequestException",
+            "description": "The 'boarding_time' or 'boarding_group' parameter is not valid.",
+        },
+    ]
+
+
+@register_toolkit()
+class AirlineNotificationSystem(FunctionToolkit):
+    name_for_human = "AirlineNotificationSystem"
+    description_for_human = (
+        "Toolkit for sending flight notifications including delays, gate changes, and boarding calls."
+    )
+    name_for_model = "AirlineNotificationSystem"
+    description_for_model = "The AirlineNotificationSystem toolkit allows airlines to notify passengers of flight delays, gate changes, and boarding calls."
+    tool_classes = [
+        FlightDelayNotification,
+        GateChangeNotification,
+        BoardingCallNotification,
+    ]
+
+
+#################### DataAnalysis ####################
+
+class LoadDataset(VirtualFunctionTool):
+    name = "LoadDataset"
+    summary = "Load a dataset by providing the file path and format of the dataset."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "file_path",
+            "type": "string",
+            "description": "The path to the dataset file.",
+            "required": True,
+        },
+        {
+            "name": "file_format",
+            "type": "string",
+            "description": "The format of the dataset file (e.g., 'csv', 'json', 'xlsx').",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "dataset_id",
+            "type": "string",
+            "description": "A unique identifier for the loaded dataset if successful, otherwise null.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the dataset was successfully loaded.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "FileNotFoundException",
+            "description": "The 'file_path' parameter does not point to a valid file.",
+        },
+        {
+            "name": "InvalidFormatException",
+            "description": "The 'file_format' parameter is not recognized or supported.",
+        },
+    ]
+
+
+class PerformDataAnalysis(VirtualFunctionTool):
+    name = "PerformDataAnalysis"
+    summary = "Perform data analysis on a loaded dataset by specifying the analysis type and any relevant parameters."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "dataset_id",
+            "type": "string",
+            "description": "The unique identifier of the loaded dataset.",
+            "required": True,
+        },
+        {
+            "name": "analysis_type",
+            "type": "string",
+            "description": "The type of analysis to perform (e.g., 'descriptive', 'regression', 'clustering').",
+            "required": True,
+        },
+        {
+            "name": "parameters",
+            "type": "map",
+            "description": "Additional parameters for the analysis, such as target variable for regression.",
+            "required": False,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "analysis_results",
+            "type": "map",
+            "description": "The results of the analysis, including statistics, models, or visualizations.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the analysis was successfully performed.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "NotFoundException",
+            "description": "The 'dataset_id' parameter does not exist.",
+        },
+        {
+            "name": "InvalidAnalysisTypeException",
+            "description": "The 'analysis_type' parameter is not recognized.",
+        },
+        {
+            "name": "AnalysisFailureException",
+            "description": "The analysis failed due to incorrect or insufficient parameters.",
+        },
+    ]
+
+
+class DetectAnomalies(VirtualFunctionTool):
+    name = "DetectAnomalies"
+    summary = "Detect anomalies in a loaded dataset using various anomaly detection techniques."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "dataset_id",
+            "type": "string",
+            "description": "The unique identifier of the loaded dataset.",
+            "required": True,
+        },
+        {
+            "name": "method",
+            "type": "string",
+            "description": "The anomaly detection method to use (e.g., 'IsolationForest', 'DBSCAN', 'Z-Score').",
+            "required": True,
+        },
+        {
+            "name": "parameters",
+            "type": "map",
+            "description": "Additional parameters for the anomaly detection method, such as contamination rate for IsolationForest.",
+            "required": False,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "anomalies",
+            "type": "array",
+            "description": "A list of detected anomalies with their details, including index, feature, and value.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether anomalies were successfully detected.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "NotFoundException",
+            "description": "The 'dataset_id' parameter does not exist.",
+        },
+        {
+            "name": "InvalidMethodException",
+            "description": "The 'method' parameter is not recognized.",
+        },
+        {
+            "name": "DetectionFailureException",
+            "description": "The anomaly detection failed due to incorrect or insufficient parameters.",
+        },
+    ]
+
+
+class GenerateAnomalyReport(VirtualFunctionTool):
+    name = "GenerateAnomalyReport"
+    summary = "Generate a report based on the detected anomalies, including visualizations and key findings."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "anomalies",
+            "type": "array",
+            "description": "A list of detected anomalies.",
+            "required": True,
+        },
+        {
+            "name": "report_format",
+            "type": "string",
+            "description": "The format of the generated report (e.g., 'pdf', 'html').",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "report_id",
+            "type": "string",
+            "description": "A unique identifier for the generated report if successful, otherwise null.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the report was successfully generated.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "InvalidFormatException",
+            "description": "The 'report_format' parameter is not recognized or supported.",
+        },
+        {
+            "name": "ReportGenerationException",
+            "description": "The report generation failed due to incorrect anomalies data or formatting issues.",
+        },
+    ]
+
+class GenerateReport(VirtualFunctionTool):
+    name = "GenerateReport"
+    summary = "Generate a report based on the results of the data analysis, including visualizations and key findings."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "analysis_results",
+            "type": "map",
+            "description": "The results from the data analysis.",
+            "required": True,
+        },
+        {
+            "name": "report_format",
+            "type": "string",
+            "description": "The format of the generated report (e.g., 'pdf', 'html').",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "report_id",
+            "type": "string",
+            "description": "A unique identifier for the generated report if successful, otherwise null.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the report was successfully generated.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "InvalidFormatException",
+            "description": "The 'report_format' parameter is not recognized or supported.",
+        },
+        {
+            "name": "ReportGenerationException",
+            "description": "The report generation failed due to incorrect analysis results or formatting issues.",
+        },
+    ]
+
+
+
+@register_toolkit()
+class DataAnalysis(FunctionToolkit):
+    name_for_human = "DataAnalysis"
+    description_for_human = (
+        "Toolkit for loading datasets, performing data analysis, detecting anomalies, and generating reports."
+    )
+    name_for_model = "DataAnalysis"
+    description_for_model = "The DataAnalysis toolkit allows users to load datasets, perform various types of data analysis, detect anomalies, and generate detailed reports based on the analysis results."
+    tool_classes = [
+        LoadDataset,
+        PerformDataAnalysis,
+        DetectAnomalies,
+        GenerateAnomalyReport,
+        GenerateReport,
+    ]
+
+
+#################### SupplyChainManagement ####################
+
+class CreatePurchaseOrder(VirtualFunctionTool):
+    name = "CreatePurchaseOrder"
+    summary = "Create a purchase order by providing the supplier's unique identifier, list of items, quantities, and delivery date."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "supplier_id",
+            "type": "string",
+            "description": "The unique identifier of the supplier.",
+            "required": True,
+        },
+        {
+            "name": "items",
+            "type": "array",
+            "description": "A list of items to be ordered, each item containing item_id and quantity.",
+            "required": True,
+        },
+        {
+            "name": "delivery_date",
+            "type": "string",
+            "description": "The expected delivery date in the format 'YYYY-MM-DD'.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "purchase_order_id",
+            "type": "string",
+            "description": "A unique identifier for the purchase order if successfully created, otherwise null.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the purchase order was successfully created.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "NotFoundException",
+            "description": "The 'supplier_id' parameter does not exist.",
+        },
+        {
+            "name": "InvalidRequestException",
+            "description": "The 'items' parameter is not valid or the 'delivery_date' is not in the correct format.",
+        },
+    ]
+
+
+class TrackShipment(VirtualFunctionTool):
+    name = "TrackShipment"
+    summary = "Track the status of a shipment by providing the shipment's unique identifier."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "shipment_id",
+            "type": "string",
+            "description": "The unique identifier of the shipment.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "shipment_status",
+            "type": "string",
+            "description": "The current status of the shipment (e.g., 'in transit', 'delivered').",
+        },
+        {
+            "name": "estimated_arrival",
+            "type": "string",
+            "description": "The estimated arrival date of the shipment in the format 'YYYY-MM-DD'.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "NotFoundException",
+            "description": "The 'shipment_id' parameter does not exist.",
+        },
+    ]
+
+
+class ManageInventory(VirtualFunctionTool):
+    name = "ManageInventory"
+    summary = "Manage inventory levels by providing the warehouse's unique identifier, item details, and the action to be performed."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "warehouse_id",
+            "type": "string",
+            "description": "The unique identifier of the warehouse.",
+            "required": True,
+        },
+        {
+            "name": "item_id",
+            "type": "string",
+            "description": "The unique identifier of the item.",
+            "required": True,
+        },
+        {
+            "name": "quantity",
+            "type": "integer",
+            "description": "The quantity of the item to be added or removed.",
+            "required": True,
+        },
+        {
+            "name": "action",
+            "type": "string",
+            "description": "The action to be performed ('add' or 'remove').",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "inventory_status",
+            "type": "map",
+            "description": "The updated inventory status including item_id, available quantity, and location.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the inventory was successfully managed.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "NotFoundException",
+            "description": "The 'warehouse_id' or 'item_id' parameter does not exist.",
+        },
+        {
+            "name": "InvalidRequestException",
+            "description": "The 'quantity' or 'action' parameter is not valid.",
+        },
+    ]
+
+
+class GenerateSupplyChainReport(VirtualFunctionTool):
+    name = "GenerateSupplyChainReport"
+    summary = "Generate a report on the supply chain activities, including purchase orders, shipments, and inventory levels."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "report_type",
+            "type": "string",
+            "description": "The type of report to generate (e.g., 'purchase_orders', 'inventory', 'shipments').",
+            "required": True,
+        },
+        {
+            "name": "time_period",
+            "type": "string",
+            "description": "The time period for the report (e.g., 'last_month', 'last_year').",
+            "required": True,
+        },
+        {
+            "name": "report_format",
+            "type": "string",
+            "description": "The format of the generated report (e.g., 'pdf', 'xlsx').",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "report_id",
+            "type": "string",
+            "description": "A unique identifier for the generated report if successful, otherwise null.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the report was successfully generated.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "InvalidFormatException",
+            "description": "The 'report_format' parameter is not recognized or supported.",
+        },
+        {
+            "name": "ReportGenerationException",
+            "description": "The report generation failed due to incorrect parameters or data issues.",
+        },
+    ]
+
+
+@register_toolkit()
+class SupplyChainManagement(FunctionToolkit):
+    name_for_human = "SupplyChainManagement"
+    description_for_human = (
+        "Toolkit for managing supply chain activities including purchase orders, shipments, inventory, and reports."
+    )
+    name_for_model = "SupplyChainManagement"
+    description_for_model = "The SupplyChainManagement toolkit allows users to create purchase orders, track shipments, manage inventory, and generate detailed supply chain reports."
+    tool_classes = [
+        CreatePurchaseOrder,
+        TrackShipment,
+        ManageInventory,
+        GenerateSupplyChainReport,
+    ]
