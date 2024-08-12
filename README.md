@@ -1,4 +1,4 @@
-![TITLE](figs/title.png)
+![TITLE](data/title.png)
 # HAICOSYSTEM
 [![Python 3.11](https://img.shields.io/badge/python-3.11-blue.svg)](https://www.python.org/downloads/release/python-3109/)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://pre-commit.com/)
@@ -37,12 +37,13 @@ conda env config vars set REDIS_OM_URL="redis://user:password@host:port"
 ## Usage
 To run a simulation, you can use the following command:
 ```bash
-python run.py --codename="TeladocRequestPrescription_0"
+python examples/run.py --codename="TeladocRequestPrescription_0"
 ```
 To learn more about the command line arguments, you can use the following command:
 ```bash
-python run.py --help
+python examples/run.py --help
 ```
+Checkout `examples` folder for more examples of using the package.
 
 
 ## Contribution

@@ -8,13 +8,13 @@ from pydantic import BaseModel
 from sotopia.envs.evaluators import Evaluator
 from sotopia.messages import AgentAction, Message
 
-from haicosystem.envs.utils import format_tool_prompt
 from haicosystem.generation_utils import (
     SIMULATOR_CRITIQUE,
     SIMULATOR_CRITIQUE_REPEAT,
     SIMULATOR_PROMPT,
     SIMULATOR_SYSTEM_INFO,
     agenerate_simulated_observation,
+    format_tool_prompt,
     obtain_history_for_environment,
     validate_observation,
 )
@@ -37,15 +37,7 @@ class LLMGroundingEngine(Evaluator):
         self.toolkits: Sequence[BaseToolkit] = []
         self.tool_parser: dict[str, Type[BaseModel]] = {}
         self.tools: list[BaseTool] = []
-        self.tool_prompt: str = ""
-        self.verbose = True
-        self._input_keys: list[str] = ["input"]
-        self.sim_system_info: str = SIMULATOR_SYSTEM_INFO
-        self.sim_prompt_instruction: str = SIMULATOR_PROMPT
-        self.critique_prompt: str = SIMULATOR_CRITIQUE
-        self.critique_prompt_repeat: str = SIMULATOR_CRITIQUE_REPEAT
-        self.max_allowed_steps: int = 1
-        self.num_critique_steps: int = 0
+        self.tool_guide: str = ""
         self.tool_names: list[str] = []
 
     @staticmethod
@@ -67,6 +59,8 @@ class LLMGroundingEngine(Evaluator):
     def create_prompt(
         self,
         toolkits_names: list[str],
+        engine_guide: str,
+        share_observation: bool = False,
     ) -> str:
         """Create prompt in the style of the zero shot agent."""
         # initialize the engine
@@ -86,8 +80,11 @@ class LLMGroundingEngine(Evaluator):
         )
         self.tool_names = [tool.name for tool in self.get_all_tools(self.toolkits)]
         tool_prompt = format_tool_prompt(toolkit_strings, ", ".join(self.tool_names))
-        self.tool_prompt = tool_prompt
-        return tool_prompt
+        self.tool_guide = engine_guide
+        return (
+            tool_prompt
+            + f"\n**Note that the observation returned by the environemnt are {'only visible to you, so you should speak to the other agent if you want to share the observation.**' if not share_observation else 'returned observation is visible to all agents'}.\n"
+        )
 
     def parse_action(self, action: str) -> LangchainAgentAction:
         json_action = json.loads(action)
@@ -110,7 +107,10 @@ class LLMGroundingEngine(Evaluator):
     ) -> list[SimulatedObservation]:
         # filter did nothing
         if not history and messages:
-            history = obtain_history_for_environment(messages)
+            string_messages = [
+                (message[0], message[1].to_natural_language()) for message in messages
+            ]
+            history = obtain_history_for_environment(string_messages)
         messages_in_single_turn = []
         assert messages is not None
         for message in messages[::-1]:
@@ -165,6 +165,7 @@ class LLMGroundingEngine(Evaluator):
                     toolkit_descriptions=self._get_current_toolkit_descriptions(
                         tool_action.tool
                     ),
+                    guide=self.tool_guide,
                     temperature=temperature,
                 )
                 # Validate and correct the observation

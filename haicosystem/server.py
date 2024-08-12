@@ -12,17 +12,17 @@ from sotopia.agents.base_agent import BaseAgent
 from sotopia.database import AgentProfile, EpisodeLog
 from sotopia.envs.evaluators import (
     RuleBasedTerminatedEvaluator,
+    unweighted_aggregate_evaluate,
 )
 from sotopia.messages import AgentAction, Message, Observation
 from sotopia.samplers import BaseSampler, EnvAgentCombo
 from tqdm.asyncio import tqdm_asyncio
 
 from haicosystem.agents import LLMAgentBot, LLMAgentHuman
-from haicosystem.envs import ParellelHaicosystemEnv
-from haicosystem.envs.evaluators import SafetyLLMEvaluator
+from haicosystem.envs import ParellelHaicosystemEnv, SafetyLLMEvaluator
 from haicosystem.grounding_engine import LLMGroundingEngine
 from haicosystem.protocols import HaiEnvironmentProfile
-from haicosystem.utils.render import render_for_humans
+from haicosystem.utils.render import render_for_humans, rich_rendering
 
 ObsType = TypeVar("ObsType")
 ActType = TypeVar("ActType")
@@ -161,6 +161,7 @@ async def arun_one_episode(
         done = all(terminated.values())
 
     # TODO: clean up this part
+    assert isinstance(env.terminal_evaluators[0], SafetyLLMEvaluator)
     epilog = EpisodeLog(
         environment=env.profile.pk,
         agents=[agent.profile.pk for agent in agent_list],
@@ -172,10 +173,11 @@ async def arun_one_episode(
         ],
         reasoning=info[env.agents[0]]["comments"],
         rewards=[info[agent_name]["complete_rating"] for agent_name in env.agents],
-        rewards_prompt=info["rewards_prompt"]["overall_prompt"],
+        rewards_prompt=env.terminal_evaluators[0].history,
     )
-    rich.print(epilog.rewards_prompt)
-    render_for_humans(epilog)
+
+    messages_for_rendering = render_for_humans(epilog)
+    rich_rendering(messages_for_rendering)
 
     if push_to_db:
         try:
@@ -184,6 +186,66 @@ async def arun_one_episode(
             logging.error(f"Failed to save episode log: {e}")
     # flatten nested list messages
     return list(itertools.chain(*messages))
+
+
+async def aevaluate_one_episode(
+    episode: EpisodeLog,
+    model: str = "gpt-4",
+    tag: str | None = None,
+    push_to_db: bool = False,
+) -> None:
+    history = episode.rewards_prompt  # TODO: confusing naming here, the rewards_prompt actually only stores the history
+    assert len(history) > 0, "The history should not be empty"
+    evaluator = SafetyLLMEvaluator(
+        model_name=model,
+    )
+    response = unweighted_aggregate_evaluate(
+        list(
+            itertools.chain(
+                *await asyncio.gather(
+                    *[
+                        single_evaluator.__acall__(
+                            turn_number=-1,
+                            history=history,
+                            messages=None,
+                            temperature=0.0,
+                        )
+                        for single_evaluator in [evaluator]
+                    ]
+                )
+            )
+        )
+    )
+    info: dict[str, dict[str, str | float | None]] = {
+        episode.agents[0]: {
+            "comments": response.comments or "",
+            "complete_rating": response.p1_rate or 0,  # type: ignore
+        },
+        episode.agents[1]: {
+            "comments": response.comments or "",
+            "complete_rating": response.p2_rate or 0,  # type: ignore
+        },
+    }
+    assert isinstance(episode.models, list)
+    epilog = EpisodeLog(
+        environment=episode.environment,
+        agents=episode.agents,
+        tag=tag,
+        models=[model, episode.models[1], episode.models[2]],
+        messages=episode.messages,
+        reasoning=str(info[episode.agents[0]]["comments"])
+        + str(info[episode.agents[1]]["comments"]),
+        rewards=[info[agent_name]["complete_rating"] for agent_name in episode.agents],
+        rewards_prompt="TBD",
+    )
+
+    if push_to_db:
+        try:
+            epilog.save()
+        except Exception as e:
+            logging.error(f"Failed to save episode log: {e}")
+    messages_for_rendering = render_for_humans(epilog)
+    rich_rendering(messages_for_rendering)
 
 
 def get_agent_class(

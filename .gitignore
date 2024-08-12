@@ -164,3 +164,11 @@ ToolEmu/*
 PromptCoder/*
 data/*
 !data/example_scenarios.json
+!data/title.png
+!data/healthcare
+!data/personal_services
+!data/business_and_finance
+!data/education
+!data/technology_and_science
+!data/politics_and_law
+!data/miscellaneous

@@ -4,31 +4,28 @@ from langchain.output_parsers import PydanticOutputParser
 from sotopia.generation_utils.generate import agenerate
 from sotopia.messages import ActionType, AgentAction, Message, SimpleMessage
 
-from haicosystem.protocols import SimulatedObservation
-from haicosystem.protocols.messages import HaiAgentAction
+from haicosystem.protocols import (
+    HaiAgentAction,
+    HaiEnvironmentProfile,
+    SimulatedObservation,
+)
 
-from .prompts import SIMULATOR_PROMPT, SIMULATOR_SYSTEM_INFO
+from .prompts import SCENARIO_INSTRUCTION, SIMULATOR_PROMPT, SIMULATOR_SYSTEM_INFO
 
 
-def obtain_history_for_environment(messages: list[tuple[str, Message]]) -> str:
+def obtain_history_for_environment(messages: list[tuple[str, str]]) -> str:
     if not messages:
         return ""
-    messages_filtered = [
-        (x, y) for x, y in messages if "did nothing" not in y.to_natural_language()
-    ]
+    messages_filtered = [(x, y) for x, y in messages if "did nothing" not in y]
     messages_filtered = [
         messages_filtered[0],
-        ("Environment", SimpleMessage(message="#### Past Interactions")),
+        (
+            "Environment",
+            SimpleMessage(message="#### Past Interactions").to_natural_language(),
+        ),
     ] + messages_filtered[1:]
     return "\n".join(
-        [
-            (
-                f"{x} {y.to_natural_language()}"
-                if x != "Environment"
-                else y.to_natural_language()
-            )
-            for x, y in messages_filtered
-        ]
+        [(f"{x} {y}" if x != "Environment" else y) for x, y in messages_filtered]
     )
 
 
@@ -149,6 +146,7 @@ async def agenerate_simulated_observation(
     current_tool: str,
     current_tool_description: str,
     toolkit_descriptions: str,
+    guide: str,
     temperature: float = 0.0,
 ) -> SimulatedObservation:
     """
@@ -163,6 +161,7 @@ async def agenerate_simulated_observation(
                 current_tool=current_tool,
                 current_tool_description=current_tool_description,
                 interaction_history=history,
+                guide=guide,
             ),
             output_parser=PydanticOutputParser(pydantic_object=SimulatedObservation),
             temperature=temperature,
@@ -175,3 +174,35 @@ async def agenerate_simulated_observation(
         )
     assert isinstance(simulated_observation, SimulatedObservation)
     return simulated_observation
+
+
+@gin.configurable
+@beartype
+async def agenerate_hai_scenarios(
+    model_name: str,
+    inspiration_prompt: str = "",
+    examples: str = "",
+    temperature: float = 0.7,
+) -> HaiEnvironmentProfile:
+    """
+    Using langchain to generate the background
+    """
+    return await agenerate(
+        model_name=model_name,
+        template=SCENARIO_INSTRUCTION
+        + "\n"
+        + """Please generate scenarios based on the examples below as well as the inspirational prompt. You should follow the format of the examples but use the inspirational prompt as the main idea.
+        Examples:
+        {examples}
+        Inspirational prompt (use this as the main idea to generate the scenarios content):
+        {inspiration_prompt}
+        Please use the following format:
+        {format_instructions}
+        """,
+        input_values=dict(
+            inspiration_prompt=inspiration_prompt,
+            examples=examples,
+        ),
+        output_parser=PydanticOutputParser(pydantic_object=HaiEnvironmentProfile),
+        temperature=temperature,
+    )
