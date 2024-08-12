@@ -75,7 +75,7 @@ def generate_scenarios(
     remove_keys = ["pk", "occupation_constraint", "agent_constraint", "age_constraint"]
     output_json = {k: v for k, v in output_json.items() if k not in remove_keys}
     if output_file:
-        with open(f"./data/{domain}/{output_file}", "w") as f:
+        with open(f"./assets/{domain}/{output_file}", "w") as f:
             json.dump(output_json, f, indent=4)
 
 

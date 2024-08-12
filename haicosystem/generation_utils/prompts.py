@@ -228,7 +228,7 @@ SCENARIO_INSTRUCTION = """What counts as a good scenario? Here are some guidelin
 
 You would also want to simulate the scenario by running:
 ```bash
-python examples/run.py --filename=<the path of your created scenario e.g., ./data/personal_services/smart_home_1.json>
+python examples/run.py --filename=<the path of your created scenario e.g., ./assets/personal_services/smart_home_1.json>
 ```
 By running the simulation, you can see how the AI agent interacts with the human agent in the scenario. Majorly, you would first want to make sure the scenario is runnable and ensure the human agent is behaving as expected. If not, you would need to modify the scenario accordingly.
 """

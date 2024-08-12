@@ -52,7 +52,7 @@ def example_run(
             env_profiles_json = json.load(file)
         env_profile = HaiEnvironmentProfile.parse_obj(env_profiles_json)
     else:
-        filename = "./data/example_scenarios.json"
+        filename = "./assets/example_scenarios.json"
         with open(filename, "r") as file:
             env_profiles_json = json.load(file)
         env_profile = HaiEnvironmentProfile.parse_obj(env_profiles_json[codename])

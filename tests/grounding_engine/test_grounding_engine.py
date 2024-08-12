@@ -21,7 +21,7 @@ from haicosystem.tools import get_toolkit_output_parser_by_names, get_toolkits_b
 
 @pytest.mark.asyncio
 async def test_llm_grounding_engine_async() -> None:
-    filename = "./data/example_scenarios.json"
+    filename = "./assets/example_scenarios.json"
     with open(filename, "r") as file:
         env_profiles_json = json.load(file)
     env_profile = HaiEnvironmentProfile.parse_obj(
