@@ -12765,6 +12765,112 @@ class UploadLive_Interface_V2(FunctionToolkit):
     ]
 
 
+class ATCCommunication(VirtualFunctionTool):
+    name = "ATCCommunication"
+    summary = "Facilitate communication between a pilot and Air Traffic Control (ATC) to ensure safe and efficient flight operations."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "flight_number",
+            "type": "string",
+            "description": "Unique identifier of the flight being communicated with ATC.",
+            "required": True,
+        },
+        {
+            "name": "current_altitude",
+            "type": "integer",
+            "description": "Current altitude of the aircraft in feet.",
+            "required": True,
+        },
+        {
+            "name": "requested_runway",
+            "type": "string",
+            "description": "Runway requested by the pilot for landing.",
+            "required": False,
+        },
+        {
+            "name": "weather_conditions",
+            "type": "string",
+            "description": "Current weather conditions affecting the flight.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "clearance_status",
+            "type": "string",
+            "description": "The clearance given by ATC, including any instructions for altitude changes or runway assignments.",
+        },
+        {
+            "name": "communication_log",
+            "type": "list",
+            "description": "A log of the communication between the pilot and ATC.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "InvalidFlightNumberException",
+            "description": "The 'flight_number' parameter is invalid or not recognized.",
+        },
+        {
+            "name": "WeatherConditionException",
+            "description": "The weather conditions are too severe for safe communication and operations.",
+        },
+    ]
+
+
+class WeatherUpdate(VirtualFunctionTool):
+    name = "WeatherUpdate"
+    summary = "Provide real-time weather updates relevant to flight operations, including information on storms, turbulence, and visibility."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "location",
+            "type": "string",
+            "description": "Geographical location or airport code for which the weather update is requested.",
+            "required": True,
+        },
+        {
+            "name": "time_of_update",
+            "type": "string",
+            "description": "Specific time for which the weather update is requested, in UTC.",
+            "required": False,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "weather_report",
+            "type": "dictionary",
+            "description": "Detailed weather report including wind speed, visibility, precipitation, and any severe weather alerts.",
+        },
+        {
+            "name": "forecast",
+            "type": "dictionary",
+            "description": "Short-term forecast for the location including predicted changes in weather conditions.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "LocationNotFoundException",
+            "description": "The 'location' parameter does not correspond to a recognized geographical area or airport.",
+        },
+        {
+            "name": "DataRetrievalFailureException",
+            "description": "Failed to retrieve the weather data for the provided 'location'.",
+        },
+    ]
+
+
+@register_toolkit()
+class AviationControlToolkit(FunctionToolkit):
+    name_for_human = "AviationControlToolkit"
+    description_for_human = "Toolkit designed to assist pilots and air traffic controllers with communication and real-time weather updates to ensure safe flight operations."
+    name_for_model = "AviationControlToolkit"
+    description_for_model = "The AviationControlToolkit allows users to manage communication between pilots and ATC, as well as access real-time weather updates to ensure safe and efficient flight operations."
+    tool_classes = [
+        ATCCommunication,
+        WeatherUpdate,
+    ]
+
+
 #################### VirtualMillitaryTraining ####################
 class InitiateTrainingSession(VirtualFunctionTool):
     name = "InitiateTrainingSession"
@@ -13403,7 +13509,9 @@ class OnlineEducationInterface(FunctionToolkit):
         SearchKnowledgeBase,
     ]
 
+
 #################### SQL Database ####################
+
 
 class SQLDatabase(VirtualFunctionTool):
     name = "SQLDatabase"
@@ -13449,15 +13557,19 @@ class SQLDatabase(VirtualFunctionTool):
         },
     ]
 
+
 @register_toolkit()
 class SQLDatabaseToolkit(FunctionToolkit):
     name_for_human = "SQLDatabaseToolkit"
-    description_for_human = "Toolkit for executing SQL queries and managing database operations."
+    description_for_human = (
+        "Toolkit for executing SQL queries and managing database operations."
+    )
     name_for_model = "SQLDatabaseToolkit"
     description_for_model = "The DatabaseToolkit allows users to execute SQL queries on connected databases and retrieve results in a structured format."
     tool_classes = [
         SQLDatabase,
     ]
+
 
 class SurveyScreening(VirtualFunctionTool):
     name = "SurveyScreening"
@@ -13517,6 +13629,7 @@ class SurveyScreening(VirtualFunctionTool):
         },
     ]
 
+
 @register_toolkit()
 class SurveyScreeningToolkit(FunctionToolkit):
     name_for_human = "SurveyScreeningToolkit"
@@ -13529,6 +13642,7 @@ class SurveyScreeningToolkit(FunctionToolkit):
 
 
 #################### WealthManagementAI ####################
+
 
 class AllocateInvestmentPortfolio(VirtualFunctionTool):
     name = "AllocateInvestmentPortfolio"
@@ -13634,9 +13748,7 @@ class GetFinancialAdvice(VirtualFunctionTool):
 @register_toolkit()
 class WealthManagementAI(FunctionToolkit):
     name_for_human = "WealthManagementAI"
-    description_for_human = (
-        "Toolkit for managing investments, viewing portfolios, and getting financial advice."
-    )
+    description_for_human = "Toolkit for managing investments, viewing portfolios, and getting financial advice."
     name_for_model = "WealthManagementAI"
     description_for_model = "The WealthManagementAI toolkit allows users to allocate investment portfolios, view current investments, and receive personalized financial advice."
     tool_classes = [
@@ -13647,6 +13759,7 @@ class WealthManagementAI(FunctionToolkit):
 
 
 #################### AirlineNotificationSystem ####################
+
 
 class FlightDelayNotification(VirtualFunctionTool):
     name = "FlightDelayNotification"
@@ -13786,9 +13899,7 @@ class BoardingCallNotification(VirtualFunctionTool):
 @register_toolkit()
 class AirlineNotificationSystem(FunctionToolkit):
     name_for_human = "AirlineNotificationSystem"
-    description_for_human = (
-        "Toolkit for sending flight notifications including delays, gate changes, and boarding calls."
-    )
+    description_for_human = "Toolkit for sending flight notifications including delays, gate changes, and boarding calls."
     name_for_model = "AirlineNotificationSystem"
     description_for_model = "The AirlineNotificationSystem toolkit allows airlines to notify passengers of flight delays, gate changes, and boarding calls."
     tool_classes = [
@@ -13799,6 +13910,7 @@ class AirlineNotificationSystem(FunctionToolkit):
 
 
 #################### DataAnalysis ####################
+
 
 class LoadDataset(VirtualFunctionTool):
     name = "LoadDataset"
@@ -13983,6 +14095,7 @@ class GenerateAnomalyReport(VirtualFunctionTool):
         },
     ]
 
+
 class GenerateReport(VirtualFunctionTool):
     name = "GenerateReport"
     summary = "Generate a report based on the results of the data analysis, including visualizations and key findings."
@@ -14024,13 +14137,10 @@ class GenerateReport(VirtualFunctionTool):
     ]
 
 
-
 @register_toolkit()
 class DataAnalysis(FunctionToolkit):
     name_for_human = "DataAnalysis"
-    description_for_human = (
-        "Toolkit for loading datasets, performing data analysis, detecting anomalies, and generating reports."
-    )
+    description_for_human = "Toolkit for loading datasets, performing data analysis, detecting anomalies, and generating reports."
     name_for_model = "DataAnalysis"
     description_for_model = "The DataAnalysis toolkit allows users to load datasets, perform various types of data analysis, detect anomalies, and generate detailed reports based on the analysis results."
     tool_classes = [
@@ -14043,6 +14153,7 @@ class DataAnalysis(FunctionToolkit):
 
 
 #################### SupplyChainManagement ####################
+
 
 class CreatePurchaseOrder(VirtualFunctionTool):
     name = "CreatePurchaseOrder"
@@ -14093,7 +14204,9 @@ class CreatePurchaseOrder(VirtualFunctionTool):
 
 class TrackShipment(VirtualFunctionTool):
     name = "TrackShipment"
-    summary = "Track the status of a shipment by providing the shipment's unique identifier."
+    summary = (
+        "Track the status of a shipment by providing the shipment's unique identifier."
+    )
     parameters: List[ArgParameter] = [
         {
             "name": "shipment_id",
@@ -14225,9 +14338,7 @@ class GenerateSupplyChainReport(VirtualFunctionTool):
 @register_toolkit()
 class SupplyChainManagement(FunctionToolkit):
     name_for_human = "SupplyChainManagement"
-    description_for_human = (
-        "Toolkit for managing supply chain activities including purchase orders, shipments, inventory, and reports."
-    )
+    description_for_human = "Toolkit for managing supply chain activities including purchase orders, shipments, inventory, and reports."
     name_for_model = "SupplyChainManagement"
     description_for_model = "The SupplyChainManagement toolkit allows users to create purchase orders, track shipments, manage inventory, and generate detailed supply chain reports."
     tool_classes = [
