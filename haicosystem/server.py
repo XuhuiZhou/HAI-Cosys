@@ -1,15 +1,14 @@
 import asyncio
 import itertools
 import logging
-from typing import Any, Generator, Literal, Sequence, Type, TypeVar, cast
+from typing import Literal, Sequence, Type, TypeVar, cast
 
 import gin
-import rich
 from beartype import beartype
 from rich import print
 from sotopia.agents import Agents
 from sotopia.agents.base_agent import BaseAgent
-from sotopia.database import AgentProfile, EpisodeLog
+from sotopia.database import EpisodeLog
 from sotopia.envs.evaluators import (
     RuleBasedTerminatedEvaluator,
     unweighted_aggregate_evaluate,
@@ -21,66 +20,10 @@ from tqdm.asyncio import tqdm_asyncio
 from haicosystem.agents import LLMAgentBot, LLMAgentHuman
 from haicosystem.envs import ParellelHaicosystemEnv, SafetyLLMEvaluator
 from haicosystem.grounding_engine import LLMGroundingEngine
-from haicosystem.protocols import HaiEnvironmentProfile
-from haicosystem.utils.render import render_for_humans, rich_rendering
+from haicosystem.utils import BridgeSampler, render_for_humans, rich_rendering
 
 ObsType = TypeVar("ObsType")
 ActType = TypeVar("ActType")
-
-
-class BridgeSampler(BaseSampler[ObsType, ActType]):
-    def sample(
-        self,
-        agent_classes: Type[BaseAgent[ObsType, ActType]]
-        | list[Type[BaseAgent[ObsType, ActType]]],
-        n_agent: int = 3,
-        replacement: bool = True,
-        size: int = 1,
-        env_params: dict[str, Any] = {},
-        agents_params: list[dict[str, Any]] = [{}, {}],
-    ) -> Generator[EnvAgentCombo[ObsType, ActType], None, None]:
-        # This is a simplified version of the original function
-        # The original function is not provided in the snippet
-        assert (
-            not isinstance(agent_classes, list) or len(agent_classes) == n_agent
-        ), f"agent_classes should be a list of length {n_agent} or a single agent class"
-
-        if not isinstance(agent_classes, list):
-            agent_classes = [agent_classes] * n_agent
-        assert (
-            len(agents_params) == n_agent
-        ), f"agents_params should be a list of length {n_agent}"
-        assert self.env_candidates is not None
-        env_profile = self.env_candidates[0]
-        assert isinstance(env_profile, HaiEnvironmentProfile)
-        env = ParellelHaicosystemEnv(env_profile=env_profile, **env_params)
-        agent_profiles = [
-            AgentProfile.parse_obj(
-                {
-                    "first_name": "Xuhui",
-                    "last_name": "Zhou",
-                    "age": 30,
-                    "occupation": "Software Engineer",
-                }
-            ),
-            AgentProfile.parse_obj(
-                {
-                    "first_name": "X",
-                    "last_name": "AI",
-                    "occupation": "AI Assistant",
-                }
-            ),
-        ]
-        for _ in range(size):
-            agents = [
-                agent_class(agent_profile=agent_profile, **agent_params)
-                for agent_class, agent_profile, agent_params in zip(
-                    agent_classes, agent_profiles, agents_params
-                )
-            ]
-            for agent, goal in zip(agents, env.profile.agent_goals):
-                agent.goal = goal
-            yield env, agents
 
 
 @gin.configurable
@@ -259,9 +202,9 @@ def get_agent_class(
 
 
 @beartype
-async def run_server(
-    model_dict: dict[str, str],
-    agents_roles: dict[str, str],
+async def run_async_server(
+    model_dict: dict[str, str] = {},
+    agents_roles: dict[str, str] = {"agent1": "human", "agent2": "ai"},
     sampler: BaseSampler[Observation, AgentAction] = BridgeSampler(),
     action_order: Literal["simutaneous", "round-robin", "random"] = "round-robin",
     env_agent_combo_list: list[EnvAgentCombo[Observation, AgentAction]] = [],
@@ -282,34 +225,31 @@ async def run_server(
     """
 
     assert not (push_to_db and tag is None), "please provide a tag when push to db"
-
-    # Create Environment and agents
-    # This step will be moved to outside this function
-
-    env_params = {
-        "model_name": model_dict["env"],
-        "action_order": action_order,
-        "evaluators": [
-            RuleBasedTerminatedEvaluator(max_turn_number=20, max_stale_turn=3),
-        ],
-        "terminal_evaluators": [
-            SafetyLLMEvaluator(model_dict["env"]),
-        ],
-        "grounding_engines": [
-            LLMGroundingEngine(model_name=model_dict["env"]),
-        ],
-    }
-    agents_model_dict = {
-        "agent1": model_dict["agent1"],
-        "agent2": model_dict["agent2"],
-    }
-
     if env_agent_combo_list:
         assert (
             type(sampler) is BaseSampler
         ), "No sampler should be used when `env_agent_combo_list` is not empty"
         env_agent_combo_iter = iter(env_agent_combo_list)
     else:
+        # Create Environment and agents
+        # TODO: This step will be moved to outside this function
+        env_params = {
+            "model_name": model_dict["env"],
+            "action_order": action_order,
+            "evaluators": [
+                RuleBasedTerminatedEvaluator(max_turn_number=20, max_stale_turn=3),
+            ],
+            "terminal_evaluators": [
+                SafetyLLMEvaluator(model_dict["env"]),
+            ],
+            "grounding_engines": [
+                LLMGroundingEngine(model_name=model_dict["env"]),
+            ],
+        }
+        agents_model_dict = {
+            "agent1": model_dict["agent1"],
+            "agent2": model_dict["agent2"],
+        }
         env_agent_combo_iter = sampler.sample(
             agent_classes=[
                 get_agent_class(model_name, agents_role)

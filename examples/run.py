@@ -9,7 +9,8 @@ from rich.logging import RichHandler
 from sotopia.database import EpisodeLog
 
 from haicosystem.protocols.database import HaiEnvironmentProfile
-from haicosystem.server import BridgeSampler, run_server
+from haicosystem.server import run_async_server
+from haicosystem.utils import BridgeSampler
 
 app = typer.Typer(pretty_exceptions_show_locals=False)
 
@@ -57,7 +58,7 @@ def example_run(
             env_profiles_json = json.load(file)
         env_profile = HaiEnvironmentProfile.parse_obj(env_profiles_json[codename])
     asyncio.run(
-        run_server(
+        run_async_server(
             sampler=BridgeSampler(env_candidates=[env_profile]),
             model_dict={
                 "env": "gpt-4-turbo",
