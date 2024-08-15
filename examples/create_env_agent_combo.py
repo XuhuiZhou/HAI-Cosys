@@ -108,7 +108,7 @@ def create_env_agent_combo(
     print("Created environment-agent combo")
     ai_agents: list[AgentProfile] = AgentProfile.find(
         AgentProfile.last_name == "AI"
-    ).all()
+    ).all()  # type: ignore
     human_agents: list[AgentProfile] = AgentProfile.find(
         AgentProfile.last_name != "AI"
     ).all()  # type: ignore
