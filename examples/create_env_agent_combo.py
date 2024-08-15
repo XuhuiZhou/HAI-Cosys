@@ -36,18 +36,21 @@ def upload_envs_to_db(env_file: str) -> None:
 
 
 def _sample_env_agent_combo_and_push_to_db(
-    env_id: str, ai_agent_pk: str, human_agent_profiles: list[AgentProfile]
+    env_id: str,
+    ai_agent_pk: str,
+    human_agent_profiles: list[AgentProfile],
+    sample_size: int = 3,
 ) -> None:
     # sampler = ConstraintBasedSampler[Observation, AgentAction](env_candidates=[env_id])
     # env_agent_combo_list = list(
     #     sampler.sample(agent_classes=[LLMAgent] * 2, replacement=False, size=1)
     # )
-    human_agent_profile_sample = random.sample(human_agent_profiles, 1)
+    human_agent_profile_sample = random.sample(human_agent_profiles, sample_size)
     env_agent_combo_list = [
         (env_id, (human_agent_profile.pk, ai_agent_pk))
         for human_agent_profile in human_agent_profile_sample
     ]
-    for env, agent in env_agent_combo_list:
+    for env_id, agent in env_agent_combo_list:
         EnvAgentComboStorage(
             env_id=env_id,
             agent_ids=agent,  # TODO: more organic sampling
@@ -65,6 +68,9 @@ def create_env_agent_combo(
     ),
     clean_combos: bool = typer.Option(
         False, help="Whether to clean the existing environment-agent combos"
+    ),
+    sample_size: int = typer.Option(
+        3, help="The number of human agents to sample for each environment"
     ),
 ) -> None:
     """
@@ -116,7 +122,10 @@ def create_env_agent_combo(
     for env in env_list:
         assert ai_agents[0].pk is not None
         _sample_env_agent_combo_and_push_to_db(
-            env, ai_agents[0].pk, human_agent_profiles=human_agents
+            env,
+            ai_agents[0].pk,
+            human_agent_profiles=human_agents,
+            sample_size=sample_size,
         )  # TODO: more organic sampling
 
     env_agent_combo_list = EnvAgentComboStorage.find().all()

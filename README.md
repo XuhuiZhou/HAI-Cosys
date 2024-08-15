@@ -53,7 +53,7 @@ python examples/create_env_agent_combo.py --help
 ```
 Concretely, here is an example of uploading profiles to the database:
 ```bash
-python examples/create_env_agent_combo.py --agent-folder="./assets/ai_agent_profiles" --env-folders="./assets/education,./assets/healthcare,./assets/personal_services,./assets/miscellaneous" --clean-combos
+python examples/create_env_agent_combo.py --agent-folder="./assets/ai_agent_profiles" --env-folders="./assets/education,./assets/healthcare,./assets/personal_services,./assets/miscellaneous,./assets/technology_and_science,./assets/business_and_finance" --clean-combos
 ```
 Checkout `examples` folder for more examples of using the package.
 
@@ -65,7 +65,7 @@ python examples/experiment.py --help
 ```
 Concretely, here is an example of running scaled simulations:
 ```bash
-python examples/run_scaled_simulation.py --agent-folder="./assets/ai_agent_profiles" --env-folders="./assets/education,./assets/healthcare,./assets/personal_services,./assets/miscellaneous" --num-simulations=10 --num-agents=10 --num-envs=10
+python examples/run_scaled_simulation.py --agent-folder="./assets/ai_agent_profiles" --env-folders="./assets/education,./assets/healthcare,./assets/personal_services,./assets/miscellaneous,./assets/technology_and_science,./assets/business_and_finance" --num-simulations=10 --num-agents=10 --num-envs=10
 ```
 
 ## Contribution
