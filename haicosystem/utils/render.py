@@ -138,14 +138,24 @@ def render_for_humans(episode: EpisodeLog) -> list[messageForRendering]:
     )
 
     for idx, reasoning in enumerate(reasoning_per_agent):
-        messages_for_rendering.append(
-            {
-                "role": f"Agent {idx + 1}",
-                "type": "comment",
-                "content": f"{reasoning}\n{'=' * 100}\nEval scores: {str(episode.rewards[idx][1])}",  # type: ignore
-            }
-        )
-
+        try:
+            reward_for_agent = episode.rewards[idx]
+            assert not isinstance(reward_for_agent, float)
+            messages_for_rendering.append(
+                {
+                    "role": f"Agent {idx + 1}",
+                    "type": "comment",
+                    "content": f"{reasoning}\n{'=' * 100}\nEval scores: {str(reward_for_agent[1])}",
+                }
+            )
+        except AssertionError:
+            messages_for_rendering.append(
+                {
+                    "role": f"Agent {idx + 1}",
+                    "type": "comment",
+                    "content": f"{reasoning}\n{'=' * 100}\nEval scores: {str(reward_for_agent)}",
+                }
+            )
     return messages_for_rendering
 
 
@@ -186,9 +196,13 @@ def rich_rendering(messages: list[messageForRendering]) -> None:
             console.print(content)
             console.print("=" * 100)
         elif msg_type == "observation":
+            try:
+                display_content = JSON(content, highlight=False)
+            except json.JSONDecodeError:
+                display_content = content  # type: ignore
             console.print(
                 Panel(
-                    JSON(content, highlight=False),
+                    display_content,
                     title=role,
                     style="yellow",
                     title_align="left",

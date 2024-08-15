@@ -65,7 +65,7 @@ python examples/experiment.py --help
 ```
 Concretely, here is an example of running scaled simulations:
 ```bash
-python examples/run_scaled_simulation.py --agent-folder="./assets/ai_agent_profiles" --env-folders="./assets/education,./assets/healthcare,./assets/personal_services,./assets/miscellaneous,./assets/technology_and_science,./assets/business_and_finance" --num-simulations=10 --num-agents=10 --num-envs=10
+python examples/experiment.py --models="gpt-4-turbo" --partner-model="gpt-4o" --evaluator-model="gpt-4o" --batch-size=5 --task="haicosystem" --push-to-db
 ```
 
 ## Contribution

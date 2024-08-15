@@ -2,6 +2,7 @@ import asyncio
 import json
 import logging
 import math
+import subprocess
 from collections import defaultdict
 from datetime import datetime
 from itertools import chain
@@ -18,18 +19,13 @@ from sotopia.agents import LLMAgent
 from sotopia.database import (
     AgentProfile,
     EnvAgentComboStorage,
-    EnvironmentProfile,
     EpisodeLog,
 )
 from sotopia.database.persistent_profile import EnvironmentList
 from sotopia.database.serialization import get_rewards_from_episode
 from sotopia.envs.evaluators import (
-    EvaluationForTwoAgents,
-    ReachGoalLLMEvaluator,
     RuleBasedTerminatedEvaluator,
-    SotopiaDimensions,
 )
-from sotopia.envs.parallel import ParallelSotopiaEnv
 from sotopia.generation_utils.generate import LLM_Name
 from sotopia.messages import AgentAction, Observation
 from sotopia.samplers import (
@@ -38,9 +34,30 @@ from sotopia.samplers import (
 )
 from tqdm import tqdm
 
+from haicosystem.agents import LLMAgentBot, LLMAgentHuman
+from haicosystem.envs import ParellelHaicosystemEnv, SafetyLLMEvaluator
+from haicosystem.grounding_engine import LLMGroundingEngine
+from haicosystem.protocols import HaiEnvironmentProfile
 from haicosystem.server import run_async_server
 
 app = typer.Typer(pretty_exceptions_show_locals=False)
+
+# date and message only
+FORMAT = "%(asctime)s - %(levelname)s - %(name)s - %(message)s"
+
+process = subprocess.Popen(
+    ["git", "rev-parse", "HEAD"], shell=False, stdout=subprocess.PIPE
+)
+git_head_hash = process.communicate()[0].strip()
+
+logging.basicConfig(
+    level=20,
+    format=FORMAT,
+    datefmt="[%X]",
+    handlers=[
+        RichHandler(),
+    ],
+)
 
 
 def initilize_benchmark_combo(url: str) -> list[EnvAgentComboStorage]:
@@ -175,10 +192,11 @@ def benchmark_display(
         avg_rewards = get_avg_reward(episodes, model)  # type: ignore
         model_rewards_dict[model] = avg_rewards
         # print(f"Model: {model}, episodes: {len(episodes)}, Avg Rewards: {avg_rewards}")
+        rich.print(model_rewards_dict)
 
-    display_in_table(model_rewards_dict, partner_model)
-    if output_to_jsonl:
-        save_to_jsonl(model_rewards_dict, partner_model)
+    # display_in_table(model_rewards_dict, partner_model)
+    # if output_to_jsonl:
+    #     save_to_jsonl(model_rewards_dict, partner_model)
 
 
 def get_avg_reward(
@@ -211,9 +229,12 @@ def get_avg_reward(
         for dimension in local_dimensions:
             rewards = [reward[dimension] for reward in local_rewards_list]
             avg_reward = sum(rewards) / len(rewards)
-            variance = sum([(reward - avg_reward) ** 2 for reward in rewards]) / (
-                len(rewards) - 1
-            )
+            if len(rewards) == 1:
+                variance = 0.0
+            else:
+                variance = sum([(reward - avg_reward) ** 2 for reward in rewards]) / (
+                    len(rewards) - 1
+                )
             local_var_reward_dict[dimension] = variance
 
         return local_var_reward_dict
@@ -324,30 +345,31 @@ def _list_all_env_agent_combo_not_in_db(
                 f"Episode for {env_id} with agents {agent_ids} using {list(model_names.values())} already exists"
             )
             continue
-        env_profile = EnvironmentProfile.get(env_id)
-        env = ParallelSotopiaEnv(
+        env_profile = HaiEnvironmentProfile.get(env_id)
+        env = ParellelHaicosystemEnv(
             env_profile=env_profile,
             model_name=model_names["env"],
             action_order="round-robin",
             evaluators=[
-                RuleBasedTerminatedEvaluator(max_turn_number=20, max_stale_turn=2),
+                RuleBasedTerminatedEvaluator(max_turn_number=20, max_stale_turn=3),
             ],
             terminal_evaluators=[
-                ReachGoalLLMEvaluator(
-                    model_names["env"],
-                    EvaluationForTwoAgents[SotopiaDimensions],
-                ),
+                SafetyLLMEvaluator(model_names["env"]),
+            ],
+            grounding_engines=[
+                LLMGroundingEngine(model_name=model_names["env"]),
             ],
         )
         agent_profiles = [AgentProfile.get(id) for id in agent_ids]
         # make sure the second agent (i.e., the agent being benchmarked) is always the indexed agent
         agents = [
-            LLMAgent(agent_profile=agent_profile, model_name=agent_model)
-            for agent_profile, agent_model in zip(
+            agent_class(agent_profile=agent_profile, model_name=agent_model)
+            for agent_profile, agent_model, agent_class in zip(
                 agent_profiles,
                 [model_names["test_model"], model_names["partner_model"]]
                 if index == "0"
                 else [model_names["partner_model"], model_names["test_model"]],
+                [LLMAgentHuman, LLMAgentBot],
             )
         ]
         list_of_env_agent_combo_storage.append((env, agents))
@@ -431,6 +453,26 @@ def run_async_benchmark_in_batch(
                 return
 
 
+def group_combos_into_env_id_trunks(
+    benchmark_combo: list[EnvAgentComboStorage],
+) -> list[list[EnvAgentComboStorage]]:
+    # Create a mapping from env_id to a list of combos with that env_id
+    env_id_map: dict[str, list[EnvAgentComboStorage]] = defaultdict(list)
+    for combo in benchmark_combo:
+        env_id_map[combo.env_id].append(combo)
+    # Now create trunks
+    trunks: list[list[EnvAgentComboStorage]] = []
+    while any(env_id_map.values()):
+        new_trunk: list[EnvAgentComboStorage] = []
+        for env_id, combos in list(env_id_map.items()):
+            if combos:  # If there are combos left for this env_id
+                new_trunk.append(combos.pop(0))  # Take one combo
+            if not combos:  # If no combos are left, remove the key
+                del env_id_map[env_id]
+        trunks.append(new_trunk)
+    return trunks
+
+
 @app.command()
 def benchmark(
     models: list[str] = typer.Option(
@@ -445,11 +487,15 @@ def benchmark(
         "gpt-4o", help="The evaluator model you want to use."
     ),
     batch_size: int = typer.Option(10, help="The batch size you want to use."),
+    iteration_num: int = typer.Option(
+        4, help="The number of iterations you want to run through the unique evns"
+    ),
     task: str = typer.Option("hard", help="The task id you want to benchmark."),
     url: str = typer.Option("", help="The url to fetch the benchmark combo."),
     print_logs: bool = typer.Option(False, help="Print logs."),
     only_show_performance: bool = typer.Option(False, help="Only show performance."),
     output_to_jsonl: bool = typer.Option(False, help="Output to jsonl."),
+    push_to_db: bool = typer.Option(False, help="Push to db."),
 ) -> None:
     if only_show_performance:
         benchmark_display(models, partner_model, evaluator_model, task, output_to_jsonl)
@@ -457,49 +503,57 @@ def benchmark(
 
     """A simple command-line interface example."""
     _set_up_logs(print_logs=print_logs)
-    benchmark_combo = initilize_benchmark_combo(url)
-    if task == "hard":
-        hard_envs = EnvironmentList.get("01HAK34YPB1H1RWXQDASDKHSNS").environments
-        agent_index = EnvironmentList.get("01HAK34YPB1H1RWXQDASDKHSNS").agent_index
-        assert isinstance(agent_index, list), "agent_index should be a list"
-
-        env_agent_combo_storage_index_list = []
-        for env_id, index in zip(hard_envs, agent_index):
-            for env_agent_combo_storage in benchmark_combo:
-                if env_agent_combo_storage.env_id == env_id:
-                    env_agent_combo_storage_index_list.append(
-                        (env_agent_combo_storage, index)
-                    )
-
-    for model in models:
-        typer.echo(
-            f"Running benchmark for {model} chatting with {partner_model} on task {task} with {evaluator_model} as the evaluator."
-        )
-        model = cast(LLM_Name, model)
-        partner_model = cast(LLM_Name, partner_model)
-        evaluator_model = cast(LLM_Name, evaluator_model)
-        tag = f"benchmark_{model}_{partner_model}_{evaluator_model}_{task}_trial0"
-        model_names = {
-            "env": evaluator_model,
-            "test_model": model,
-            "partner_model": partner_model,
-        }
-        env_agent_combo_list = _list_all_env_agent_combo_not_in_db(
-            model_names=model_names,
-            tag=tag,
-            env_agent_combo_storage_index_list=env_agent_combo_storage_index_list,
-            task=task,
-        )
-        run_async_benchmark_in_batch(
-            env_agent_combo_list=env_agent_combo_list,
-            model_names=model_names,
-            env_agent_combo_storage_index_list=env_agent_combo_storage_index_list,
-            batch_size=batch_size,
-            tag=tag,
-            verbose=False,
-            task=task,
-            push_to_db=True,
-        )
+    benchmark_combo_all = initilize_benchmark_combo(url)
+    benchmark_combo_trunks = group_combos_into_env_id_trunks(benchmark_combo_all)
+    for iter_num, benchmark_combo in enumerate(benchmark_combo_trunks):
+        if iter_num >= iteration_num:
+            break
+        if task == "hard":
+            hard_envs = EnvironmentList.get("01HAK34YPB1H1RWXQDASDKHSNS").environments
+            agent_index = EnvironmentList.get("01HAK34YPB1H1RWXQDASDKHSNS").agent_index
+            assert isinstance(agent_index, list), "agent_index should be a list"
+            env_agent_combo_storage_index_list = []
+            for env_id, index in zip(hard_envs, agent_index):
+                for env_agent_combo_storage in benchmark_combo:
+                    if env_agent_combo_storage.env_id == env_id:
+                        env_agent_combo_storage_index_list.append(
+                            (env_agent_combo_storage, index)
+                        )
+        elif task == "haicosystem":
+            env_agent_combo_storage_index_list = [
+                (env_agent_combo_storage, "1")
+                for env_agent_combo_storage in benchmark_combo
+            ]
+        for model in models:
+            typer.echo(
+                f"Running benchmark for {model} chatting with {partner_model} on task {task} with {evaluator_model} as the evaluator."
+            )
+            model = cast(LLM_Name, model)
+            partner_model = cast(LLM_Name, partner_model)
+            evaluator_model = cast(LLM_Name, evaluator_model)
+            tag = f"benchmark_{model}_{partner_model}_{evaluator_model}_{task}_trial0"
+            typer.echo(typer.style(f"Tag: {tag}", fg=typer.colors.GREEN, bold=True))
+            model_names = {
+                "env": evaluator_model,
+                "test_model": model,
+                "partner_model": partner_model,
+            }
+            env_agent_combo_list = _list_all_env_agent_combo_not_in_db(
+                model_names=model_names,
+                tag=tag,
+                env_agent_combo_storage_index_list=env_agent_combo_storage_index_list,
+                task=task,
+            )
+            run_async_benchmark_in_batch(
+                env_agent_combo_list=env_agent_combo_list,
+                model_names=model_names,
+                env_agent_combo_storage_index_list=env_agent_combo_storage_index_list,
+                batch_size=batch_size,
+                tag=tag,
+                verbose=False,
+                task=task,
+                push_to_db=push_to_db,
+            )
     benchmark_display(
         models, partner_model, evaluator_model, task, output_to_jsonl=output_to_jsonl
     )
