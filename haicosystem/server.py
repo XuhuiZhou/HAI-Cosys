@@ -128,6 +128,9 @@ async def arun_one_episode(
         except Exception as e:
             logging.error(f"Failed to save episode log: {e}")
     # flatten nested list messages
+
+    messages_for_rendering = render_for_humans(epilog)
+    rich_rendering(messages_for_rendering)
     return list(itertools.chain(*messages))
 
 
