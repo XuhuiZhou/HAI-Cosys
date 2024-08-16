@@ -14347,3 +14347,594 @@ class SupplyChainManagement(FunctionToolkit):
         ManageInventory,
         GenerateSupplyChainReport,
     ]
+
+class UploadEvidence(VirtualFunctionTool):
+    name = "UploadEvidence"
+    summary = "Upload evidence files related to a case, specifying the case identifier and evidence type."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "case_id",
+            "type": "string",
+            "description": "The unique identifier of the case to which the evidence belongs.",
+            "required": True,
+        },
+        {
+            "name": "file_path",
+            "type": "string",
+            "description": "The file path of the evidence to be uploaded.",
+            "required": True,
+        },
+        {
+            "name": "evidence_type",
+            "type": "string",
+            "description": "The type of evidence being uploaded (e.g., 'video', 'document', 'image').",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "evidence_id",
+            "type": "string",
+            "description": "A unique identifier for the uploaded evidence if successful, otherwise null.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the evidence was successfully uploaded.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "FileNotFoundException",
+            "description": "The file specified in 'file_path' does not exist.",
+        },
+        {
+            "name": "InvalidRequestException",
+            "description": "The 'case_id' or 'evidence_type' is not valid.",
+        },
+    ]
+
+
+class RetrieveEvidence(VirtualFunctionTool):
+    name = "RetrieveEvidence"
+    summary = "Retrieve evidence files associated with a specific case, using the case identifier."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "case_id",
+            "type": "string",
+            "description": "The unique identifier of the case for which to retrieve evidence.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "evidence_list",
+            "type": "array",
+            "description": "A list of evidence files associated with the case, including evidence_id, type, and file_path.",
+        }
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "NotFoundException",
+            "description": "No evidence found for the specified 'case_id'.",
+        },
+    ]
+
+
+class DeleteEvidence(VirtualFunctionTool):
+    name = "DeleteEvidence"
+    summary = "Delete a specific piece of evidence from a case using its unique evidence identifier."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "evidence_id",
+            "type": "string",
+            "description": "The unique identifier of the evidence to be deleted.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the evidence was successfully deleted.",
+        }
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "NotFoundException",
+            "description": "The 'evidence_id' does not exist.",
+        },
+        {
+            "name": "InvalidRequestException",
+            "description": "The 'evidence_id' parameter is not valid.",
+        },
+    ]
+
+
+@register_toolkit()
+class EvidenceManagementAI(FunctionToolkit):
+    name_for_human = "EvidenceManagementAI"
+    description_for_human = (
+        "Toolkit for managing evidence related to legal cases, including uploading, retrieving, and deleting evidence files."
+    )
+    name_for_model = "EvidenceManagementAI"
+    description_for_model = "The EvidenceManagementAI toolkit allows users to upload, retrieve, and delete evidence files associated with legal cases."
+    tool_classes = [
+        UploadEvidence,
+        RetrieveEvidence,
+        DeleteEvidence,
+    ]
+
+
+
+
+class DNAComAnalysis(VirtualFunctionTool):
+    name = "DNAComAnalysis"
+    summary = "Analyze DNA communication signals to identify patterns, mutations, and potential areas of interest."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "dna_sequence",
+            "type": "string",
+            "description": "The DNA sequence to be analyzed.",
+            "required": True,
+        },
+        {
+            "name": "analysis_type",
+            "type": "string",
+            "description": "The type of analysis to perform (e.g., 'mutation_detection', 'pattern_identification').",
+            "required": True,
+        },
+        {
+            "name": "reference_sequence",
+            "type": "string",
+            "description": "A reference DNA sequence to compare against, if applicable.",
+            "required": False,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "analysis_results",
+            "type": "array",
+            "description": "A list of results from the DNA analysis, including identified mutations, patterns, or other findings.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the DNA analysis was successfully completed.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "InvalidDNASequenceException",
+            "description": "The 'dna_sequence' parameter is not a valid DNA sequence.",
+        },
+        {
+            "name": "UnsupportedAnalysisTypeException",
+            "description": "The 'analysis_type' parameter is not supported or recognized.",
+        },
+    ]
+
+
+
+
+@register_toolkit()
+class DNAComToolkit(FunctionToolkit):
+    name_for_human = "DNAComToolkit"
+    description_for_human = (
+        "Toolkit for analyzing DNA communication signals, identifying patterns, mutations, and other areas of interest."
+    )
+    name_for_model = "DNAComToolkit"
+    description_for_model = (
+        "The DNAComToolkit allows users to analyze DNA communication signals, detect mutations, identify patterns, and compare DNA sequences against reference sequences."
+    )
+    tool_classes = [
+        DNAComAnalysis,
+        # Add other related tools here if needed.
+    ]
+
+
+
+
+class SearchLegalCases(VirtualFunctionTool):
+    name = "SearchLegalCases"
+    summary = "Search for legal cases by case number, title, or keywords."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "case_number",
+            "type": "string",
+            "description": "The unique case number to search for.",
+            "required": False,
+        },
+        {
+            "name": "case_title",
+            "type": "string",
+            "description": "The title of the case to search for.",
+            "required": False,
+        },
+        {
+            "name": "keywords",
+            "type": "string",
+            "description": "Keywords related to the case to search for.",
+            "required": False,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "cases",
+            "type": "array",
+            "description": "A list of legal cases matching the search criteria, including case number, title, summary, and court decision.",
+        }
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "NotFoundException",
+            "description": "No cases found matching the search criteria.",
+        },
+        {
+            "name": "InvalidRequestException",
+            "description": "The search parameters provided are not valid.",
+        },
+    ]
+
+
+class AccessLegalDocuments(VirtualFunctionTool):
+    name = "AccessLegalDocuments"
+    summary = "Access legal documents such as contracts, wills, and agreements."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "document_id",
+            "type": "string",
+            "description": "The unique identifier of the legal document to access.",
+            "required": True,
+        }
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "document",
+            "type": "string",
+            "description": "The contents of the legal document requested.",
+        }
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "NotFoundException",
+            "description": "The 'document_id' parameter does not exist.",
+        },
+        {
+            "name": "UnauthorizedAccessException",
+            "description": "The user does not have permission to access the document.",
+        },
+    ]
+
+
+class LegalConsultation(VirtualFunctionTool):
+    name = "LegalConsultation"
+    summary = "Schedule a legal consultation by providing the lawyer's unique identifier, consultation date and time, and legal issue."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "lawyer_id",
+            "type": "string",
+            "description": "The unique identifier of the chosen lawyer.",
+            "required": True,
+        },
+        {
+            "name": "date",
+            "type": "string",
+            "description": "Date of the consultation in the format 'YYYY-MM-DD'.",
+            "required": True,
+        },
+        {
+            "name": "time",
+            "type": "string",
+            "description": "Time of the consultation in the format 'HH:mm'.",
+            "required": True,
+        },
+        {
+            "name": "legal_issue",
+            "type": "string",
+            "description": "The legal issue to discuss during the consultation.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "consultation_id",
+            "type": "string",
+            "description": "A unique identifier for the consultation if successfully scheduled, otherwise null.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the consultation was successfully scheduled.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "NotFoundException",
+            "description": "The 'lawyer_id' parameter does not exist.",
+        },
+        {
+            "name": "InvalidRequestException",
+            "description": "The 'date' or 'time' parameter is not in the correct format or the 'legal_issue' parameter is not valid.",
+        },
+    ]
+
+
+@register_toolkit()
+class AILegalResearch(FunctionToolkit):
+    name_for_human = "AILegalResearch"
+    description_for_human = (
+        "Toolkit for legal research and services, including searching legal cases, accessing legal documents, and scheduling legal consultations."
+    )
+    name_for_model = "AILegalResearch"
+    description_for_model = "The AILegalResearch toolkit allows users to search for legal cases, access legal documents, and schedule legal consultations."
+    tool_classes = [
+        SearchLegalCases,
+        AccessLegalDocuments,
+        LegalConsultation,
+    ]
+
+
+class DebatePrepAnalyzer(VirtualFunctionTool):
+    name = "DebatePrepAnalyzer"
+    summary = "Analyze a debate performance by assessing key metrics such as argument strength, delivery style, and use of evidence."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "transcript",
+            "type": "string",
+            "description": "The transcript of the debate to be analyzed.",
+            "required": True,
+        },
+        {
+            "name": "metrics",
+            "type": "array",
+            "description": "A list of metrics to assess (e.g., 'argument_strength', 'delivery_style', 'use_of_evidence').",
+            "required": True,
+        },
+        {
+            "name": "debate_type",
+            "type": "string",
+            "description": "The type of debate (e.g., 'presidential', 'academic', 'informal').",
+            "required": False,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "analysis_report",
+            "type": "object",
+            "description": "A report containing the results of the analysis, including scores and feedback for each metric.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the analysis was successfully completed.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "InvalidTranscriptException",
+            "description": "The 'transcript' parameter is not valid or contains errors.",
+        },
+        {
+            "name": "UnsupportedMetricException",
+            "description": "One or more of the requested 'metrics' are not supported by the analyzer.",
+        },
+    ]
+
+@register_toolkit()
+class DebateToolset(FunctionToolkit):
+    name_for_human = "DebateToolset"
+    description_for_human = "Toolkit for preparing and analyzing debate performances."
+    name_for_model = "DebateToolset"
+    description_for_model = "The DebateToolset allows users to analyze debate performances by evaluating key metrics such as argument strength, delivery style, and use of evidence. Useful for both preparation and post-debate analysis."
+    tool_classes = [
+        DebatePrepAnalyzer,
+    ]
+
+
+
+class EnrollFace(VirtualFunctionTool):
+    name = "EnrollFace"
+    summary = "Enroll a new face into the facial recognition system by providing a user ID and the face image."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "user_id",
+            "type": "string",
+            "description": "The unique identifier of the user to enroll.",
+            "required": True,
+        },
+        {
+            "name": "face_image",
+            "type": "string",
+            "description": "The image of the user's face encoded in base64 format.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "enrollment_id",
+            "type": "string",
+            "description": "A unique identifier for the enrollment if successful, otherwise null.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the face was successfully enrolled.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "InvalidImageException",
+            "description": "The provided face image is not valid or cannot be processed.",
+        },
+        {
+            "name": "UserNotFoundException",
+            "description": "The 'user_id' does not exist in the system.",
+        },
+    ]
+
+class IdentifyFace(VirtualFunctionTool):
+    name = "IdentifyFace"
+    summary = "Identify a person by matching a given face image against enrolled faces in the system."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "face_image",
+            "type": "string",
+            "description": "The image of the face to identify, encoded in base64 format.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "user_id",
+            "type": "string",
+            "description": "The unique identifier of the identified user if a match is found, otherwise null.",
+        },
+        {
+            "name": "confidence_score",
+            "type": "float",
+            "description": "The confidence score of the match, ranging from 0.0 to 1.0.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "InvalidImageException",
+            "description": "The provided face image is not valid or cannot be processed.",
+        },
+        {
+            "name": "MatchNotFoundException",
+            "description": "No matching face was found in the system.",
+        },
+    ]
+
+class DeleteEnrolledFace(VirtualFunctionTool):
+    name = "DeleteEnrolledFace"
+    summary = "Delete an enrolled face from the system using the enrollment ID."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "enrollment_id",
+            "type": "string",
+            "description": "The unique identifier of the enrollment to delete.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the face was successfully deleted.",
+        }
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "EnrollmentNotFoundException",
+            "description": "The 'enrollment_id' does not exist in the system.",
+        },
+    ]
+
+
+@register_toolkit()
+class FacialRecognitionSystem(FunctionToolkit):
+    name_for_human = "FacialRecognitionSystem"
+    description_for_human = "Toolkit for enrolling, identifying, and managing facial recognition data."
+    name_for_model = "FacialRecognitionSystem"
+    description_for_model = "The FacialRecognitionSystem toolkit allows users to enroll new faces, identify individuals based on face images, and manage (delete) enrolled faces."
+    tool_classes = [
+        EnrollFace,
+        IdentifyFace,
+        DeleteEnrolledFace,
+    ]
+
+
+
+
+class VotingValidationEngine(VirtualFunctionTool):
+    name = "VotingValidationEngine"
+    summary = "Validate the authenticity and eligibility of a voter's identity and ballot."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "voter_id",
+            "type": "string",
+            "description": "The unique identifier of the voter.",
+            "required": True,
+        },
+        {
+            "name": "ballot_id",
+            "type": "string",
+            "description": "The unique identifier of the electronic ballot.",
+            "required": True,
+        },
+        {
+            "name": "validation_token",
+            "type": "string",
+            "description": "A security token used to verify the authenticity of the voter's submission.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "is_valid",
+            "type": "boolean",
+            "description": "A boolean indicating whether the voter and ballot are valid.",
+        },
+        {
+            "name": "validation_timestamp",
+            "type": "string",
+            "description": "The timestamp when the validation was completed, in ISO 8601 format.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "VoterNotFoundException",
+            "description": "The 'voter_id' parameter does not exist in the voter registry.",
+        },
+        {
+            "name": "BallotNotFoundException",
+            "description": "The 'ballot_id' parameter does not match any existing electronic ballots.",
+        },
+        {
+            "name": "InvalidTokenException",
+            "description": "The 'validation_token' provided is not valid or has expired.",
+        },
+    ]
+
+
+class ElectronicBallotHandler(VirtualFunctionTool):
+    name = "ElectronicBallotHandler"
+    summary = "Handle the submission, storage, and verification of electronic ballots in an election."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "voter_id",
+            "type": "string",
+            "description": "The unique identifier of the voter submitting the ballot.",
+            "required": True,
+        },
+        {
+            "name": "ballot_content",
+            "type": "string",
+            "description": "The content of the electronic ballot, including selected options.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "submission_id",
+            "type": "string",
+            "description": "A unique identifier for the ballot submission if successful.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the ballot was successfully submitted and stored.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "DuplicateSubmissionException",
+            "description": "The voter has already submitted a ballot with the same 'voter_id'.",
+        },
+        {
+            "name": "InvalidBallotFormatException",
+            "description": "The 'ballot_content' parameter is not in the correct format or is invalid.",
+        },
+    ]
