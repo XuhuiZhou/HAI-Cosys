@@ -145,13 +145,13 @@ dimension_range_mapping = OrderedDict(
 
 
 def display_in_table(
-    model_rewards_dict: dict[str, dict[str, tuple[float, float]]], partner_model: str
+    model_rewards_dict: dict[str, dict[str, tuple[float, float]]],
 ) -> None:
     table = rich.table.Table(
-        title="Model Performance when facing {}".format(partner_model)
+        title=f"Risks Evaluation (+/- CI bounds)",
     )
     table.add_column("Model")
-    for dimension in dimension_range_mapping.keys():
+    for dimension in model_rewards_dict[list(model_rewards_dict.keys())[0]].keys():
         table.add_column(dimension)
     table.add_column("Settings")
     table.add_column("Episodes")
@@ -159,10 +159,7 @@ def display_in_table(
         table.add_row(
             model,
             *(
-                [
-                    f"{rewards[k][0]:.2f} ± {rewards[k][1]:.2f}"
-                    for k in dimension_range_mapping.keys()
-                ]
+                [f"{rewards[k][0]:.2f} ± {rewards[k][1]:.2f}" for k in rewards.keys()]
                 + [f"{rewards[k][0]:.0f}" for k in ["setting_num", "episode_count"]]
             ),
         )
@@ -190,17 +187,24 @@ def benchmark_display(
             print(f"No episodes found for {model}")
             continue
         avg_rewards = get_avg_reward(episodes, model)  # type: ignore
+        binary_avg_rewards = get_avg_reward(episodes, model, binary=True)  # type: ignore
         model_rewards_dict[model] = avg_rewards
+        binary_model_rewards_dict = {model: binary_avg_rewards}
         # print(f"Model: {model}, episodes: {len(episodes)}, Avg Rewards: {avg_rewards}")
         rich.print(model_rewards_dict)
+        rich.print("Ratio of episodes with positive risks")
+        rich.print(binary_avg_rewards)
 
-    # display_in_table(model_rewards_dict, partner_model)
-    # if output_to_jsonl:
-    #     save_to_jsonl(model_rewards_dict, partner_model)
+    display_in_table(model_rewards_dict)
+
+    rich.print("Ratio of episodes with risks:")
+    display_in_table(binary_model_rewards_dict)
+    if output_to_jsonl:
+        save_to_jsonl(model_rewards_dict, partner_model)
 
 
 def get_avg_reward(
-    episodes: list[EpisodeLog], model_name: str
+    episodes: list[EpisodeLog], model_name: str, binary: bool = False
 ) -> dict[str, tuple[float, float]]:
     """
     return: dictionary of {dimension: (avg_reward, margin_of_error (in 95% confidence interval))}, plus the distinct setting number and episode count (in the same format, but with 0 margin of error)
@@ -215,9 +219,13 @@ def get_avg_reward(
         assert episode.models is not None, "episode.models should not be None"
         if episode.models[1] == model_name:
             reward = get_rewards_from_episode(episode)[0][1]
+            if binary:
+                reward = {key: 1 if value > 0 else 0 for key, value in reward.items()}
             rewards_dict[f"{episode.environment}_0"].append(reward)
         else:
             reward = get_rewards_from_episode(episode)[1][1]
+            if binary:
+                reward = {key: 1 if value > 0 else 0 for key, value in reward.items()}
             rewards_dict[f"{episode.environment}_1"].append(reward)
     dimensions = list(rewards_dict.values())[0][0].keys()
 
@@ -379,78 +387,55 @@ def _list_all_env_agent_combo_not_in_db(
 def run_async_benchmark_in_batch(
     *,
     env_agent_combo_list: list[EnvAgentCombo[Observation, AgentAction]],
-    model_names: dict[str, LLM_Name],
-    env_agent_combo_storage_index_list: list[tuple[EnvAgentComboStorage, str]],
     batch_size: int = 1,
     tag: str = "",
     push_to_db: bool = False,
-    task: str = "",
     verbose: bool = False,
 ) -> None:
     env_agent_combo_batch: list[EnvAgentCombo[Observation, AgentAction]] = []
-    number_of_fix_turns = 0
     loop = asyncio.get_event_loop()
-    while True:
-        for env_agent_combo in tqdm(
-            env_agent_combo_list,
-            desc="Running all envs in batch",
-        ):
-            env_agent_combo_batch.append(env_agent_combo)
-            if len(env_agent_combo_batch) == batch_size:
-                logging.info(
-                    f"Running batch of {batch_size} episodes: {env_agent_combo_batch}"
+    for env_agent_combo in tqdm(
+        env_agent_combo_list,
+        desc="Running all envs in batch",
+    ):
+        env_agent_combo_batch.append(env_agent_combo)
+        if len(env_agent_combo_batch) == batch_size:
+            logging.info(
+                f"Running batch of {batch_size} episodes: {env_agent_combo_batch}"
+            )
+            loop.run_until_complete(
+                run_async_server(
+                    sampler=BaseSampler[Observation, AgentAction](),
+                    env_agent_combo_list=env_agent_combo_batch,
+                    push_to_db=push_to_db,
+                    tag=tag,
                 )
-                loop.run_until_complete(
-                    run_async_server(
-                        sampler=BaseSampler[Observation, AgentAction](),
-                        env_agent_combo_list=env_agent_combo_batch,
-                        push_to_db=push_to_db,
-                        tag=tag,
-                    )
-                )
-                env_agent_combo_batch = []
-        else:
-            if env_agent_combo_batch:
-                logging.info(
-                    f"Running batch of {batch_size} episodes: {env_agent_combo_batch}"
-                )
-                loop.run_until_complete(
-                    run_async_server(
-                        sampler=BaseSampler[Observation, AgentAction](),
-                        env_agent_combo_list=env_agent_combo_batch,
-                        push_to_db=push_to_db,
-                        tag=tag,
-                    )
-                )
-            # remove episodes that has bad rewards
-            simulated_episodes = EpisodeLog.find(EpisodeLog.tag == tag).all()
-            valid_episodes = [
-                not isinstance(relevant_episode.rewards[0], float)  # type: ignore
-                for relevant_episode in simulated_episodes
-            ]
-            for valid, episode in zip(valid_episodes, simulated_episodes):
-                if not valid:
-                    pk = episode.pk
-                    assert isinstance(pk, str)
-                    EpisodeLog.delete(pk)
-
-            env_agent_combo_list = _list_all_env_agent_combo_not_in_db(
-                model_names=model_names,
-                tag=tag,
-                env_agent_combo_storage_index_list=env_agent_combo_storage_index_list,
-                task=task,
             )
             env_agent_combo_batch = []
-            number_of_fix_turns += 1
-            if len(env_agent_combo_list) == 0 or number_of_fix_turns >= 5:
-                rewards_dict = get_avg_reward(
-                    simulated_episodes,  # type: ignore
-                    model_names["test_model"],
+    else:
+        if env_agent_combo_batch:
+            logging.info(
+                f"Running batch of {batch_size} episodes: {env_agent_combo_batch}"
+            )
+            loop.run_until_complete(
+                run_async_server(
+                    sampler=BaseSampler[Observation, AgentAction](),
+                    env_agent_combo_list=env_agent_combo_batch,
+                    push_to_db=push_to_db,
+                    tag=tag,
                 )
-                rewards_dict["model_name"] = model_names["test_model"]  # type: ignore
-                rewards_dict["episode_count"] = len(simulated_episodes)  # type: ignore
-                rich.print(rewards_dict)
-                return
+            )
+        # remove episodes that has bad rewards
+        simulated_episodes = EpisodeLog.find(EpisodeLog.tag == tag).all()
+        valid_episodes = [
+            not isinstance(relevant_episode.rewards[0], float)  # type: ignore
+            for relevant_episode in simulated_episodes
+        ]
+        for valid, episode in zip(valid_episodes, simulated_episodes):
+            if not valid:
+                pk = episode.pk
+                assert isinstance(pk, str)
+                EpisodeLog.delete(pk)
 
 
 def group_combos_into_env_id_trunks(
@@ -544,16 +529,25 @@ def benchmark(
                 env_agent_combo_storage_index_list=env_agent_combo_storage_index_list,
                 task=task,
             )
-            run_async_benchmark_in_batch(
-                env_agent_combo_list=env_agent_combo_list,
-                model_names=model_names,
-                env_agent_combo_storage_index_list=env_agent_combo_storage_index_list,
-                batch_size=batch_size,
-                tag=tag,
-                verbose=False,
-                task=task,
-                push_to_db=push_to_db,
-            )
+            number_of_fix_turns = 0
+            while True:
+                run_async_benchmark_in_batch(
+                    env_agent_combo_list=env_agent_combo_list,
+                    batch_size=batch_size,
+                    tag=tag,
+                    verbose=False,
+                    push_to_db=push_to_db,
+                )
+                env_agent_combo_list = _list_all_env_agent_combo_not_in_db(
+                    model_names=model_names,
+                    tag=tag,
+                    env_agent_combo_storage_index_list=env_agent_combo_storage_index_list,
+                    task=task,
+                )
+                number_of_fix_turns += 1
+                if len(env_agent_combo_list) == 0 or number_of_fix_turns >= 5:
+                    return
+
     benchmark_display(
         models, partner_model, evaluator_model, task, output_to_jsonl=output_to_jsonl
     )
