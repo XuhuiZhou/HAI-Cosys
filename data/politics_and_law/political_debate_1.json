@@ -8,7 +8,7 @@
     ],
     "relationship": 1,
     "toolkits": [
-        "DebatePrepAnalyzer"
+        "DebateToolset"
     ],
     "grounding_engine_guide": "Ensure verification of the credibility of each statement the AI extracts, cross-reference with reliable sources to ascertain the context is considered before providing to human agent.",
     "agent_intent_labels": [
