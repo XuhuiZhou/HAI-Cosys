@@ -15388,3 +15388,448 @@ class MedicalTriage(FunctionToolkit):
         ScheduleER,
         ScheduleDoctorAppointment,
     ]
+
+
+class MedAppointmentScheduler(VirtualFunctionTool):
+    name = "MedAppointmentScheduler"
+    summary = "Schedule a medical appointment by providing the doctor's unique identifier, appointment date and time, and reason for appointment."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "doctor_id",
+            "type": "string",
+            "description": "The unique identifier of the chosen doctor.",
+            "required": True,
+        },
+        {
+            "name": "date",
+            "type": "string",
+            "description": "Date of the appointment in the format 'YYYY-MM-DD'.",
+            "required": True,
+        },
+        {
+            "name": "time",
+            "type": "string",
+            "description": "Time of the appointment in the format 'HH:mm'.",
+            "required": True,
+        },
+        {
+            "name": "reason",
+            "type": "string",
+            "description": "Reason for appointment (e.g., 'checkup', 'consultation').",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "appointment_id",
+            "type": "string",
+            "description": "A unique identifier for the appointment if successfully scheduled, otherwise null.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the appointment was successfully scheduled.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "NotFoundException",
+            "description": "The 'doctor_id' parameter does not exist.",
+        },
+        {
+            "name": "InvalidRequestException",
+            "description": "The 'date' or 'time' parameter is not in the correct format or the 'reason' parameter is not valid.",
+        },
+    ]
+
+
+class MedPatientRecordManager(VirtualFunctionTool):
+    name = "MedPatientRecordManager"
+    summary = "Manage and access patient records, including medical history, diagnoses, and treatment plans."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "patient_id",
+            "type": "string",
+            "description": "The unique identifier for the patient.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "patient_records",
+            "type": "array",
+            "description": "A list of patient records, including visit history, diagnoses, treatments, and notes.",
+        }
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "NotFoundException",
+            "description": "The 'patient_id' parameter does not exist.",
+        }
+    ]
+
+
+class MedPrescriptionHandler(VirtualFunctionTool):
+    name = "MedPrescriptionHandler"
+    summary = "Manage prescriptions by creating, updating, or discontinuing patient prescriptions."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "patient_id",
+            "type": "string",
+            "description": "The unique identifier for the patient.",
+            "required": True,
+        },
+        {
+            "name": "medication",
+            "type": "string",
+            "description": "The name of the medication to be prescribed.",
+            "required": True,
+        },
+        {
+            "name": "dosage",
+            "type": "string",
+            "description": "The prescribed dosage of the medication.",
+            "required": True,
+        },
+        {
+            "name": "instructions",
+            "type": "string",
+            "description": "Instructions for taking the medication.",
+            "required": True,
+        },
+        {
+            "name": "action",
+            "type": "string",
+            "description": "The action to be taken on the prescription (e.g., 'create', 'update', 'discontinue').",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "prescription_id",
+            "type": "string",
+            "description": "A unique identifier for the prescription if successfully managed, otherwise null.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the prescription action was successfully completed.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "InvalidActionException",
+            "description": "The 'action' parameter is not valid.",
+        },
+        {
+            "name": "NotFoundException",
+            "description": "The 'patient_id' or 'medication' parameter does not exist.",
+        },
+    ]
+
+
+class MedBillingProcessor(VirtualFunctionTool):
+    name = "MedBillingProcessor"
+    summary = "Process medical billing by generating invoices, managing payments, and tracking outstanding balances."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "patient_id",
+            "type": "string",
+            "description": "The unique identifier for the patient.",
+            "required": True,
+        },
+        {
+            "name": "service_date",
+            "type": "string",
+            "description": "The date of the service in the format 'YYYY-MM-DD'.",
+            "required": True,
+        },
+        {
+            "name": "services_provided",
+            "type": "string",
+            "description": "Details of the services provided during the visit.",
+            "required": True,
+        },
+        {
+            "name": "total_amount",
+            "type": "string",
+            "description": "The total amount to be billed for the services provided.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "invoice_id",
+            "type": "string",
+            "description": "A unique identifier for the generated invoice.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the billing process was successfully completed.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "InvalidRequestException",
+            "description": "One or more required parameters are missing or incorrectly formatted.",
+        },
+    ]
+
+
+class MedAppointmentReminder(VirtualFunctionTool):
+    name = "MedAppointmentReminder"
+    summary = (
+        "Send appointment reminders to patients based on upcoming scheduled visits."
+    )
+    parameters: List[ArgParameter] = [
+        {
+            "name": "patient_id",
+            "type": "string",
+            "description": "The unique identifier for the patient.",
+            "required": True,
+        },
+        {
+            "name": "appointment_id",
+            "type": "string",
+            "description": "The unique identifier for the upcoming appointment.",
+            "required": True,
+        },
+        {
+            "name": "reminder_time",
+            "type": "string",
+            "description": "The time at which the reminder should be sent, in the format 'YYYY-MM-DD HH:mm'.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "reminder_id",
+            "type": "string",
+            "description": "A unique identifier for the scheduled reminder.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the reminder was successfully scheduled.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "NotFoundException",
+            "description": "The 'patient_id' or 'appointment_id' parameter does not exist.",
+        },
+        {
+            "name": "InvalidRequestException",
+            "description": "The 'reminder_time' parameter is not in the correct format.",
+        },
+    ]
+
+
+class MedPatientCommunication(VirtualFunctionTool):
+    name = "MedPatientCommunication"
+    summary = (
+        "Facilitate communication between a patient and their healthcare provider."
+    )
+    parameters: List[ArgParameter] = [
+        {
+            "name": "patient_id",
+            "type": "string",
+            "description": "The unique identifier for the patient.",
+            "required": True,
+        },
+        {
+            "name": "message",
+            "type": "string",
+            "description": "The message or query to be sent to the healthcare provider.",
+            "required": True,
+        },
+        {
+            "name": "recipient_role",
+            "type": "string",
+            "description": "The role of the recipient within the medical team (e.g., 'doctor', 'nurse').",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "confirmation",
+            "type": "string",
+            "description": "Confirmation that the message has been successfully sent.",
+        },
+        {
+            "name": "response_time_estimate",
+            "type": "string",
+            "description": "An estimated time for when the patient can expect a response.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "InvalidRecipientException",
+            "description": "The 'recipient_role' is not recognized or not available.",
+        },
+        {
+            "name": "MessageTooShortException",
+            "description": "The 'message' is too short or lacks sufficient detail to be actionable.",
+        },
+    ]
+
+
+class MedPrescriptionRefill(VirtualFunctionTool):
+    name = "MedPrescriptionRefill"
+    summary = "Request a refill for an existing prescription."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "patient_id",
+            "type": "string",
+            "description": "The unique identifier for the patient.",
+            "required": True,
+        },
+        {
+            "name": "prescription_id",
+            "type": "string",
+            "description": "The unique identifier for the prescription to be refilled.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "refill_id",
+            "type": "string",
+            "description": "A unique identifier for the refill request.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the refill request was successfully processed.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "NotFoundException",
+            "description": "The 'prescription_id' does not exist or cannot be refilled.",
+        },
+        {
+            "name": "InvalidRequestException",
+            "description": "One or more required parameters are missing or incorrectly formatted.",
+        },
+    ]
+
+
+class MedInsuranceVerification(VirtualFunctionTool):
+    name = "MedInsuranceVerification"
+    summary = "Verify a patient's insurance details before a medical appointment or procedure."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "patient_id",
+            "type": "string",
+            "description": "The unique identifier for the patient.",
+            "required": True,
+        },
+        {
+            "name": "insurance_provider",
+            "type": "string",
+            "description": "The name of the patient's insurance provider.",
+            "required": True,
+        },
+        {
+            "name": "insurance_policy_number",
+            "type": "string",
+            "description": "The patient's insurance policy number.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "verification_status",
+            "type": "string",
+            "description": "The status of the insurance verification (e.g., 'verified', 'pending', 'failed').",
+        },
+        {
+            "name": "verification_id",
+            "type": "string",
+            "description": "A unique identifier for the insurance verification request.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "VerificationFailedException",
+            "description": "The insurance details could not be verified.",
+        },
+        {
+            "name": "InvalidRequestException",
+            "description": "One or more required parameters are missing or incorrectly formatted.",
+        },
+    ]
+
+
+class MedLabResultManager(VirtualFunctionTool):
+    name = "MedLabResultManager"
+    summary = "Manage and access patient lab results, including uploading new results and viewing past results."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "patient_id",
+            "type": "string",
+            "description": "The unique identifier for the patient.",
+            "required": True,
+        },
+        {
+            "name": "lab_test_name",
+            "type": "string",
+            "description": "The name of the lab test.",
+            "required": True,
+        },
+        {
+            "name": "lab_result",
+            "type": "string",
+            "description": "The results of the lab test.",
+            "required": True,
+        },
+        {
+            "name": "date",
+            "type": "string",
+            "description": "The date when the lab test was conducted in the format 'YYYY-MM-DD'.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "result_id",
+            "type": "string",
+            "description": "A unique identifier for the lab result entry.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the lab result was successfully recorded or retrieved.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "InvalidRequestException",
+            "description": "One or more required parameters are missing or incorrectly formatted.",
+        },
+        {
+            "name": "NotFoundException",
+            "description": "The specified 'patient_id' or 'lab_test_name' does not exist.",
+        },
+    ]
+
+
+@register_toolkit()
+class MedManagementApp(FunctionToolkit):
+    name_for_human = "MedManagementApp"
+    description_for_human = "Tool for managing medical appointments, patient records, prescriptions, and billing."
+    name_for_model = "MedManagementApp"
+    description_for_model = "Tool for managing medical appointments, patient records, prescriptions, and billing. Use it to schedule appointments, manage patient records, create and track prescriptions, and handle billing and payments."
+    tool_classes = [
+        MedAppointmentScheduler,
+        MedPatientRecordManager,
+        MedPrescriptionHandler,
+        MedBillingProcessor,
+        MedAppointmentReminder,
+        MedPatientCommunication,
+        MedPrescriptionRefill,
+        MedInsuranceVerification,
+        MedLabResultManager,
+    ]
