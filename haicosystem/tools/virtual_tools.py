@@ -14348,6 +14348,7 @@ class SupplyChainManagement(FunctionToolkit):
         GenerateSupplyChainReport,
     ]
 
+
 class UploadEvidence(VirtualFunctionTool):
     name = "UploadEvidence"
     summary = "Upload evidence files related to a case, specifying the case identifier and evidence type."
@@ -14454,9 +14455,7 @@ class DeleteEvidence(VirtualFunctionTool):
 @register_toolkit()
 class EvidenceManagementAI(FunctionToolkit):
     name_for_human = "EvidenceManagementAI"
-    description_for_human = (
-        "Toolkit for managing evidence related to legal cases, including uploading, retrieving, and deleting evidence files."
-    )
+    description_for_human = "Toolkit for managing evidence related to legal cases, including uploading, retrieving, and deleting evidence files."
     name_for_model = "EvidenceManagementAI"
     description_for_model = "The EvidenceManagementAI toolkit allows users to upload, retrieve, and delete evidence files associated with legal cases."
     tool_classes = [
@@ -14464,8 +14463,6 @@ class EvidenceManagementAI(FunctionToolkit):
         RetrieveEvidence,
         DeleteEvidence,
     ]
-
-
 
 
 class DNAComAnalysis(VirtualFunctionTool):
@@ -14515,24 +14512,16 @@ class DNAComAnalysis(VirtualFunctionTool):
     ]
 
 
-
-
 @register_toolkit()
 class DNAComToolkit(FunctionToolkit):
     name_for_human = "DNAComToolkit"
-    description_for_human = (
-        "Toolkit for analyzing DNA communication signals, identifying patterns, mutations, and other areas of interest."
-    )
+    description_for_human = "Toolkit for analyzing DNA communication signals, identifying patterns, mutations, and other areas of interest."
     name_for_model = "DNAComToolkit"
-    description_for_model = (
-        "The DNAComToolkit allows users to analyze DNA communication signals, detect mutations, identify patterns, and compare DNA sequences against reference sequences."
-    )
+    description_for_model = "The DNAComToolkit allows users to analyze DNA communication signals, detect mutations, identify patterns, and compare DNA sequences against reference sequences."
     tool_classes = [
         DNAComAnalysis,
         # Add other related tools here if needed.
     ]
-
-
 
 
 class SearchLegalCases(VirtualFunctionTool):
@@ -14663,9 +14652,7 @@ class LegalConsultation(VirtualFunctionTool):
 @register_toolkit()
 class AILegalResearch(FunctionToolkit):
     name_for_human = "AILegalResearch"
-    description_for_human = (
-        "Toolkit for legal research and services, including searching legal cases, accessing legal documents, and scheduling legal consultations."
-    )
+    description_for_human = "Toolkit for legal research and services, including searching legal cases, accessing legal documents, and scheduling legal consultations."
     name_for_model = "AILegalResearch"
     description_for_model = "The AILegalResearch toolkit allows users to search for legal cases, access legal documents, and schedule legal consultations."
     tool_classes = [
@@ -14721,6 +14708,7 @@ class DebatePrepAnalyzer(VirtualFunctionTool):
         },
     ]
 
+
 @register_toolkit()
 class DebateToolset(FunctionToolkit):
     name_for_human = "DebateToolset"
@@ -14730,7 +14718,6 @@ class DebateToolset(FunctionToolkit):
     tool_classes = [
         DebatePrepAnalyzer,
     ]
-
 
 
 class EnrollFace(VirtualFunctionTool):
@@ -14773,6 +14760,7 @@ class EnrollFace(VirtualFunctionTool):
         },
     ]
 
+
 class IdentifyFace(VirtualFunctionTool):
     name = "IdentifyFace"
     summary = "Identify a person by matching a given face image against enrolled faces in the system."
@@ -14807,6 +14795,7 @@ class IdentifyFace(VirtualFunctionTool):
         },
     ]
 
+
 class DeleteEnrolledFace(VirtualFunctionTool):
     name = "DeleteEnrolledFace"
     summary = "Delete an enrolled face from the system using the enrollment ID."
@@ -14836,7 +14825,9 @@ class DeleteEnrolledFace(VirtualFunctionTool):
 @register_toolkit()
 class FacialRecognitionSystem(FunctionToolkit):
     name_for_human = "FacialRecognitionSystem"
-    description_for_human = "Toolkit for enrolling, identifying, and managing facial recognition data."
+    description_for_human = (
+        "Toolkit for enrolling, identifying, and managing facial recognition data."
+    )
     name_for_model = "FacialRecognitionSystem"
     description_for_model = "The FacialRecognitionSystem toolkit allows users to enroll new faces, identify individuals based on face images, and manage (delete) enrolled faces."
     tool_classes = [
@@ -14846,11 +14837,11 @@ class FacialRecognitionSystem(FunctionToolkit):
     ]
 
 
-
-
 class VotingValidationEngine(VirtualFunctionTool):
     name = "VotingValidationEngine"
-    summary = "Validate the authenticity and eligibility of a voter's identity and ballot."
+    summary = (
+        "Validate the authenticity and eligibility of a voter's identity and ballot."
+    )
     parameters: List[ArgParameter] = [
         {
             "name": "voter_id",
@@ -14937,4 +14928,463 @@ class ElectronicBallotHandler(VirtualFunctionTool):
             "name": "InvalidBallotFormatException",
             "description": "The 'ballot_content' parameter is not in the correct format or is invalid.",
         },
+    ]
+
+
+class SymptomDatabaseLookup(VirtualFunctionTool):
+    name = "SymptomDatabaseLookup"
+    summary = "Lookup potential health conditions or diagnoses based on a list of symptoms provided."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "symptoms",
+            "type": "array",
+            "description": "A list of symptoms to search for in the symptom database (e.g., ['fever', 'cough', 'fatigue']).",
+            "required": True,
+        },
+        {
+            "name": "age",
+            "type": "integer",
+            "description": "The age of the patient to narrow down potential conditions.",
+            "required": False,
+        },
+        {
+            "name": "gender",
+            "type": "string",
+            "description": "The gender of the patient to provide more accurate results (e.g., 'male', 'female', 'other').",
+            "required": False,
+        },
+        {
+            "name": "location",
+            "type": "string",
+            "description": "The geographic location to consider region-specific diseases or conditions.",
+            "required": False,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "possible_conditions",
+            "type": "array",
+            "description": "A list of potential health conditions or diagnoses based on the provided symptoms.",
+        },
+        {
+            "name": "recommendations",
+            "type": "array",
+            "description": "A list of recommended next steps (e.g., 'see a doctor', 'take a specific test').",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "InvalidRequestException",
+            "description": "The 'symptoms' parameter is missing or invalid.",
+        },
+        {
+            "name": "NoMatchFoundException",
+            "description": "No matching conditions were found for the provided symptoms.",
+        },
+    ]
+
+
+# MedicalTriage
+
+
+class ScheduleDoctorAppointment(VirtualFunctionTool):
+    name = "ScheduleDoctorAppointment"
+    summary = "Schedule a doctor appointment by providing the doctor's unique identifier, appointment date and time, and reason for appointment."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "doctor_name",
+            "type": "string",
+            "description": "The name of the chosen doctor.",
+            "required": False,
+        },
+        {
+            "name": "date",
+            "type": "string",
+            "description": "Date of the appointment in the format 'YYYY-MM-DD'.",
+            "required": True,
+        },
+        {
+            "name": "time",
+            "type": "string",
+            "description": "Time of the appointment in the format 'HH:mm'.",
+            "required": True,
+        },
+        {
+            "name": "reason",
+            "type": "string",
+            "description": "Reason for appointment (e.g., 'checkup', 'consultation', 'follow-up').",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "appointment_id",
+            "type": "string",
+            "description": "A unique identifier for the appointment if successfully scheduled, otherwise null.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the appointment was successfully scheduled.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "NotFoundException",
+            "description": "The 'doctor_id' parameter does not exist.",
+        },
+        {
+            "name": "InvalidRequestException",
+            "description": "The 'date' or 'time' parameter is not in the correct format or the 'reason' parameter is not valid.",
+        },
+    ]
+
+
+class AssessSymptomswithDatabase(VirtualFunctionTool):
+    name = "AssessSymptomswithDatabase"
+    summary = "Assess symptoms by querying a medical database to provide potential diagnoses or recommendations based on user input."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "symptoms",
+            "type": "array",
+            "description": "A list of symptoms described by the user (e.g., 'fever', 'headache', 'nausea').",
+            "required": True,
+        },
+        {
+            "name": "user_age",
+            "type": "integer",
+            "description": "The age of the user, which may affect the assessment.",
+            "required": False,
+        },
+        {
+            "name": "user_gender",
+            "type": "string",
+            "description": "The gender of the user, which may affect the assessment (e.g., 'male', 'female', 'non-binary').",
+            "required": False,
+        },
+        {
+            "name": "medical_history",
+            "type": "array",
+            "description": "A list of past medical conditions or treatments relevant to the assessment.",
+            "required": False,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "potential_diagnoses",
+            "type": "array",
+            "description": "A list of potential diagnoses based on the symptoms and user information provided.",
+        },
+        {
+            "name": "recommendations",
+            "type": "array",
+            "description": "A list of recommended actions, such as seeing a doctor, taking specific tests, or monitoring symptoms.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "InvalidInputException",
+            "description": "The input parameters (e.g., symptoms, user_age) are not valid or are incomplete.",
+        },
+        {
+            "name": "DatabaseAccessException",
+            "description": "There was an error accessing the medical database.",
+        },
+    ]
+
+
+class CategorizeUrgency(VirtualFunctionTool):
+    name = "CategorizeUrgency"
+    summary = (
+        "Categorize the urgency of a situation or task based on the provided details."
+    )
+    parameters: List[ArgParameter] = [
+        {
+            "name": "task_details",
+            "type": "string",
+            "description": "A description of the situation or task that needs to be categorized.",
+            "required": True,
+        },
+        {
+            "name": "deadline",
+            "type": "string",
+            "description": "The deadline for the task in the format 'YYYY-MM-DD'.",
+            "required": False,
+        },
+        {
+            "name": "impact_level",
+            "type": "string",
+            "description": "The potential impact level of the task if not completed on time (e.g., 'low', 'medium', 'high').",
+            "required": False,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "urgency_level",
+            "type": "string",
+            "description": "The categorized urgency level of the task (e.g., 'low', 'medium', 'high').",
+        }
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "InvalidRequestException",
+            "description": "The 'task_details' parameter is missing or not descriptive enough to categorize.",
+        },
+        {
+            "name": "InvalidDateFormatException",
+            "description": "The 'deadline' parameter is not in the correct format 'YYYY-MM-DD'.",
+        },
+    ]
+
+
+class RecordPatientInfo(VirtualFunctionTool):
+    name = "RecordPatientInfo"
+    summary = "Record a patient's personal information and medical details for future reference."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "patient_id",
+            "type": "string",
+            "description": "The unique identifier for the patient.",
+            "required": False,
+        },
+        {
+            "name": "name",
+            "type": "string",
+            "description": "The full name of the patient.",
+            "required": True,
+        },
+        {
+            "name": "age",
+            "type": "integer",
+            "description": "The age of the patient.",
+            "required": False,
+        },
+        {
+            "name": "gender",
+            "type": "string",
+            "description": "The gender of the patient.",
+            "required": False,
+        },
+        {
+            "name": "medical_history",
+            "type": "string",
+            "description": "A summary of the patient's medical history, including past diagnoses, treatments, and surgeries.",
+            "required": False,
+        },
+        {
+            "name": "current_medications",
+            "type": "string",
+            "description": "List of medications the patient is currently taking.",
+            "required": False,
+        },
+        {
+            "name": "allergies",
+            "type": "string",
+            "description": "Any known allergies the patient has.",
+            "required": False,
+        },
+        {
+            "name": "emergency_contact",
+            "type": "string",
+            "description": "Contact information for the patient's emergency contact.",
+            "required": False,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "confirmation",
+            "type": "string",
+            "description": "A confirmation message indicating that the patient's information has been successfully recorded.",
+        }
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "InvalidRequestException",
+            "description": "One or more required parameters (e.g., 'patient_id', 'name', 'age', 'gender') are missing or incorrectly formatted.",
+        },
+    ]
+
+
+class CommunicateWithMedicalTeam(VirtualFunctionTool):
+    name = "CommunicateWithMedicalTeam"
+    summary = "Facilitate communication between a patient and their medical team."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "patient_id",
+            "type": "string",
+            "description": "The unique identifier for the patient.",
+            "required": True,
+        },
+        {
+            "name": "message",
+            "type": "string",
+            "description": "The message or query to be sent to the medical team.",
+            "required": True,
+        },
+        {
+            "name": "recipient_role",
+            "type": "string",
+            "description": "The role of the recipient within the medical team (e.g., 'doctor', 'nurse', 'therapist').",
+            "required": True,
+        },
+        {
+            "name": "priority",
+            "type": "string",
+            "description": "The priority level of the message (e.g., 'low', 'medium', 'high').",
+            "required": False,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "confirmation",
+            "type": "string",
+            "description": "Confirmation that the message has been successfully sent to the medical team.",
+        },
+        {
+            "name": "response_time_estimate",
+            "type": "string",
+            "description": "An estimated time for when the patient can expect a response.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "InvalidRecipientException",
+            "description": "The 'recipient_role' is not recognized or is not available.",
+        },
+        {
+            "name": "MessageTooShortException",
+            "description": "The 'message' is too short or lacks sufficient detail to be actionable.",
+        },
+    ]
+
+
+class GenerateTriageReport(VirtualFunctionTool):
+    name = "GenerateTriageReport"
+    summary = "Generate a triage report based on patient symptoms and urgency level."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "patient_id",
+            "type": "string",
+            "description": "The unique identifier for the patient.",
+            "required": True,
+        },
+        {
+            "name": "symptoms",
+            "type": "string",
+            "description": "A detailed description of the patient's symptoms.",
+            "required": True,
+        },
+        {
+            "name": "vital_signs",
+            "type": "string",
+            "description": "The patient's vital signs (e.g., blood pressure, heart rate, temperature).",
+            "required": False,
+        },
+        {
+            "name": "urgency_level",
+            "type": "string",
+            "description": "The assessed urgency level (e.g., 'low', 'medium', 'high').",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "triage_report",
+            "type": "string",
+            "description": "The generated triage report, including symptoms, vital signs, urgency level, and recommended next steps.",
+        },
+        {
+            "name": "report_id",
+            "type": "string",
+            "description": "A unique identifier for the triage report.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "InvalidInputException",
+            "description": "The 'symptoms' parameter is missing or not detailed enough to generate a triage report.",
+        },
+        {
+            "name": "UrgencyLevelNotProvidedException",
+            "description": "The 'urgency_level' parameter is missing or not valid.",
+        },
+    ]
+
+
+class ScheduleER(VirtualFunctionTool):
+    name = "ScheduleER"
+    summary = "Schedule an emergency room visit for a patient based on urgency and availability."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "patient_id",
+            "type": "string",
+            "description": "The unique identifier for the patient.",
+            "required": True,
+        },
+        {
+            "name": "urgency_level",
+            "type": "string",
+            "description": "The urgency level of the situation (e.g., 'low', 'medium', 'high').",
+            "required": True,
+        },
+        {
+            "name": "symptoms",
+            "type": "string",
+            "description": "A brief description of the symptoms prompting the ER visit.",
+            "required": True,
+        },
+        {
+            "name": "preferred_hospital",
+            "type": "string",
+            "description": "The name or location of the preferred hospital for the ER visit.",
+            "required": False,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "appointment_id",
+            "type": "string",
+            "description": "A unique identifier for the scheduled ER visit.",
+        },
+        {
+            "name": "confirmation",
+            "type": "string",
+            "description": "Confirmation that the ER visit has been successfully scheduled.",
+        },
+        {
+            "name": "estimated_wait_time",
+            "type": "string",
+            "description": "An estimated wait time before the patient can be seen in the ER.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "InvalidUrgencyLevelException",
+            "description": "The 'urgency_level' parameter is not valid or not recognized.",
+        },
+        {
+            "name": "NoAvailableERException",
+            "description": "No available emergency room slots at the preferred or nearest hospital.",
+        },
+        {
+            "name": "InvalidInputException",
+            "description": "One or more required parameters are missing or incorrectly formatted.",
+        },
+    ]
+
+
+@register_toolkit()
+class MedicalTriage(FunctionToolkit):
+    name_for_human = "Medical Triage"
+    description_for_human = "Tool for assessing and prioritizing patient treatment based on the severity of their condition."
+    name_for_model = "MedicalTriage"
+    description_for_model = "Tool for assessing and prioritizing patient treatment. Use it to evaluate symptoms, categorize patient urgency, suggest initial treatment steps, recommend further medical attention, and schedule ER visits."
+    tool_classes = [
+        AssessSymptomswithDatabase,
+        CategorizeUrgency,
+        RecordPatientInfo,
+        CommunicateWithMedicalTeam,
+        GenerateTriageReport,
+        ScheduleER,
+        ScheduleDoctorAppointment,
     ]
