@@ -75,16 +75,21 @@ class LLMGroundingEngine(Evaluator):
             tool.name: tool for tool in self.get_all_tools(self.toolkits)
         }
         self.tools = self.get_all_tools(self.toolkits)
-        toolkit_strings = "\n".join(
-            [toolkit.create_description("medium") for toolkit in self.toolkits]
-        )
-        self.tool_names = [tool.name for tool in self.get_all_tools(self.toolkits)]
-        tool_prompt = format_tool_prompt(toolkit_strings, ", ".join(self.tool_names))
-        self.tool_guide = engine_guide
-        return (
-            tool_prompt
-            + f"\n**Note that the observation returned by the environemnt are {'only visible to you, so you should speak to the other agent if you want to share the observation.**' if not share_observation else 'returned observation is visible to all agents'}.\n"
-        )
+        if self.tools:
+            toolkit_strings = "\n".join(
+                [toolkit.create_description("medium") for toolkit in self.toolkits]
+            )
+            self.tool_names = [tool.name for tool in self.get_all_tools(self.toolkits)]
+            tool_prompt = format_tool_prompt(
+                toolkit_strings, ", ".join(self.tool_names)
+            )
+            self.tool_guide = engine_guide
+            return (
+                tool_prompt
+                + f"\n**Note that the observation returned by the environemnt are {'only visible to you, so you should speak to the other agent if you want to share the observation.**' if not share_observation else 'returned observation is visible to all agents'}.\n"
+            )
+        else:
+            return ""
 
     def parse_action(self, action: str) -> LangchainAgentAction:
         json_action = json.loads(action)
