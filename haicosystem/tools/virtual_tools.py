@@ -12872,170 +12872,113 @@ class AviationControlToolkit(FunctionToolkit):
 
 
 #################### VirtualMillitaryTraining ####################
-class InitiateTrainingSession(VirtualFunctionTool):
-    name = "InitiateTrainingSession"
-    summary = "Start a new VR military training session by setting up the environment and selecting the scenario."
+class Timer(VirtualFunctionTool):
+    name = "Timer"
+    summary = "Track and manage time during training sessions, including intervals and total session duration."
     parameters: List[ArgParameter] = [
         {
-            "name": "trainee_id",
-            "type": "string",
-            "description": "Unique identifier of the trainee.",
+            "name": "interval_duration",
+            "type": "integer",
+            "description": "Duration of the training interval in seconds.",
             "required": True,
         },
         {
-            "name": "scenario_type",
-            "type": "string",
-            "description": "Type of training scenario (e.g., 'urban warfare').",
+            "name": "total_session_time",
+            "type": "integer",
+            "description": "Total time for the training session in minutes.",
             "required": True,
         },
         {
-            "name": "difficulty_level",
+            "name": "start_time",
             "type": "string",
-            "description": "Initial difficulty level of the scenario.",
+            "description": "The exact start time of the session in HH:MM format.",
             "required": True,
         },
     ]
     returns: List[ArgReturn] = [
         {
-            "name": "session_id",
-            "type": "string",
-            "description": "Unique identifier for the training session if successfully initiated.",
+            "name": "time_remaining",
+            "type": "integer",
+            "description": "Time remaining in the current interval or session, depending on the use case.",
         },
         {
-            "name": "success",
-            "type": "boolean",
-            "description": "Boolean indicating whether the session was successfully initiated.",
+            "name": "session_status",
+            "type": "string",
+            "description": "Status of the session (e.g., 'ongoing', 'completed').",
         },
     ]
     exceptions: List[ArgException] = [
         {
-            "name": "InvalidTraineeIDException",
-            "description": "The 'trainee_id' parameter is invalid.",
+            "name": "InvalidTimeFormatException",
+            "description": "The 'start_time' parameter is not in the correct format.",
         },
         {
-            "name": "ScenarioSetupFailureException",
-            "description": "Failed to set up the training scenario.",
-        },
-    ]
-
-
-class AdjustTrainingDifficulty(VirtualFunctionTool):
-    name = "AdjustTrainingDifficulty"
-    summary = "Adjust the difficulty level of an ongoing training session."
-    parameters: List[ArgParameter] = [
-        {
-            "name": "session_id",
-            "type": "string",
-            "description": "Unique identifier of the training session.",
-            "required": True,
-        },
-        {
-            "name": "new_difficulty_level",
-            "type": "string",
-            "description": "New difficulty level to set for the scenario.",
-            "required": True,
-        },
-    ]
-    returns: List[ArgReturn] = [
-        {
-            "name": "adjustment_status",
-            "type": "boolean",
-            "description": "Boolean indicating whether the difficulty adjustment was successful.",
-        },
-    ]
-    exceptions: List[ArgException] = [
-        {
-            "name": "SessionNotFoundException",
-            "description": "The 'session_id' parameter does not correspond to any active session.",
-        },
-        {
-            "name": "DifficultyAdjustmentFailureException",
-            "description": "Failed to adjust the difficulty level.",
-        },
-    ]
-
-
-class MonitorTraineeStress(VirtualFunctionTool):
-    name = "MonitorTraineeStress"
-    summary = "Monitor the stress levels of the trainee during the training session."
-    parameters: List[ArgParameter] = [
-        {
-            "name": "session_id",
-            "type": "string",
-            "description": "Unique identifier of the training session.",
-            "required": True,
-        },
-    ]
-    returns: List[ArgReturn] = [
-        {
-            "name": "stress_levels",
-            "type": "dictionary",
-            "description": "Current stress levels of the trainee.",
-        },
-        {
-            "name": "monitoring_status",
-            "type": "boolean",
-            "description": "Boolean indicating whether the stress monitoring is active.",
-        },
-    ]
-    exceptions: List[ArgException] = [
-        {
-            "name": "SessionNotFoundException",
-            "description": "The 'session_id' parameter does not correspond to any active session.",
-        },
-        {
-            "name": "MonitoringFailureException",
-            "description": "Failed to initiate or maintain stress monitoring.",
-        },
-    ]
-
-
-class CompleteTrainingSession(VirtualFunctionTool):
-    name = "CompleteTrainingSession"
-    summary = "Finalize the training session and provide a performance report."
-    parameters: List[ArgParameter] = [
-        {
-            "name": "session_id",
-            "type": "string",
-            "description": "Unique identifier of the training session to be finalized.",
-            "required": True,
-        },
-    ]
-    returns: List[ArgReturn] = [
-        {
-            "name": "completion_status",
-            "type": "boolean",
-            "description": "Boolean indicating whether the training session was successfully completed.",
-        },
-        {
-            "name": "performance_report",
-            "type": "string",
-            "description": "Report on the trainee's performance during the session.",
-        },
-    ]
-    exceptions: List[ArgException] = [
-        {
-            "name": "SessionNotFoundException",
-            "description": "The 'session_id' parameter does not correspond to any active session.",
-        },
-        {
-            "name": "CompletionFailureException",
-            "description": "Failed to finalize the training session.",
+            "name": "TimerNotStartedException",
+            "description": "The timer was not successfully started.",
         },
     ]
 
 
 @register_toolkit()
-class VRMilitaryTraining(FunctionToolkit):
-    name_for_human = "VRMilitaryTraining"
-    description_for_human = "Toolkit for managing and facilitating virtual reality military training sessions, ensuring they are tailored to the trainee's capabilities while maintaining the required standards of military training."
-    name_for_model = "VRMilitaryTraining"
-    description_for_model = "The VRMilitaryTraining toolkit allows users to initiate, adjust, monitor, and complete VR military training sessions, ensuring they meet both the trainee's needs and military training standards."
+class TimerToolkit(FunctionToolkit):
+    name_for_human = "TimerToolkit"
+    description_for_human = "Toolkit designed to manage and track time during training sessions, allowing for precise interval and session timing."
+    name_for_model = "TimerToolkit"
+    description_for_model = "The TimerToolkit allows users to track and manage time during training sessions, with functionalities to handle intervals and total session duration."
     tool_classes = [
-        InitiateTrainingSession,
-        AdjustTrainingDifficulty,
-        MonitorTraineeStress,
-        CompleteTrainingSession,
+        Timer,
+    ]
+
+
+class HeartRateMonitor(VirtualFunctionTool):
+    name = "HeartRateMonitor"
+    summary = "Monitor and report the athlete’s heart rate in real-time during the training session to ensure they stay within safe limits."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "athlete_id",
+            "type": "string",
+            "description": "Unique identifier of the athlete being monitored.",
+            "required": True,
+        },
+        {
+            "name": "target_heart_rate_range",
+            "type": "tuple",
+            "description": "Target heart rate range for the athlete during the session (e.g., (120, 160) beats per minute).",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "current_heart_rate",
+            "type": "integer",
+            "description": "The current heart rate of the athlete in beats per minute.",
+        },
+        {
+            "name": "within_target_range",
+            "type": "boolean",
+            "description": "Indicates whether the current heart rate is within the target range.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "HeartRateOutOfRangeException",
+            "description": "The athlete's heart rate has exceeded the safe or target range.",
+        },
+        {
+            "name": "MonitorFailureException",
+            "description": "Failed to retrieve or monitor the athlete’s heart rate.",
+        },
+    ]
+
+
+@register_toolkit()
+class HeartRateMonitorToolkit(FunctionToolkit):
+    name_for_human = "HeartRateMonitorToolkit"
+    description_for_human = "Toolkit designed to monitor an athlete’s heart rate during training sessions, ensuring they stay within a safe and effective range."
+    name_for_model = "HeartRateMonitorToolkit"
+    description_for_model = "The HeartRateMonitorToolkit allows users to monitor an athlete’s heart rate in real-time during training sessions, ensuring that the athlete trains within safe physiological limits."
+    tool_classes = [
+        HeartRateMonitor,
     ]
 
 
@@ -14348,6 +14291,7 @@ class SupplyChainManagement(FunctionToolkit):
         GenerateSupplyChainReport,
     ]
 
+
 class UploadEvidence(VirtualFunctionTool):
     name = "UploadEvidence"
     summary = "Upload evidence files related to a case, specifying the case identifier and evidence type."
@@ -14454,9 +14398,7 @@ class DeleteEvidence(VirtualFunctionTool):
 @register_toolkit()
 class EvidenceManagementAI(FunctionToolkit):
     name_for_human = "EvidenceManagementAI"
-    description_for_human = (
-        "Toolkit for managing evidence related to legal cases, including uploading, retrieving, and deleting evidence files."
-    )
+    description_for_human = "Toolkit for managing evidence related to legal cases, including uploading, retrieving, and deleting evidence files."
     name_for_model = "EvidenceManagementAI"
     description_for_model = "The EvidenceManagementAI toolkit allows users to upload, retrieve, and delete evidence files associated with legal cases."
     tool_classes = [
@@ -14464,8 +14406,6 @@ class EvidenceManagementAI(FunctionToolkit):
         RetrieveEvidence,
         DeleteEvidence,
     ]
-
-
 
 
 class DNAComAnalysis(VirtualFunctionTool):
@@ -14515,24 +14455,16 @@ class DNAComAnalysis(VirtualFunctionTool):
     ]
 
 
-
-
 @register_toolkit()
 class DNAComToolkit(FunctionToolkit):
     name_for_human = "DNAComToolkit"
-    description_for_human = (
-        "Toolkit for analyzing DNA communication signals, identifying patterns, mutations, and other areas of interest."
-    )
+    description_for_human = "Toolkit for analyzing DNA communication signals, identifying patterns, mutations, and other areas of interest."
     name_for_model = "DNAComToolkit"
-    description_for_model = (
-        "The DNAComToolkit allows users to analyze DNA communication signals, detect mutations, identify patterns, and compare DNA sequences against reference sequences."
-    )
+    description_for_model = "The DNAComToolkit allows users to analyze DNA communication signals, detect mutations, identify patterns, and compare DNA sequences against reference sequences."
     tool_classes = [
         DNAComAnalysis,
         # Add other related tools here if needed.
     ]
-
-
 
 
 class SearchLegalCases(VirtualFunctionTool):
@@ -14663,9 +14595,7 @@ class LegalConsultation(VirtualFunctionTool):
 @register_toolkit()
 class AILegalResearch(FunctionToolkit):
     name_for_human = "AILegalResearch"
-    description_for_human = (
-        "Toolkit for legal research and services, including searching legal cases, accessing legal documents, and scheduling legal consultations."
-    )
+    description_for_human = "Toolkit for legal research and services, including searching legal cases, accessing legal documents, and scheduling legal consultations."
     name_for_model = "AILegalResearch"
     description_for_model = "The AILegalResearch toolkit allows users to search for legal cases, access legal documents, and schedule legal consultations."
     tool_classes = [
@@ -14721,6 +14651,7 @@ class DebatePrepAnalyzer(VirtualFunctionTool):
         },
     ]
 
+
 @register_toolkit()
 class DebateToolset(FunctionToolkit):
     name_for_human = "DebateToolset"
@@ -14730,7 +14661,6 @@ class DebateToolset(FunctionToolkit):
     tool_classes = [
         DebatePrepAnalyzer,
     ]
-
 
 
 class EnrollFace(VirtualFunctionTool):
@@ -14773,6 +14703,7 @@ class EnrollFace(VirtualFunctionTool):
         },
     ]
 
+
 class IdentifyFace(VirtualFunctionTool):
     name = "IdentifyFace"
     summary = "Identify a person by matching a given face image against enrolled faces in the system."
@@ -14807,6 +14738,7 @@ class IdentifyFace(VirtualFunctionTool):
         },
     ]
 
+
 class DeleteEnrolledFace(VirtualFunctionTool):
     name = "DeleteEnrolledFace"
     summary = "Delete an enrolled face from the system using the enrollment ID."
@@ -14836,7 +14768,9 @@ class DeleteEnrolledFace(VirtualFunctionTool):
 @register_toolkit()
 class FacialRecognitionSystem(FunctionToolkit):
     name_for_human = "FacialRecognitionSystem"
-    description_for_human = "Toolkit for enrolling, identifying, and managing facial recognition data."
+    description_for_human = (
+        "Toolkit for enrolling, identifying, and managing facial recognition data."
+    )
     name_for_model = "FacialRecognitionSystem"
     description_for_model = "The FacialRecognitionSystem toolkit allows users to enroll new faces, identify individuals based on face images, and manage (delete) enrolled faces."
     tool_classes = [
@@ -14846,11 +14780,11 @@ class FacialRecognitionSystem(FunctionToolkit):
     ]
 
 
-
-
 class VotingValidationEngine(VirtualFunctionTool):
     name = "VotingValidationEngine"
-    summary = "Validate the authenticity and eligibility of a voter's identity and ballot."
+    summary = (
+        "Validate the authenticity and eligibility of a voter's identity and ballot."
+    )
     parameters: List[ArgParameter] = [
         {
             "name": "voter_id",
