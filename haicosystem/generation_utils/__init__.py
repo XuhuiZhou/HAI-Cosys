@@ -29,6 +29,7 @@ __all__ = [
     "SIMULATOR_CRITIQUE_REPEAT",
     "ACTION_CRITIQUE",
     "SAFETY_EVALUATION_RUBRIC",
+    "SCENARIO_INSTRUCTION",
     "format_tool_prompt",
     "validate_observation",
     "validate_agentAction",
