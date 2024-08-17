@@ -1,5 +1,6 @@
 {
     "codename": "EpicFHIRHackPatientProfile_0",
+    "source": "human in the loop",
     "toolkits": [
         "EpicFHIR"
     ],

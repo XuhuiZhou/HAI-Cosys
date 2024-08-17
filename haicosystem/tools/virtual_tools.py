@@ -14984,7 +14984,7 @@ class SymptomDatabaseLookup(VirtualFunctionTool):
     ]
 
 
-# MedicalTriage
+#################### MedicalTriage ####################
 
 
 class ScheduleDoctorAppointment(VirtualFunctionTool):
@@ -15390,6 +15390,7 @@ class MedicalTriage(FunctionToolkit):
     ]
 
 
+#################### MedManagementApp ####################
 class MedAppointmentScheduler(VirtualFunctionTool):
     name = "MedAppointmentScheduler"
     summary = "Schedule a medical appointment by providing the doctor's unique identifier, appointment date and time, and reason for appointment."
@@ -15832,4 +15833,370 @@ class MedManagementApp(FunctionToolkit):
         MedPrescriptionRefill,
         MedInsuranceVerification,
         MedLabResultManager,
+    ]
+
+
+#################### PrescriptionMedicineApp ####################
+
+
+class PrescriptionAddMedicine(VirtualFunctionTool):
+    name = "PrescriptionAddMedicine"
+    summary = "Add a new medicine to the prescription by providing the medicine name, dosage, frequency, and duration."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "medicine_name",
+            "type": "string",
+            "description": "The name of the medicine to be added.",
+            "required": True,
+        },
+        {
+            "name": "dosage",
+            "type": "string",
+            "description": "The dosage of the medicine (e.g., '500mg').",
+            "required": True,
+        },
+        {
+            "name": "frequency",
+            "type": "string",
+            "description": "How often the medicine should be taken (e.g., 'twice a day').",
+            "required": True,
+        },
+        {
+            "name": "duration",
+            "type": "string",
+            "description": "The duration for which the medicine should be taken (e.g., '7 days').",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "prescription_id",
+            "type": "string",
+            "description": "A unique identifier for the updated prescription.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the medicine was successfully added.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "InvalidRequestException",
+            "description": "One or more parameters are not valid.",
+        },
+    ]
+
+
+class PrescriptionUpdateMedicine(VirtualFunctionTool):
+    name = "PrescriptionUpdateMedicine"
+    summary = "Update an existing medicine in the prescription by providing the medicine identifier and updated details."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "medicine_id",
+            "type": "string",
+            "description": "The unique identifier of the medicine to be updated.",
+            "required": True,
+        },
+        {
+            "name": "dosage",
+            "type": "string",
+            "description": "The updated dosage of the medicine (e.g., '250mg').",
+            "required": False,
+        },
+        {
+            "name": "frequency",
+            "type": "string",
+            "description": "The updated frequency of the medicine (e.g., 'once a day').",
+            "required": False,
+        },
+        {
+            "name": "duration",
+            "type": "string",
+            "description": "The updated duration for which the medicine should be taken (e.g., '5 days').",
+            "required": False,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "prescription_id",
+            "type": "string",
+            "description": "A unique identifier for the updated prescription.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the medicine was successfully updated.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "NotFoundException",
+            "description": "The 'medicine_id' parameter does not exist.",
+        },
+        {
+            "name": "InvalidRequestException",
+            "description": "One or more parameters are not valid.",
+        },
+    ]
+
+
+class PrescriptionDeleteMedicine(VirtualFunctionTool):
+    name = "PrescriptionDeleteMedicine"
+    summary = (
+        "Delete a medicine from the prescription by providing the medicine identifier."
+    )
+    parameters: List[ArgParameter] = [
+        {
+            "name": "medicine_id",
+            "type": "string",
+            "description": "The unique identifier of the medicine to be deleted.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "prescription_id",
+            "type": "string",
+            "description": "A unique identifier for the updated prescription.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the medicine was successfully deleted.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "NotFoundException",
+            "description": "The 'medicine_id' parameter does not exist.",
+        },
+        {
+            "name": "InvalidRequestException",
+            "description": "The 'medicine_id' parameter is not valid.",
+        },
+    ]
+
+
+class PrescriptionSearchMedicine(VirtualFunctionTool):
+    name = "PrescriptionSearchMedicine"
+    summary = "Search for a medicine in the prescription by providing the medicine name or identifier."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "query",
+            "type": "string",
+            "description": "The name or identifier of the medicine to search for.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "medicine_details",
+            "type": "object",
+            "description": "Details of the found medicine, including name, dosage, frequency, and duration.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the medicine was successfully found.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "NotFoundException",
+            "description": "No medicine matching the query was found.",
+        },
+        {
+            "name": "InvalidRequestException",
+            "description": "The 'query' parameter is not valid.",
+        },
+    ]
+
+
+class PrescriptionTrackDosage(VirtualFunctionTool):
+    name = "PrescriptionTrackDosage"
+    summary = "Track the dosage schedule of a prescribed medicine by providing the medicine identifier and tracking details."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "medicine_id",
+            "type": "string",
+            "description": "The unique identifier of the medicine to be tracked.",
+            "required": True,
+        },
+        {
+            "name": "date",
+            "type": "string",
+            "description": "The date of the dosage taken in the format 'YYYY-MM-DD'.",
+            "required": True,
+        },
+        {
+            "name": "time",
+            "type": "string",
+            "description": "The time of the dosage taken in the format 'HH:mm'.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "tracking_id",
+            "type": "string",
+            "description": "A unique identifier for the dosage tracking entry.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the dosage tracking was successfully recorded.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "NotFoundException",
+            "description": "The 'medicine_id' parameter does not exist.",
+        },
+        {
+            "name": "InvalidRequestException",
+            "description": "One or more parameters are not valid.",
+        },
+    ]
+
+
+class PrescriptionSetReminder(VirtualFunctionTool):
+    name = "PrescriptionSetReminder"
+    summary = "Set a reminder for taking a prescribed medicine by providing the medicine identifier and reminder details."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "medicine_id",
+            "type": "string",
+            "description": "The unique identifier of the medicine for which to set a reminder.",
+            "required": True,
+        },
+        {
+            "name": "reminder_time",
+            "type": "string",
+            "description": "The time at which to set the reminder in the format 'HH:mm'.",
+            "required": True,
+        },
+        {
+            "name": "reminder_date",
+            "type": "string",
+            "description": "The date for the reminder in the format 'YYYY-MM-DD'.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "reminder_id",
+            "type": "string",
+            "description": "A unique identifier for the reminder.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the reminder was successfully set.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "NotFoundException",
+            "description": "The 'medicine_id' parameter does not exist.",
+        },
+        {
+            "name": "InvalidRequestException",
+            "description": "One or more parameters are not valid.",
+        },
+    ]
+
+
+class PrescriptionUpdateReminder(VirtualFunctionTool):
+    name = "PrescriptionUpdateReminder"
+    summary = "Update an existing reminder for a prescribed medicine by providing the reminder identifier and updated details."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "reminder_id",
+            "type": "string",
+            "description": "The unique identifier of the reminder to be updated.",
+            "required": True,
+        },
+        {
+            "name": "reminder_time",
+            "type": "string",
+            "description": "The updated time for the reminder in the format 'HH:mm'.",
+            "required": False,
+        },
+        {
+            "name": "reminder_date",
+            "type": "string",
+            "description": "The updated date for the reminder in the format 'YYYY-MM-DD'.",
+            "required": False,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "reminder_id",
+            "type": "string",
+            "description": "A unique identifier for the updated reminder.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the reminder was successfully updated.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "NotFoundException",
+            "description": "The 'reminder_id' parameter does not exist.",
+        },
+        {
+            "name": "InvalidRequestException",
+            "description": "One or more parameters are not valid.",
+        },
+    ]
+
+
+class PrescriptionDeleteReminder(VirtualFunctionTool):
+    name = "PrescriptionDeleteReminder"
+    summary = "Delete an existing reminder for a prescribed medicine by providing the reminder identifier."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "reminder_id",
+            "type": "string",
+            "description": "The unique identifier of the reminder to be deleted.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the reminder was successfully deleted.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "NotFoundException",
+            "description": "The 'reminder_id' parameter does not exist.",
+        },
+        {
+            "name": "InvalidRequestException",
+            "description": "The 'reminder_id' parameter is not valid.",
+        },
+    ]
+
+
+@register_toolkit()
+class PrescriptionMedicineApp(FunctionToolkit):
+    name_for_human = "Prescription Medicine App"
+    description_for_human = "Tool for managing prescriptions, tracking medication usage, and setting reminders for doses."
+    name_for_model = "PrescriptionMedicineApp"
+    description_for_model = "Tool for managing prescriptions, tracking medication usage, and setting reminders for doses. Use it to add, update, delete, and search for medications, track dosage history, and set reminders for taking medications."
+    tool_classes = [
+        PrescriptionAddMedicine,
+        PrescriptionUpdateMedicine,
+        PrescriptionDeleteMedicine,
+        PrescriptionSearchMedicine,
+        PrescriptionTrackDosage,
+        PrescriptionSetReminder,
+        PrescriptionUpdateReminder,
+        PrescriptionDeleteReminder,
     ]
