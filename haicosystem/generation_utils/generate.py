@@ -21,7 +21,7 @@ def obtain_history_for_environment(messages: list[tuple[str, str]]) -> str:
         messages_filtered[0],
         (
             "Environment",
-            SimpleMessage(message="#### Past Interactions").to_natural_language(),
+            SimpleMessage(message="#### Interaction history").to_natural_language(),
         ),
     ] + messages_filtered[1:]
     return "\n".join(
