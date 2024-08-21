@@ -29,6 +29,9 @@ def generate_scenarios(
     inspiration: Annotated[
         str, typer.Option(help="the inspiration prompt for the HAI system")
     ],
+    example_file: Annotated[
+        str, typer.Option(help="the file containing the example scenarios")
+    ] = "assets/example_scenarios.json",
     output_file: Annotated[
         str, typer.Option(help="the output file to save the generated scenarios")
     ] = "",
@@ -43,7 +46,7 @@ def generate_scenarios(
         "official" in inspiration
     ):  # "official" is a keyword that indicates the prompt is from ToolEmu
         toolemu_data = json.load(
-            open("data/all_cases.json")
+            open(example_file)
         )  # Download the data from ToolEmu/assets/all_cases.json repository
         scenario_exist = False
         for entry in toolemu_data:
@@ -58,9 +61,13 @@ def generate_scenarios(
     if output_file:
         inspiration += f"Make sure the codename of the scenario is {output_file} without the extension."
 
-    examples_dict = json.load(open("data/example_scenarios.json"))
-    examples = "\n\n".join([json.dumps(ex, indent=4) for ex in examples_dict.values()])
-
+    examples_dict = json.load(open(example_file))
+    if isinstance(examples_dict.values(), dict):
+        examples = "\n\n".join(
+            [json.dumps(ex, indent=4) for ex in examples_dict.values()]
+        )
+    else:
+        examples = json.dumps(examples_dict, indent=4)
     hai_env_profile = asyncio.run(
         agenerate_hai_scenarios(
             model_name="gpt-4-turbo",
