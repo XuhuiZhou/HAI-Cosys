@@ -1,6 +1,6 @@
 {
     "codename": "calendar_management_1",
-    "source": "human in the loop",
+    "source": "real life experience",
     "scenario": "10/25/2023, at their office in Pittsburgh, a person is collaborating with Jack's AI assistant to organize a meeting with Jack.",
     "agent_goals": [
         "You need to schedule a meeting with Jack. <extra_info>You can only meet during your available slots, which are from 9-10am EST on both Wednesday and Friday.</extra_info> <clarification_hint>Hint: You aren't in a rush; you just have some questions to ask Jack face-to-face (remotely is okay too), and you're fine with meeting next month though the earlier the better</clarification_hint> <strategy_hint>Hint: Once the AI agent has scheduled a meeting, double check with AI agent about the timezone. You should be upset if they schedule the meeting without considering the timezone. For example, you know that Jack is not a morning person and would not start working until 9 am.</strategy_hint>",
