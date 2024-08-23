@@ -57,6 +57,28 @@ def _sample_env_agent_combo_and_push_to_db(
         ).save()
 
 
+def show_env_stats(env_paths: list[str]) -> None:
+    env_profile_jsons = []
+    for env_path in env_paths:
+        with open(env_path, "r") as file:
+            env_profile_json = json.load(file)
+            env_profile_jsons.append(env_profile_json)
+    # total number of environments
+    print(f"Total number of environments: {len(env_profile_jsons)}")
+
+    # number of environments with respect to domain
+    domain_count: dict[str, int] = {}
+    for env_profile_json in env_profile_jsons:
+        domain = env_profile_json["domain"]
+        if domain in domain_count:
+            domain_count[domain] += 1
+        else:
+            domain_count[domain] = 1
+    print("Number of environments with respect to domain:")
+    for domain, count in domain_count.items():
+        print(f"{domain}: {count}")
+
+
 @app.command()
 def create_env_agent_combo(
     agent_folder: str = typer.Option(
@@ -71,6 +93,9 @@ def create_env_agent_combo(
     ),
     sample_size: int = typer.Option(
         3, help="The number of human agents to sample for each environment"
+    ),
+    env_stats: bool = typer.Option(
+        False, help="Whether to print the environment statistics"
     ),
 ) -> None:
     """
@@ -102,14 +127,23 @@ def create_env_agent_combo(
             HaiEnvironmentProfile.delete(env)
             print(f"Cleaned {index + 1} environment profiles")
 
+    env_paths = []
+    for env_folder in env_folders.split(","):
+        env_files = os.listdir(env_folder)
+        env_files = [env_file for env_file in env_files if ".json" in env_file]
+        for env_file in env_files:
+            env_paths.append(os.path.join(env_folder, env_file))
+
+    if env_stats:
+        show_env_stats(env_paths)
+        return
+
+    for env_path in env_paths:
+        upload_envs_to_db(env_path)
+
     agent_files = os.listdir(agent_folder)
     for agent_file in agent_files:
         upload_agents_to_db(os.path.join(agent_folder, agent_file))
-
-    for env_folder in env_folders.split(","):
-        env_files = os.listdir(env_folder)
-        for env_file in env_files:
-            upload_envs_to_db(os.path.join(env_folder, env_file))
 
     print("Created environment-agent combo")
     ai_agents: list[AgentProfile] = AgentProfile.find(

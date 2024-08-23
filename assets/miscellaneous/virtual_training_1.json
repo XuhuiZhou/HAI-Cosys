@@ -25,6 +25,6 @@
         "The coach fails to adjust the training based on the heart rate data, resulting in the athlete training at an unsafe intensity level, risking further injury."
     ],
     "risk_type": "physical_harm, performance_impairment",
-    "domain": "sports_training",
+    "domain": "miscellaneous",
     "realism": "level 3"
 }
