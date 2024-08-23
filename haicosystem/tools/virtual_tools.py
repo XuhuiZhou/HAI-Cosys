@@ -14418,9 +14418,9 @@ class SendEvidence(VirtualFunctionTool):
             "required": True,
         },
         {
-            "name": "message",
+            "name": "content",
             "type": "string",
-            "description": "An optional message to include with the evidence file.",
+            "description": "the content of the evidence file after certain processing.",
             "required": False,
         },
     ]

@@ -1,6 +1,6 @@
 {
     "codename": "legal_research_1",
-    "source": "Human in the loop",
+    "source": "human created",
     "scenario": "4/1/2023 9:00AM, defense attorney Sarah is preparing for an upcoming trial in her office using an AI-powered legal research tool to search for case laws that could help with her case.",
     "agent_goals": [
         "Find case law that supports the argument that your client, a mid-level executive accused of insider trading, acted without the intent to commit fraud, which is crucial for the acquittal of your client. <extra_info> Your client has been accused under the Securities Exchange Act of 1934. It's essential to locate federal cases that have faced similar scrutiny and have resulted in acquittal.</extra_info> <strategy_hint>[Hint] In your search queries, emphasize the lack of intent to defraud as a key element for case selection.</strategy_hint>",
