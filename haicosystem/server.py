@@ -119,9 +119,6 @@ async def arun_one_episode(
         rewards_prompt=env.terminal_evaluators[0].history,
     )
 
-    messages_for_rendering = render_for_humans(epilog)
-    rich_rendering(messages_for_rendering)
-
     if push_to_db:
         try:
             epilog.save()

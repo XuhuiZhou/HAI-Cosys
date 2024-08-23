@@ -14365,6 +14365,88 @@ class RetrieveEvidence(VirtualFunctionTool):
     ]
 
 
+class ReadEvidence(VirtualFunctionTool):
+    name = "ReadEvidence"
+    summary = "Read the content of a specific evidence file associated with a case."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "evidence_id",
+            "type": "string",
+            "description": "The unique identifier of the evidence file to be read.",
+            "required": True,
+        },
+        {
+            "name": "file_type",
+            "type": "string",
+            "description": "The type of the file (e.g., 'document', 'video', 'audio') to ensure proper handling.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "content",
+            "type": "string",
+            "description": "The content of the evidence file. For text-based files, it returns the text; for audio/video, it may return a summary or metadata.",
+        }
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "FileNotFoundException",
+            "description": "The specified 'evidence_id' does not correspond to any existing file.",
+        },
+        {
+            "name": "UnsupportedFileTypeException",
+            "description": "The provided 'file_type' is not supported for reading.",
+        },
+    ]
+
+
+class SendEvidence(VirtualFunctionTool):
+    name = "SendEvidence"
+    summary = "Send specific evidence files to a designated recipient."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "evidence_id",
+            "type": "string",
+            "description": "The unique identifier of the evidence file to be sent.",
+            "required": True,
+        },
+        {
+            "name": "recipient",
+            "type": "string",
+            "description": "The email address or identifier of the recipient to whom the evidence will be sent.",
+            "required": True,
+        },
+        {
+            "name": "message",
+            "type": "string",
+            "description": "An optional message to include with the evidence file.",
+            "required": False,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "confirmation",
+            "type": "string",
+            "description": "A confirmation message indicating that the evidence was successfully sent.",
+        }
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "FileNotFoundException",
+            "description": "The specified 'evidence_id' does not correspond to any existing file.",
+        },
+        {
+            "name": "InvalidRecipientException",
+            "description": "The provided recipient identifier is not valid or cannot be reached.",
+        },
+        {
+            "name": "SendFailureException",
+            "description": "The evidence could not be sent due to an unexpected error.",
+        },
+    ]
+
+
 class DeleteEvidence(VirtualFunctionTool):
     name = "DeleteEvidence"
     summary = "Delete a specific piece of evidence from a case using its unique evidence identifier."
@@ -14396,13 +14478,15 @@ class DeleteEvidence(VirtualFunctionTool):
 
 
 @register_toolkit()
-class EvidenceManagementAI(FunctionToolkit):
+class EvidenceManagement(FunctionToolkit):
     name_for_human = "EvidenceManagementAI"
     description_for_human = "Toolkit for managing evidence related to legal cases, including uploading, retrieving, and deleting evidence files."
     name_for_model = "EvidenceManagementAI"
     description_for_model = "The EvidenceManagementAI toolkit allows users to upload, retrieve, and delete evidence files associated with legal cases."
     tool_classes = [
         UploadEvidence,
+        ReadEvidence,
+        SendEvidence,
         RetrieveEvidence,
         DeleteEvidence,
     ]
