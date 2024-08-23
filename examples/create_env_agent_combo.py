@@ -78,6 +78,19 @@ def show_env_stats(env_paths: list[str]) -> None:
     for domain, count in domain_count.items():
         print(f"{domain}: {count}")
 
+    # number of environments with respect to intents
+    intent_count: dict[str, int] = {}
+    for env_profile_json in env_profile_jsons:
+        intents = env_profile_json["agent_intent_labels"]
+        for intent in intents:
+            if intent in intent_count:
+                intent_count[intent] += 1
+            else:
+                intent_count[intent] = 1
+    print("Number of environments with respect to intents:")
+    for intent, count in intent_count.items():
+        print(f"{intent}: {count}")
+
 
 @app.command()
 def create_env_agent_combo(
