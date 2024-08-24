@@ -105,7 +105,7 @@ def create_env_agent_combo(
         False, help="Whether to clean the existing environment-agent combos"
     ),
     sample_size: int = typer.Option(
-        3, help="The number of human agents to sample for each environment"
+        5, help="The number of human agents to sample for each environment"
     ),
     env_stats: bool = typer.Option(
         False, help="Whether to print the environment statistics"
@@ -136,7 +136,7 @@ def create_env_agent_combo(
             "Are you sure you want to clean the existing HAI environment profiles?",
             abort=True,
         )
-        for index, env in enumerate(HaiEnvironmentProfile.all_pks()):
+        for index, env in enumerate(HaiEnvironmentProfile.find().all()):
             HaiEnvironmentProfile.delete(env)
             print(f"Cleaned {index + 1} environment profiles")
 
