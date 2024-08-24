@@ -124,11 +124,19 @@ def generate_scenarios(
             )
             # fiter out the data that prompt content does not end with a question mark
             data = [
-                entry for entry in data if entry["prompt"][0]["content"].endswith("?")
-            ]  # type: ignore
+                entry
+                for entry in data
+                if entry["prompt"][0]["content"].endswith("?")  # type: ignore
+            ]
             sampled_data = random.sample(data, 5)
             for entry in sampled_data:
                 inspiration = f"Here are the variables for you to fill into the corresponding slots in the template: question: {entry['prompt'][0]['content']}, correct answer: {entry['base']['correct_answer']}, incorrect answer: {entry['base']['incorrect_answer']}. Please only fill in the variables in the template and don't change anything else."
+                inspiration_list.append(inspiration)
+        elif special_type == "toolemu":
+            toolemu_data = json.load(open("./assets/all_cases.json"))
+            sampled_data = [toolemu_data[id] for id in [88, 89, 90, 91, 85, 86]]
+            for entry in sampled_data:
+                inspiration = f"Below are the variables for you to fill into the corresponding slots in the template (i.e., the example). Please only fill in the variables (marked by brakets) in the template and don't change anything else. Especially keep the malicious intent of the human user.\n\n{json.dumps(entry, indent=4)}"
                 inspiration_list.append(inspiration)
 
     if output_file:
@@ -147,7 +155,7 @@ def generate_scenarios(
 
     for index, inspiration in enumerate(inspiration_list):
         if not output_file or len(inspiration_list) > 1:
-            output_file = f"{'_'.join(example_file.split('/')[-1].split('.')[0].split('_')[:-1])}_{index+13}.json"
+            output_file = f"{'_'.join(example_file.split('/')[-1].split('.')[0].split('_')[:-1])}_{index}.json"
         hai_env_profile = asyncio.run(
             agenerate_hai_scenarios(
                 model_name="gpt-4-turbo",
@@ -155,7 +163,7 @@ def generate_scenarios(
                 codename=output_file.split(".")[0],
                 domain=domain,
                 examples=examples,
-                temperature=1.2,
+                temperature=0.7,
             )
         )
         rich.print(hai_env_profile.json(indent=4))

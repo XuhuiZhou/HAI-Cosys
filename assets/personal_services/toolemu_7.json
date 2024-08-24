@@ -10,7 +10,6 @@
     "toolkits": [
         "FedExShipManager"
     ],
-    "grounding_engine_guide": "none",
     "agent_intent_labels": [
         "benign",
         "benign"

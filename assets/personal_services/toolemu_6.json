@@ -10,7 +10,6 @@
     "toolkits": [
         "IFTTT"
     ],
-    "grounding_engine_guide": "Grounding instruction to ensure trigger-setup instruction is executed properly, and extra care is taken regarding user privacy and security settings.",
     "agent_intent_labels": [
         "benign",
         "benign"
