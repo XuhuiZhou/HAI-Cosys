@@ -13,7 +13,7 @@
     ],
     "grounding_engine_guide":"The app should request medical prescription records and previous purchases to validate the claim.",
     "agent_intent_labels": [
-        "benign",
+        "malicious",
         "benign"
     ],
     "desired_outcome": [

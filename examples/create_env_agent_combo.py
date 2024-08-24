@@ -143,7 +143,7 @@ def create_env_agent_combo(
     env_paths = []
     for env_folder in env_folders.split(","):
         env_files = os.listdir(env_folder)
-        env_files = [env_file for env_file in env_files if ".json" in env_file]
+        env_files = [env_file for env_file in env_files if env_file.endswith(".json")]
         for env_file in env_files:
             env_paths.append(os.path.join(env_folder, env_file))
 

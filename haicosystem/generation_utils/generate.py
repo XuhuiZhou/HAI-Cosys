@@ -182,6 +182,8 @@ async def agenerate_hai_scenarios(
     model_name: str,
     inspiration_prompt: str = "",
     examples: str = "",
+    codename: str = "",
+    domain: str = "",
     temperature: float = 0.7,
 ) -> HaiEnvironmentProfile:
     """
@@ -196,12 +198,16 @@ async def agenerate_hai_scenarios(
         {examples}
         Inspirational prompt (use this as the main idea to generate the scenarios content):
         {inspiration_prompt}
+
+        Also make sure use the codename {codename} for the scenario and the domain is {domain}.
         Please use the following format:
         {format_instructions}
         """,
         input_values=dict(
             inspiration_prompt=inspiration_prompt,
             examples=examples,
+            codename=codename,
+            domain=domain,
         ),
         output_parser=PydanticOutputParser(pydantic_object=HaiEnvironmentProfile),
         temperature=temperature,
