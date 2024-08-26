@@ -181,7 +181,7 @@ def benchmark_display(
     print(f"Displaying performance for {model_list} vs {partner_model} on task {task}")
     model_rewards_dict = dict()
     for model in model_list:
-        tag = f"benchmark_{model}_{partner_model}_{evaluator_model}_{task}_trial0"
+        tag = f"benchmark_{model}_{partner_model}_{evaluator_model}_{task}"
         episodes = EpisodeLog.find(EpisodeLog.tag == tag).all()
         if len(episodes) == 0:
             print(f"No episodes found for {model}")
@@ -220,12 +220,12 @@ def get_avg_reward(
         if episode.models[1] == model_name:
             reward = get_rewards_from_episode(episode)[0][1]
             if binary:
-                reward = {key: 1 if value > 0 else 0 for key, value in reward.items()}
+                reward = {key: 1 if value < 0 else 0 for key, value in reward.items()}
             rewards_dict[f"{episode.environment}_0"].append(reward)
         else:
             reward = get_rewards_from_episode(episode)[1][1]
             if binary:
-                reward = {key: 1 if value > 0 else 0 for key, value in reward.items()}
+                reward = {key: 1 if value < 0 else 0 for key, value in reward.items()}
             rewards_dict[f"{episode.environment}_1"].append(reward)
     dimensions = list(rewards_dict.values())[0][0].keys()
 
@@ -473,12 +473,19 @@ def benchmark(
     ),
     batch_size: int = typer.Option(10, help="The batch size you want to use."),
     iteration_num: int = typer.Option(
-        4, help="The number of iterations you want to run through the unique evns"
+        4,
+        help="The number of iterations you want to run through the unique envs, this could be used to do partial benchmarking.",
     ),
-    task: str = typer.Option("hard", help="The task id you want to benchmark."),
+    task: str = typer.Option(
+        "hard",
+        help="The task id you want to benchmark. Will be integrated in the tag with the model names (benchmark_[model]_[partner_model]_[evaluator_model]_[task]).",
+    ),
     url: str = typer.Option("", help="The url to fetch the benchmark combo."),
     print_logs: bool = typer.Option(False, help="Print logs."),
-    only_show_performance: bool = typer.Option(False, help="Only show performance."),
+    only_show_performance: bool = typer.Option(
+        False,
+        help="only show the evaluation results fetched from the database wo running the simulation.",
+    ),
     output_to_jsonl: bool = typer.Option(False, help="Output to jsonl."),
     push_to_db: bool = typer.Option(False, help="Push to db."),
 ) -> None:
@@ -493,22 +500,10 @@ def benchmark(
     for iter_num, benchmark_combo in enumerate(benchmark_combo_trunks):
         if iter_num >= iteration_num:
             break
-        if task == "hard":
-            hard_envs = EnvironmentList.get("01HAK34YPB1H1RWXQDASDKHSNS").environments
-            agent_index = EnvironmentList.get("01HAK34YPB1H1RWXQDASDKHSNS").agent_index
-            assert isinstance(agent_index, list), "agent_index should be a list"
-            env_agent_combo_storage_index_list = []
-            for env_id, index in zip(hard_envs, agent_index):
-                for env_agent_combo_storage in benchmark_combo:
-                    if env_agent_combo_storage.env_id == env_id:
-                        env_agent_combo_storage_index_list.append(
-                            (env_agent_combo_storage, index)
-                        )
-        elif task == "haicosystem":
-            env_agent_combo_storage_index_list = [
-                (env_agent_combo_storage, "1")
-                for env_agent_combo_storage in benchmark_combo
-            ]
+        env_agent_combo_storage_index_list = [
+            (env_agent_combo_storage, "1")
+            for env_agent_combo_storage in benchmark_combo
+        ]
         for model in models:
             typer.echo(
                 f"Running benchmark for {model} chatting with {partner_model} on task {task} with {evaluator_model} as the evaluator."
@@ -516,7 +511,7 @@ def benchmark(
             model = cast(LLM_Name, model)
             partner_model = cast(LLM_Name, partner_model)
             evaluator_model = cast(LLM_Name, evaluator_model)
-            tag = f"benchmark_{model}_{partner_model}_{evaluator_model}_{task}_trial0"
+            tag = f"benchmark_{model}_{partner_model}_{evaluator_model}_{task}"
             typer.echo(typer.style(f"Tag: {tag}", fg=typer.colors.GREEN, bold=True))
             model_names = {
                 "env": evaluator_model,

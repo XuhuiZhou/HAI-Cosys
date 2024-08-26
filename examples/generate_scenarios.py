@@ -125,8 +125,8 @@ def generate_scenarios(
             # fiter out the data that prompt content does not end with a question mark
             data = [
                 entry
-                for entry in data
-                if entry["prompt"][0]["content"].endswith("?")  # type: ignore
+                for entry in data  # type: ignore
+                if entry["prompt"][0]["content"].endswith("?")
             ]
             sampled_data = random.sample(data, 5)
             for entry in sampled_data:

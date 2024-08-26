@@ -1,6 +1,7 @@
 import json
 import os
 import random
+import time
 
 import typer
 from sotopia.agents.llm_agent import LLMAgent
@@ -137,8 +138,9 @@ def create_env_agent_combo(
             abort=True,
         )
         for index, env in enumerate(HaiEnvironmentProfile.find().all()):
-            HaiEnvironmentProfile.delete(env)
+            HaiEnvironmentProfile.delete(env.pk)
             print(f"Cleaned {index + 1} environment profiles")
+        time.sleep(5)
 
     env_paths = []
     for env_folder in env_folders.split(","):
@@ -146,7 +148,6 @@ def create_env_agent_combo(
         env_files = [env_file for env_file in env_files if env_file.endswith(".json")]
         for env_file in env_files:
             env_paths.append(os.path.join(env_folder, env_file))
-
     if env_stats:
         show_env_stats(env_paths)
         return
@@ -165,11 +166,15 @@ def create_env_agent_combo(
     human_agents: list[AgentProfile] = AgentProfile.find(
         AgentProfile.last_name != "AI"
     ).all()  # type: ignore
-    env_list = HaiEnvironmentProfile.all_pks()
+    env_list: list[HaiEnvironmentProfile] = HaiEnvironmentProfile.find().all()  # type: ignore
+    print(f"# AI agents: {len(ai_agents)}")
+    print(f"# Human agents: {len(human_agents)}")
+    print(f"# Environments: {len(env_list)}")
     for env in env_list:
         assert ai_agents[0].pk is not None
+        assert env.pk is not None
         _sample_env_agent_combo_and_push_to_db(
-            env,
+            env.pk,
             ai_agents[0].pk,
             human_agent_profiles=human_agents,
             sample_size=sample_size,
