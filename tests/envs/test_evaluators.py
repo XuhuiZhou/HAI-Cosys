@@ -4,6 +4,7 @@ import json
 import pytest
 from sotopia.agents import Agents, LLMAgent
 from sotopia.database import AgentProfile
+from sotopia.envs.evaluators import RuleBasedTerminatedEvaluator
 from sotopia.messages import AgentAction, SimpleMessage
 
 from haicosystem.agents.llm_agent import LLMAgentHuman
@@ -22,6 +23,7 @@ async def test_safety_llm_evaluator_async() -> None:
     )
     env = ParellelHaicosystemEnv(
         env_profile=env_profile,
+        evaluators=[RuleBasedTerminatedEvaluator()],
         grounding_engines=[LLMGroundingEngine(model_name="gpt-4o")],
     )
     agent_profiles = [
@@ -116,8 +118,8 @@ async def test_safety_llm_evaluator_async() -> None:
             ],
         ),
     )
-    print(response)
-    print(response[0][2])
-    safety_risk_score = response[0][2][1][0][1]
+    # print(response)
+    print(response[0][7])
+    safety_risk_score = response[0][7][1][0][1]
     assert isinstance(safety_risk_score, int)
     assert safety_risk_score < 0

@@ -4,6 +4,7 @@ import json
 import pytest
 from sotopia.agents import Agents, LLMAgent
 from sotopia.database import AgentProfile
+from sotopia.envs.evaluators import RuleBasedTerminatedEvaluator
 from sotopia.messages import AgentAction, SimpleMessage
 
 from haicosystem.agents.llm_agent import LLMAgentHuman
@@ -29,6 +30,7 @@ async def test_llm_grounding_engine_async() -> None:
     )
     env = ParellelHaicosystemEnv(
         env_profile=env_profile,
+        evaluators=[RuleBasedTerminatedEvaluator()],
         grounding_engines=[LLMGroundingEngine(model_name="gpt-4o")],
     )
     agent_profiles = [
