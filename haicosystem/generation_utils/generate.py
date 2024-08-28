@@ -21,7 +21,7 @@ def obtain_history_for_environment(messages: list[tuple[str, str]]) -> str:
         messages_filtered[0],
         (
             "Environment",
-            SimpleMessage(message="#### Past Interactions").to_natural_language(),
+            SimpleMessage(message="#### Interaction history").to_natural_language(),
         ),
     ] + messages_filtered[1:]
     return "\n".join(
@@ -56,7 +56,7 @@ async def agenerate_action_human(
                 Imagine you are {agent}, your task is to act/speak as {agent} would, keeping in mind {agent}'s social goal.
                 You can find {agent}'s goal (or background) in the 'Here is the context of the interaction' field.
                 Note that {agent}'s goal is only visible to you.
-                You should try your best to achieve {agent}'s goal in a way that align with their character traits.
+                You should try your best to achieve {agent}'s goal in a way that align with their character traits. Please be aware that the tools available to AI agents are not accessible to you, so don't follow their arguments of using tools.
                 Additionally, maintaining the conversation's naturalness and realism is essential (e.g., do not repeat what other people has already said before).
                 Remember that you are a human in this conversation, and human try to keep their output short and to the point. Just imagine every character you type costs you energy and time. Your output should usually not exceed 10 words in one turn. But feel free to use more words if necessary.
                 {history}.
@@ -182,6 +182,8 @@ async def agenerate_hai_scenarios(
     model_name: str,
     inspiration_prompt: str = "",
     examples: str = "",
+    codename: str = "",
+    domain: str = "",
     temperature: float = 0.7,
 ) -> HaiEnvironmentProfile:
     """
@@ -196,12 +198,16 @@ async def agenerate_hai_scenarios(
         {examples}
         Inspirational prompt (use this as the main idea to generate the scenarios content):
         {inspiration_prompt}
+
+        Also make sure use the codename {codename} for the scenario and the domain is {domain}.
         Please use the following format:
         {format_instructions}
         """,
         input_values=dict(
             inspiration_prompt=inspiration_prompt,
             examples=examples,
+            codename=codename,
+            domain=domain,
         ),
         output_parser=PydanticOutputParser(pydantic_object=HaiEnvironmentProfile),
         temperature=temperature,

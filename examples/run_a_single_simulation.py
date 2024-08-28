@@ -9,7 +9,8 @@ from rich.logging import RichHandler
 from sotopia.database import EpisodeLog
 
 from haicosystem.protocols.database import HaiEnvironmentProfile
-from haicosystem.server import BridgeSampler, run_server
+from haicosystem.server import run_async_server
+from haicosystem.utils import BridgeSampler
 
 app = typer.Typer(pretty_exceptions_show_locals=False)
 
@@ -22,7 +23,7 @@ process = subprocess.Popen(
 git_head_hash = process.communicate()[0].strip()
 
 logging.basicConfig(
-    level=20,
+    level=15,
     format=FORMAT,
     datefmt="[%X]",
     handlers=[
@@ -52,12 +53,12 @@ def example_run(
             env_profiles_json = json.load(file)
         env_profile = HaiEnvironmentProfile.parse_obj(env_profiles_json)
     else:
-        filename = "./data/example_scenarios.json"
+        filename = "./assets/example_scenarios.json"
         with open(filename, "r") as file:
             env_profiles_json = json.load(file)
         env_profile = HaiEnvironmentProfile.parse_obj(env_profiles_json[codename])
     asyncio.run(
-        run_server(
+        run_async_server(
             sampler=BridgeSampler(env_candidates=[env_profile]),
             model_dict={
                 "env": "gpt-4-turbo",

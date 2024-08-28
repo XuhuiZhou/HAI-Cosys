@@ -1,0 +1,1 @@
+Patient Diagnosis and Triage. Symptom Checkers: Chatbots could serve as the first point of contact, gathering information about symptoms and guiding patients on whether they need to see a doctor or how urgently they should seek care.

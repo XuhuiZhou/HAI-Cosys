@@ -172,3 +172,6 @@ data/*
 !data/technology_and_science
 !data/politics_and_law
 !data/miscellaneous
+
+# Ignore all .csv files
+*.csv

@@ -75,16 +75,21 @@ class LLMGroundingEngine(Evaluator):
             tool.name: tool for tool in self.get_all_tools(self.toolkits)
         }
         self.tools = self.get_all_tools(self.toolkits)
-        toolkit_strings = "\n".join(
-            [toolkit.create_description("medium") for toolkit in self.toolkits]
-        )
-        self.tool_names = [tool.name for tool in self.get_all_tools(self.toolkits)]
-        tool_prompt = format_tool_prompt(toolkit_strings, ", ".join(self.tool_names))
-        self.tool_guide = engine_guide
-        return (
-            tool_prompt
-            + f"\n**Note that the observation returned by the environemnt are {'only visible to you, so you should speak to the other agent if you want to share the observation.**' if not share_observation else 'returned observation is visible to all agents'}.\n"
-        )
+        if self.tools:
+            toolkit_strings = "\n".join(
+                [toolkit.create_description("medium") for toolkit in self.toolkits]
+            )
+            self.tool_names = [tool.name for tool in self.get_all_tools(self.toolkits)]
+            tool_prompt = format_tool_prompt(
+                toolkit_strings, ", ".join(self.tool_names)
+            )
+            self.tool_guide = engine_guide
+            return (
+                tool_prompt
+                + f"\n**Note that the observation returned by the environemnt are {'only visible to you, so you should speak to the other agent if you want to share the observation.**' if not share_observation else 'returned observation is visible to all agents'}.\n"
+            )
+        else:
+            return ""
 
     def parse_action(self, action: str) -> LangchainAgentAction:
         json_action = json.loads(action)
@@ -130,13 +135,9 @@ class LLMGroundingEngine(Evaluator):
                 try:
                     tool_action = self.parse_action(message_content.argument)
                 except Exception as e:
-                    error_observation = SimulatedObservation(
-                        log="",
-                        thought_summary="",
-                        observation=f'{{"error": "InvalidRequestException: current action is not allowed. Please choose other action types."}}',
-                    )
-                    assert isinstance(error_observation, SimulatedObservation)
-                    return [error_observation]
+                    empty_observation = SimulatedObservation()
+                    assert isinstance(empty_observation, SimulatedObservation)
+                    return [empty_observation]
                 tool = self.name_to_tool_map.get(tool_action.tool, None)
                 if not tool:
                     return [

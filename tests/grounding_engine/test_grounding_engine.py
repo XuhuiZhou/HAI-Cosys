@@ -4,6 +4,7 @@ import json
 import pytest
 from sotopia.agents import Agents, LLMAgent
 from sotopia.database import AgentProfile
+from sotopia.envs.evaluators import RuleBasedTerminatedEvaluator
 from sotopia.messages import AgentAction, SimpleMessage
 
 from haicosystem.agents.llm_agent import LLMAgentHuman
@@ -21,7 +22,7 @@ from haicosystem.tools import get_toolkit_output_parser_by_names, get_toolkits_b
 
 @pytest.mark.asyncio
 async def test_llm_grounding_engine_async() -> None:
-    filename = "./data/example_scenarios.json"
+    filename = "./assets/example_scenarios.json"
     with open(filename, "r") as file:
         env_profiles_json = json.load(file)
     env_profile = HaiEnvironmentProfile.parse_obj(
@@ -29,6 +30,7 @@ async def test_llm_grounding_engine_async() -> None:
     )
     env = ParellelHaicosystemEnv(
         env_profile=env_profile,
+        evaluators=[RuleBasedTerminatedEvaluator()],
         grounding_engines=[LLMGroundingEngine(model_name="gpt-4o")],
     )
     agent_profiles = [

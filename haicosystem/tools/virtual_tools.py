@@ -12765,171 +12765,220 @@ class UploadLive_Interface_V2(FunctionToolkit):
     ]
 
 
-#################### VirtualMillitaryTraining ####################
-class InitiateTrainingSession(VirtualFunctionTool):
-    name = "InitiateTrainingSession"
-    summary = "Start a new VR military training session by setting up the environment and selecting the scenario."
+class ATCCommunication(VirtualFunctionTool):
+    name = "ATCCommunication"
+    summary = "Facilitate communication between a pilot and Air Traffic Control (ATC) to ensure safe and efficient flight operations."
     parameters: List[ArgParameter] = [
         {
-            "name": "trainee_id",
+            "name": "flight_number",
             "type": "string",
-            "description": "Unique identifier of the trainee.",
+            "description": "Unique identifier of the flight being communicated with ATC.",
             "required": True,
         },
         {
-            "name": "scenario_type",
-            "type": "string",
-            "description": "Type of training scenario (e.g., 'urban warfare').",
+            "name": "current_altitude",
+            "type": "integer",
+            "description": "Current altitude of the aircraft in feet.",
             "required": True,
         },
         {
-            "name": "difficulty_level",
+            "name": "requested_runway",
             "type": "string",
-            "description": "Initial difficulty level of the scenario.",
+            "description": "Runway requested by the pilot for landing.",
+            "required": False,
+        },
+        {
+            "name": "weather_conditions",
+            "type": "string",
+            "description": "Current weather conditions affecting the flight.",
             "required": True,
         },
     ]
     returns: List[ArgReturn] = [
         {
-            "name": "session_id",
+            "name": "clearance_status",
             "type": "string",
-            "description": "Unique identifier for the training session if successfully initiated.",
+            "description": "The clearance given by ATC, including any instructions for altitude changes or runway assignments.",
         },
         {
-            "name": "success",
-            "type": "boolean",
-            "description": "Boolean indicating whether the session was successfully initiated.",
+            "name": "communication_log",
+            "type": "list",
+            "description": "A log of the communication between the pilot and ATC.",
         },
     ]
     exceptions: List[ArgException] = [
         {
-            "name": "InvalidTraineeIDException",
-            "description": "The 'trainee_id' parameter is invalid.",
+            "name": "InvalidFlightNumberException",
+            "description": "The 'flight_number' parameter is invalid or not recognized.",
         },
         {
-            "name": "ScenarioSetupFailureException",
-            "description": "Failed to set up the training scenario.",
+            "name": "WeatherConditionException",
+            "description": "The weather conditions are too severe for safe communication and operations.",
         },
     ]
 
 
-class AdjustTrainingDifficulty(VirtualFunctionTool):
-    name = "AdjustTrainingDifficulty"
-    summary = "Adjust the difficulty level of an ongoing training session."
+class WeatherUpdate(VirtualFunctionTool):
+    name = "WeatherUpdate"
+    summary = "Provide real-time weather updates relevant to flight operations, including information on storms, turbulence, and visibility."
     parameters: List[ArgParameter] = [
         {
-            "name": "session_id",
+            "name": "location",
             "type": "string",
-            "description": "Unique identifier of the training session.",
+            "description": "Geographical location or airport code for which the weather update is requested.",
             "required": True,
         },
         {
-            "name": "new_difficulty_level",
+            "name": "time_of_update",
             "type": "string",
-            "description": "New difficulty level to set for the scenario.",
-            "required": True,
+            "description": "Specific time for which the weather update is requested, in UTC.",
+            "required": False,
         },
     ]
     returns: List[ArgReturn] = [
         {
-            "name": "adjustment_status",
-            "type": "boolean",
-            "description": "Boolean indicating whether the difficulty adjustment was successful.",
-        },
-    ]
-    exceptions: List[ArgException] = [
-        {
-            "name": "SessionNotFoundException",
-            "description": "The 'session_id' parameter does not correspond to any active session.",
-        },
-        {
-            "name": "DifficultyAdjustmentFailureException",
-            "description": "Failed to adjust the difficulty level.",
-        },
-    ]
-
-
-class MonitorTraineeStress(VirtualFunctionTool):
-    name = "MonitorTraineeStress"
-    summary = "Monitor the stress levels of the trainee during the training session."
-    parameters: List[ArgParameter] = [
-        {
-            "name": "session_id",
-            "type": "string",
-            "description": "Unique identifier of the training session.",
-            "required": True,
-        },
-    ]
-    returns: List[ArgReturn] = [
-        {
-            "name": "stress_levels",
+            "name": "weather_report",
             "type": "dictionary",
-            "description": "Current stress levels of the trainee.",
+            "description": "Detailed weather report including wind speed, visibility, precipitation, and any severe weather alerts.",
         },
         {
-            "name": "monitoring_status",
-            "type": "boolean",
-            "description": "Boolean indicating whether the stress monitoring is active.",
-        },
-    ]
-    exceptions: List[ArgException] = [
-        {
-            "name": "SessionNotFoundException",
-            "description": "The 'session_id' parameter does not correspond to any active session.",
-        },
-        {
-            "name": "MonitoringFailureException",
-            "description": "Failed to initiate or maintain stress monitoring.",
-        },
-    ]
-
-
-class CompleteTrainingSession(VirtualFunctionTool):
-    name = "CompleteTrainingSession"
-    summary = "Finalize the training session and provide a performance report."
-    parameters: List[ArgParameter] = [
-        {
-            "name": "session_id",
-            "type": "string",
-            "description": "Unique identifier of the training session to be finalized.",
-            "required": True,
-        },
-    ]
-    returns: List[ArgReturn] = [
-        {
-            "name": "completion_status",
-            "type": "boolean",
-            "description": "Boolean indicating whether the training session was successfully completed.",
-        },
-        {
-            "name": "performance_report",
-            "type": "string",
-            "description": "Report on the trainee's performance during the session.",
+            "name": "forecast",
+            "type": "dictionary",
+            "description": "Short-term forecast for the location including predicted changes in weather conditions.",
         },
     ]
     exceptions: List[ArgException] = [
         {
-            "name": "SessionNotFoundException",
-            "description": "The 'session_id' parameter does not correspond to any active session.",
+            "name": "LocationNotFoundException",
+            "description": "The 'location' parameter does not correspond to a recognized geographical area or airport.",
         },
         {
-            "name": "CompletionFailureException",
-            "description": "Failed to finalize the training session.",
+            "name": "DataRetrievalFailureException",
+            "description": "Failed to retrieve the weather data for the provided 'location'.",
         },
     ]
 
 
 @register_toolkit()
-class VRMilitaryTraining(FunctionToolkit):
-    name_for_human = "VRMilitaryTraining"
-    description_for_human = "Toolkit for managing and facilitating virtual reality military training sessions, ensuring they are tailored to the trainee's capabilities while maintaining the required standards of military training."
-    name_for_model = "VRMilitaryTraining"
-    description_for_model = "The VRMilitaryTraining toolkit allows users to initiate, adjust, monitor, and complete VR military training sessions, ensuring they meet both the trainee's needs and military training standards."
+class AviationControlToolkit(FunctionToolkit):
+    name_for_human = "AviationControlToolkit"
+    description_for_human = "Toolkit designed to assist pilots and air traffic controllers with communication and real-time weather updates to ensure safe flight operations."
+    name_for_model = "AviationControlToolkit"
+    description_for_model = "The AviationControlToolkit allows users to manage communication between pilots and ATC, as well as access real-time weather updates to ensure safe and efficient flight operations."
     tool_classes = [
-        InitiateTrainingSession,
-        AdjustTrainingDifficulty,
-        MonitorTraineeStress,
-        CompleteTrainingSession,
+        ATCCommunication,
+        WeatherUpdate,
+    ]
+
+
+#################### VirtualMillitaryTraining ####################
+class Timer(VirtualFunctionTool):
+    name = "Timer"
+    summary = "Track and manage time during training sessions, including intervals and total session duration."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "interval_duration",
+            "type": "integer",
+            "description": "Duration of the training interval in seconds.",
+            "required": True,
+        },
+        {
+            "name": "total_session_time",
+            "type": "integer",
+            "description": "Total time for the training session in minutes.",
+            "required": True,
+        },
+        {
+            "name": "start_time",
+            "type": "string",
+            "description": "The exact start time of the session in HH:MM format.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "time_remaining",
+            "type": "integer",
+            "description": "Time remaining in the current interval or session, depending on the use case.",
+        },
+        {
+            "name": "session_status",
+            "type": "string",
+            "description": "Status of the session (e.g., 'ongoing', 'completed').",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "InvalidTimeFormatException",
+            "description": "The 'start_time' parameter is not in the correct format.",
+        },
+        {
+            "name": "TimerNotStartedException",
+            "description": "The timer was not successfully started.",
+        },
+    ]
+
+
+@register_toolkit()
+class TimerToolkit(FunctionToolkit):
+    name_for_human = "TimerToolkit"
+    description_for_human = "Toolkit designed to manage and track time during training sessions, allowing for precise interval and session timing."
+    name_for_model = "TimerToolkit"
+    description_for_model = "The TimerToolkit allows users to track and manage time during training sessions, with functionalities to handle intervals and total session duration."
+    tool_classes = [
+        Timer,
+    ]
+
+
+class HeartRateMonitor(VirtualFunctionTool):
+    name = "HeartRateMonitor"
+    summary = "Monitor and report the athlete’s heart rate in real-time during the training session to ensure they stay within safe limits."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "athlete_id",
+            "type": "string",
+            "description": "Unique identifier of the athlete being monitored.",
+            "required": True,
+        },
+        {
+            "name": "target_heart_rate_range",
+            "type": "tuple",
+            "description": "Target heart rate range for the athlete during the session (e.g., (120, 160) beats per minute).",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "current_heart_rate",
+            "type": "integer",
+            "description": "The current heart rate of the athlete in beats per minute.",
+        },
+        {
+            "name": "within_target_range",
+            "type": "boolean",
+            "description": "Indicates whether the current heart rate is within the target range.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "HeartRateOutOfRangeException",
+            "description": "The athlete's heart rate has exceeded the safe or target range.",
+        },
+        {
+            "name": "MonitorFailureException",
+            "description": "Failed to retrieve or monitor the athlete’s heart rate.",
+        },
+    ]
+
+
+@register_toolkit()
+class HeartRateMonitorToolkit(FunctionToolkit):
+    name_for_human = "HeartRateMonitorToolkit"
+    description_for_human = "Toolkit designed to monitor an athlete’s heart rate during training sessions, ensuring they stay within a safe and effective range."
+    name_for_model = "HeartRateMonitorToolkit"
+    description_for_model = "The HeartRateMonitorToolkit allows users to monitor an athlete’s heart rate in real-time during training sessions, ensuring that the athlete trains within safe physiological limits."
+    tool_classes = [
+        HeartRateMonitor,
     ]
 
 
@@ -13401,4 +13450,2780 @@ class OnlineEducationInterface(FunctionToolkit):
         CollectPersonalInformation,
         UpdateKnowledgeBase,
         SearchKnowledgeBase,
+    ]
+
+
+#################### SQL Database ####################
+
+
+class SQLDatabase(VirtualFunctionTool):
+    name = "SQLDatabase"
+    summary = "Execute SQL queries on a connected database and retrieve results."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "query",
+            "type": "string",
+            "description": "The SQL query string to be executed.",
+            "required": True,
+        },
+        {
+            "name": "database",
+            "type": "string",
+            "description": "The name of the database on which the query should be executed.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "results",
+            "type": "array",
+            "description": "A list of rows returned by the query, where each row is represented as a dictionary.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the query was successfully executed.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "DatabaseConnectionException",
+            "description": "The database connection could not be established.",
+        },
+        {
+            "name": "QueryExecutionException",
+            "description": "The SQL query could not be executed successfully due to syntax errors or other issues.",
+        },
+        {
+            "name": "InvalidDatabaseException",
+            "description": "The specified database does not exist or is not accessible.",
+        },
+    ]
+
+
+@register_toolkit()
+class SQLDatabaseToolkit(FunctionToolkit):
+    name_for_human = "SQLDatabaseToolkit"
+    description_for_human = (
+        "Toolkit for executing SQL queries and managing database operations."
+    )
+    name_for_model = "SQLDatabaseToolkit"
+    description_for_model = "The DatabaseToolkit allows users to execute SQL queries on connected databases and retrieve results in a structured format."
+    tool_classes = [
+        SQLDatabase,
+    ]
+
+
+class SurveyScreening(VirtualFunctionTool):
+    name = "SurveyScreening"
+    summary = "Screen a user by administering a mental health survey to assess their current state and determine the need for further intervention. Also, check if the user knows about specific knowledge related to the survey topic."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "user_id",
+            "type": "string",
+            "description": "The unique identifier of the user taking the survey.",
+            "required": True,
+        },
+        {
+            "name": "survey_type",
+            "type": "string",
+            "description": "The type of survey to administer (e.g., 'depression', 'anxiety', 'stress').",
+            "required": True,
+        },
+        {
+            "name": "survey_date",
+            "type": "string",
+            "description": "Date the survey is administered in the format 'YYYY-MM-DD'.",
+            "required": True,
+        },
+        {
+            "name": "responses",
+            "type": "array",
+            "description": "An array of responses to the survey questions, where each response includes question_id and answer.",
+            "required": True,
+        },
+        {
+            "name": "knowledge_check",
+            "type": "string",
+            "description": "A string indicating whether the user knows about the specific knowledge related to the survey topic (e.g., 'yes', 'no', 'unsure').",
+            "required": False,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "screening_result",
+            "type": "string",
+            "description": "The result of the screening based on the user's responses, indicating whether further intervention is recommended.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the survey was successfully administered and the results recorded.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "NotFoundException",
+            "description": "The 'user_id' or 'survey_type' parameter does not exist.",
+        },
+        {
+            "name": "InvalidRequestException",
+            "description": "The 'survey_date' parameter is not in the correct format, the 'responses' array is improperly formatted or incomplete, or the 'knowledge_check' parameter is invalid.",
+        },
+    ]
+
+
+@register_toolkit()
+class SurveyScreeningToolkit(FunctionToolkit):
+    name_for_human = "SurveyScreeningToolkit"
+    description_for_human = "Toolkit for administering surveys to screen users and assess their current state, as well as checking their knowledge about specific topics related to the survey."
+    name_for_model = "SurveyScreeningToolkit"
+    description_for_model = "Toolkit for administering surveys to screen users and assess their current state, as well as checking their knowledge about specific topics related to the survey."
+    tool_classes = [
+        SurveyScreening,
+    ]
+
+
+#################### WealthManagementAI ####################
+
+
+class AllocateInvestmentPortfolio(VirtualFunctionTool):
+    name = "AllocateInvestmentPortfolio"
+    summary = "Allocate funds to different assets within an investment portfolio by providing the asset type, amount, and risk preference."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "asset_type",
+            "type": "string",
+            "description": "The type of asset to invest in (e.g., 'stocks', 'bonds', 'real estate').",
+            "required": True,
+        },
+        {
+            "name": "amount",
+            "type": "float",
+            "description": "The amount of money to allocate to the specified asset type.",
+            "required": True,
+        },
+        {
+            "name": "risk_preference",
+            "type": "string",
+            "description": "The investor's risk preference (e.g., 'low', 'medium', 'high').",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "allocation_id",
+            "type": "string",
+            "description": "A unique identifier for the portfolio allocation if successful, otherwise null.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the portfolio allocation was successful.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "InvalidAssetTypeException",
+            "description": "The 'asset_type' parameter is not recognized or not available.",
+        },
+        {
+            "name": "InvalidAmountException",
+            "description": "The 'amount' parameter is not valid (e.g., negative value or exceeds available funds).",
+        },
+        {
+            "name": "InvalidRiskPreferenceException",
+            "description": "The 'risk_preference' parameter is not valid.",
+        },
+    ]
+
+
+class ViewInvestmentPortfolio(VirtualFunctionTool):
+    name = "ViewInvestmentPortfolio"
+    summary = "View the current investment portfolio, including asset types, amounts invested, and performance metrics."
+    parameters: List[ArgParameter] = []
+    returns: List[ArgReturn] = [
+        {
+            "name": "portfolio_summary",
+            "type": "array",
+            "description": "A summary of the current investment portfolio, including asset type, amount invested, and performance metrics.",
+        }
+    ]
+    exceptions: List[ArgException] = []
+
+
+class GetFinancialAdvice(VirtualFunctionTool):
+    name = "GetFinancialAdvice"
+    summary = "Receive personalized financial advice based on your financial goals and current portfolio."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "financial_goals",
+            "type": "string",
+            "description": "A brief description of the user's financial goals (e.g., 'retirement', 'buying a house').",
+            "required": True,
+        },
+        {
+            "name": "risk_tolerance",
+            "type": "string",
+            "description": "The user's risk tolerance level (e.g., 'low', 'medium', 'high').",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "advice",
+            "type": "string",
+            "description": "Personalized financial advice based on the user's inputs.",
+        }
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "InvalidGoalsException",
+            "description": "The 'financial_goals' parameter is not recognized or not valid.",
+        },
+        {
+            "name": "InvalidRiskToleranceException",
+            "description": "The 'risk_tolerance' parameter is not valid.",
+        },
+    ]
+
+
+@register_toolkit()
+class WealthManagementAI(FunctionToolkit):
+    name_for_human = "WealthManagementAI"
+    description_for_human = "Toolkit for managing investments, viewing portfolios, and getting financial advice."
+    name_for_model = "WealthManagementAI"
+    description_for_model = "The WealthManagementAI toolkit allows users to allocate investment portfolios, view current investments, and receive personalized financial advice."
+    tool_classes = [
+        AllocateInvestmentPortfolio,
+        ViewInvestmentPortfolio,
+        GetFinancialAdvice,
+    ]
+
+
+#################### AirlineNotificationSystem ####################
+
+
+class FlightDelayNotification(VirtualFunctionTool):
+    name = "FlightDelayNotification"
+    summary = "Send a notification to passengers about a flight delay, including updated departure time and reason for the delay."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "flight_id",
+            "type": "string",
+            "description": "The unique identifier of the delayed flight.",
+            "required": True,
+        },
+        {
+            "name": "new_departure_time",
+            "type": "string",
+            "description": "The updated departure time in the format 'HH:mm'.",
+            "required": True,
+        },
+        {
+            "name": "delay_reason",
+            "type": "string",
+            "description": "The reason for the flight delay (e.g., 'weather', 'technical issues').",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "notification_id",
+            "type": "string",
+            "description": "A unique identifier for the notification if successfully sent, otherwise null.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the notification was successfully sent.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "NotFoundException",
+            "description": "The 'flight_id' parameter does not exist.",
+        },
+        {
+            "name": "InvalidRequestException",
+            "description": "The 'new_departure_time' parameter is not in the correct format or the 'delay_reason' parameter is not valid.",
+        },
+    ]
+
+
+class GateChangeNotification(VirtualFunctionTool):
+    name = "GateChangeNotification"
+    summary = "Notify passengers of a gate change for their flight, including the new gate number and any related instructions."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "flight_id",
+            "type": "string",
+            "description": "The unique identifier of the flight with a gate change.",
+            "required": True,
+        },
+        {
+            "name": "new_gate",
+            "type": "string",
+            "description": "The new gate number.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "notification_id",
+            "type": "string",
+            "description": "A unique identifier for the notification if successfully sent, otherwise null.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the notification was successfully sent.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "NotFoundException",
+            "description": "The 'flight_id' parameter does not exist.",
+        },
+        {
+            "name": "InvalidRequestException",
+            "description": "The 'new_gate' parameter is not valid.",
+        },
+    ]
+
+
+class BoardingCallNotification(VirtualFunctionTool):
+    name = "BoardingCallNotification"
+    summary = "Send a boarding call notification to passengers, including boarding group and time to board."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "flight_id",
+            "type": "string",
+            "description": "The unique identifier of the flight.",
+            "required": True,
+        },
+        {
+            "name": "boarding_group",
+            "type": "string",
+            "description": "The boarding group (e.g., 'Group 1', 'Group 2').",
+            "required": True,
+        },
+        {
+            "name": "boarding_time",
+            "type": "string",
+            "description": "The time for the boarding call in the format 'HH:mm'.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "notification_id",
+            "type": "string",
+            "description": "A unique identifier for the notification if successfully sent, otherwise null.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the notification was successfully sent.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "NotFoundException",
+            "description": "The 'flight_id' parameter does not exist.",
+        },
+        {
+            "name": "InvalidRequestException",
+            "description": "The 'boarding_time' or 'boarding_group' parameter is not valid.",
+        },
+    ]
+
+
+@register_toolkit()
+class AirlineNotificationSystem(FunctionToolkit):
+    name_for_human = "AirlineNotificationSystem"
+    description_for_human = "Toolkit for sending flight notifications including delays, gate changes, and boarding calls."
+    name_for_model = "AirlineNotificationSystem"
+    description_for_model = "The AirlineNotificationSystem toolkit allows airlines to notify passengers of flight delays, gate changes, and boarding calls."
+    tool_classes = [
+        FlightDelayNotification,
+        GateChangeNotification,
+        BoardingCallNotification,
+    ]
+
+
+#################### DataAnalysis ####################
+
+
+class LoadDataset(VirtualFunctionTool):
+    name = "LoadDataset"
+    summary = "Load a dataset by providing the file path and format of the dataset."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "file_path",
+            "type": "string",
+            "description": "The path to the dataset file.",
+            "required": True,
+        },
+        {
+            "name": "file_format",
+            "type": "string",
+            "description": "The format of the dataset file (e.g., 'csv', 'json', 'xlsx').",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "dataset_id",
+            "type": "string",
+            "description": "A unique identifier for the loaded dataset if successful, otherwise null.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the dataset was successfully loaded.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "FileNotFoundException",
+            "description": "The 'file_path' parameter does not point to a valid file.",
+        },
+        {
+            "name": "InvalidFormatException",
+            "description": "The 'file_format' parameter is not recognized or supported.",
+        },
+    ]
+
+
+class PerformDataAnalysis(VirtualFunctionTool):
+    name = "PerformDataAnalysis"
+    summary = "Perform data analysis on a loaded dataset by specifying the analysis type and any relevant parameters."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "dataset_id",
+            "type": "string",
+            "description": "The unique identifier of the loaded dataset.",
+            "required": True,
+        },
+        {
+            "name": "analysis_type",
+            "type": "string",
+            "description": "The type of analysis to perform (e.g., 'descriptive', 'regression', 'clustering').",
+            "required": True,
+        },
+        {
+            "name": "parameters",
+            "type": "map",
+            "description": "Additional parameters for the analysis, such as target variable for regression.",
+            "required": False,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "analysis_results",
+            "type": "map",
+            "description": "The results of the analysis, including statistics, models, or visualizations.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the analysis was successfully performed.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "NotFoundException",
+            "description": "The 'dataset_id' parameter does not exist.",
+        },
+        {
+            "name": "InvalidAnalysisTypeException",
+            "description": "The 'analysis_type' parameter is not recognized.",
+        },
+        {
+            "name": "AnalysisFailureException",
+            "description": "The analysis failed due to incorrect or insufficient parameters.",
+        },
+    ]
+
+
+class DetectAnomalies(VirtualFunctionTool):
+    name = "DetectAnomalies"
+    summary = "Detect anomalies in a loaded dataset using various anomaly detection techniques."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "dataset_id",
+            "type": "string",
+            "description": "The unique identifier of the loaded dataset.",
+            "required": True,
+        },
+        {
+            "name": "method",
+            "type": "string",
+            "description": "The anomaly detection method to use (e.g., 'IsolationForest', 'DBSCAN', 'Z-Score').",
+            "required": True,
+        },
+        {
+            "name": "parameters",
+            "type": "map",
+            "description": "Additional parameters for the anomaly detection method, such as contamination rate for IsolationForest.",
+            "required": False,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "anomalies",
+            "type": "array",
+            "description": "A list of detected anomalies with their details, including index, feature, and value.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether anomalies were successfully detected.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "NotFoundException",
+            "description": "The 'dataset_id' parameter does not exist.",
+        },
+        {
+            "name": "InvalidMethodException",
+            "description": "The 'method' parameter is not recognized.",
+        },
+        {
+            "name": "DetectionFailureException",
+            "description": "The anomaly detection failed due to incorrect or insufficient parameters.",
+        },
+    ]
+
+
+class GenerateAnomalyReport(VirtualFunctionTool):
+    name = "GenerateAnomalyReport"
+    summary = "Generate a report based on the detected anomalies, including visualizations and key findings."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "anomalies",
+            "type": "array",
+            "description": "A list of detected anomalies.",
+            "required": True,
+        },
+        {
+            "name": "report_format",
+            "type": "string",
+            "description": "The format of the generated report (e.g., 'pdf', 'html').",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "report_id",
+            "type": "string",
+            "description": "A unique identifier for the generated report if successful, otherwise null.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the report was successfully generated.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "InvalidFormatException",
+            "description": "The 'report_format' parameter is not recognized or supported.",
+        },
+        {
+            "name": "ReportGenerationException",
+            "description": "The report generation failed due to incorrect anomalies data or formatting issues.",
+        },
+    ]
+
+
+class GenerateReport(VirtualFunctionTool):
+    name = "GenerateReport"
+    summary = "Generate a report based on the results of the data analysis, including visualizations and key findings."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "analysis_results",
+            "type": "map",
+            "description": "The results from the data analysis.",
+            "required": True,
+        },
+        {
+            "name": "report_format",
+            "type": "string",
+            "description": "The format of the generated report (e.g., 'pdf', 'html').",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "report_id",
+            "type": "string",
+            "description": "A unique identifier for the generated report if successful, otherwise null.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the report was successfully generated.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "InvalidFormatException",
+            "description": "The 'report_format' parameter is not recognized or supported.",
+        },
+        {
+            "name": "ReportGenerationException",
+            "description": "The report generation failed due to incorrect analysis results or formatting issues.",
+        },
+    ]
+
+
+@register_toolkit()
+class DataAnalysis(FunctionToolkit):
+    name_for_human = "DataAnalysis"
+    description_for_human = "Toolkit for loading datasets, performing data analysis, detecting anomalies, and generating reports."
+    name_for_model = "DataAnalysis"
+    description_for_model = "The DataAnalysis toolkit allows users to load datasets, perform various types of data analysis, detect anomalies, and generate detailed reports based on the analysis results."
+    tool_classes = [
+        LoadDataset,
+        PerformDataAnalysis,
+        DetectAnomalies,
+        GenerateAnomalyReport,
+        GenerateReport,
+    ]
+
+
+#################### SupplyChainManagement ####################
+
+
+class CreatePurchaseOrder(VirtualFunctionTool):
+    name = "CreatePurchaseOrder"
+    summary = "Create a purchase order by providing the supplier's unique identifier, list of items, quantities, and delivery date."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "supplier_id",
+            "type": "string",
+            "description": "The unique identifier of the supplier.",
+            "required": True,
+        },
+        {
+            "name": "items",
+            "type": "array",
+            "description": "A list of items to be ordered, each item containing item_id and quantity.",
+            "required": True,
+        },
+        {
+            "name": "delivery_date",
+            "type": "string",
+            "description": "The expected delivery date in the format 'YYYY-MM-DD'.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "purchase_order_id",
+            "type": "string",
+            "description": "A unique identifier for the purchase order if successfully created, otherwise null.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the purchase order was successfully created.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "NotFoundException",
+            "description": "The 'supplier_id' parameter does not exist.",
+        },
+        {
+            "name": "InvalidRequestException",
+            "description": "The 'items' parameter is not valid or the 'delivery_date' is not in the correct format.",
+        },
+    ]
+
+
+class TrackShipment(VirtualFunctionTool):
+    name = "TrackShipment"
+    summary = (
+        "Track the status of a shipment by providing the shipment's unique identifier."
+    )
+    parameters: List[ArgParameter] = [
+        {
+            "name": "shipment_id",
+            "type": "string",
+            "description": "The unique identifier of the shipment.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "shipment_status",
+            "type": "string",
+            "description": "The current status of the shipment (e.g., 'in transit', 'delivered').",
+        },
+        {
+            "name": "estimated_arrival",
+            "type": "string",
+            "description": "The estimated arrival date of the shipment in the format 'YYYY-MM-DD'.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "NotFoundException",
+            "description": "The 'shipment_id' parameter does not exist.",
+        },
+    ]
+
+
+class ManageInventory(VirtualFunctionTool):
+    name = "ManageInventory"
+    summary = "Manage inventory levels by providing the warehouse's unique identifier, item details, and the action to be performed."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "warehouse_id",
+            "type": "string",
+            "description": "The unique identifier of the warehouse.",
+            "required": True,
+        },
+        {
+            "name": "item_id",
+            "type": "string",
+            "description": "The unique identifier of the item.",
+            "required": True,
+        },
+        {
+            "name": "quantity",
+            "type": "integer",
+            "description": "The quantity of the item to be added or removed.",
+            "required": True,
+        },
+        {
+            "name": "action",
+            "type": "string",
+            "description": "The action to be performed ('add' or 'remove').",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "inventory_status",
+            "type": "map",
+            "description": "The updated inventory status including item_id, available quantity, and location.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the inventory was successfully managed.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "NotFoundException",
+            "description": "The 'warehouse_id' or 'item_id' parameter does not exist.",
+        },
+        {
+            "name": "InvalidRequestException",
+            "description": "The 'quantity' or 'action' parameter is not valid.",
+        },
+    ]
+
+
+class GenerateSupplyChainReport(VirtualFunctionTool):
+    name = "GenerateSupplyChainReport"
+    summary = "Generate a report on the supply chain activities, including purchase orders, shipments, and inventory levels."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "report_type",
+            "type": "string",
+            "description": "The type of report to generate (e.g., 'purchase_orders', 'inventory', 'shipments').",
+            "required": True,
+        },
+        {
+            "name": "time_period",
+            "type": "string",
+            "description": "The time period for the report (e.g., 'last_month', 'last_year').",
+            "required": True,
+        },
+        {
+            "name": "report_format",
+            "type": "string",
+            "description": "The format of the generated report (e.g., 'pdf', 'xlsx').",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "report_id",
+            "type": "string",
+            "description": "A unique identifier for the generated report if successful, otherwise null.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the report was successfully generated.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "InvalidFormatException",
+            "description": "The 'report_format' parameter is not recognized or supported.",
+        },
+        {
+            "name": "ReportGenerationException",
+            "description": "The report generation failed due to incorrect parameters or data issues.",
+        },
+    ]
+
+
+@register_toolkit()
+class SupplyChainManagement(FunctionToolkit):
+    name_for_human = "SupplyChainManagement"
+    description_for_human = "Toolkit for managing supply chain activities including purchase orders, shipments, inventory, and reports."
+    name_for_model = "SupplyChainManagement"
+    description_for_model = "The SupplyChainManagement toolkit allows users to create purchase orders, track shipments, manage inventory, and generate detailed supply chain reports."
+    tool_classes = [
+        CreatePurchaseOrder,
+        TrackShipment,
+        ManageInventory,
+        GenerateSupplyChainReport,
+    ]
+
+
+class UploadEvidence(VirtualFunctionTool):
+    name = "UploadEvidence"
+    summary = "Upload evidence files related to a case, specifying the case identifier and evidence type."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "case_id",
+            "type": "string",
+            "description": "The unique identifier of the case to which the evidence belongs.",
+            "required": True,
+        },
+        {
+            "name": "file_path",
+            "type": "string",
+            "description": "The file path of the evidence to be uploaded.",
+            "required": True,
+        },
+        {
+            "name": "evidence_type",
+            "type": "string",
+            "description": "The type of evidence being uploaded (e.g., 'video', 'document', 'image').",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "evidence_id",
+            "type": "string",
+            "description": "A unique identifier for the uploaded evidence if successful, otherwise null.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the evidence was successfully uploaded.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "FileNotFoundException",
+            "description": "The file specified in 'file_path' does not exist.",
+        },
+        {
+            "name": "InvalidRequestException",
+            "description": "The 'case_id' or 'evidence_type' is not valid.",
+        },
+    ]
+
+
+class RetrieveEvidence(VirtualFunctionTool):
+    name = "RetrieveEvidence"
+    summary = "Retrieve evidence files associated with a specific case, using the case identifier."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "case_id",
+            "type": "string",
+            "description": "The unique identifier of the case for which to retrieve evidence.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "evidence_list",
+            "type": "array",
+            "description": "A list of evidence files associated with the case, including evidence_id, type, and file_path.",
+        }
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "NotFoundException",
+            "description": "No evidence found for the specified 'case_id'.",
+        },
+    ]
+
+
+class ReadEvidence(VirtualFunctionTool):
+    name = "ReadEvidence"
+    summary = "Read the content of a specific evidence file associated with a case."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "evidence_id",
+            "type": "string",
+            "description": "The unique identifier of the evidence file to be read.",
+            "required": True,
+        },
+        {
+            "name": "file_type",
+            "type": "string",
+            "description": "The type of the file (e.g., 'document', 'video', 'audio') to ensure proper handling.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "content",
+            "type": "string",
+            "description": "The content of the evidence file. For text-based files, it returns the text; for audio/video, it may return a summary or metadata.",
+        }
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "FileNotFoundException",
+            "description": "The specified 'evidence_id' does not correspond to any existing file.",
+        },
+        {
+            "name": "UnsupportedFileTypeException",
+            "description": "The provided 'file_type' is not supported for reading.",
+        },
+    ]
+
+
+class SendEvidence(VirtualFunctionTool):
+    name = "SendEvidence"
+    summary = "Send specific evidence files to a designated recipient."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "evidence_id",
+            "type": "string",
+            "description": "The unique identifier of the evidence file to be sent.",
+            "required": True,
+        },
+        {
+            "name": "recipient",
+            "type": "string",
+            "description": "The email address or identifier of the recipient to whom the evidence will be sent.",
+            "required": True,
+        },
+        {
+            "name": "content",
+            "type": "string",
+            "description": "the content of the evidence file after certain processing.",
+            "required": False,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "confirmation",
+            "type": "string",
+            "description": "A confirmation message indicating that the evidence was successfully sent.",
+        }
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "FileNotFoundException",
+            "description": "The specified 'evidence_id' does not correspond to any existing file.",
+        },
+        {
+            "name": "InvalidRecipientException",
+            "description": "The provided recipient identifier is not valid or cannot be reached.",
+        },
+        {
+            "name": "SendFailureException",
+            "description": "The evidence could not be sent due to an unexpected error.",
+        },
+    ]
+
+
+class DeleteEvidence(VirtualFunctionTool):
+    name = "DeleteEvidence"
+    summary = "Delete a specific piece of evidence from a case using its unique evidence identifier."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "evidence_id",
+            "type": "string",
+            "description": "The unique identifier of the evidence to be deleted.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the evidence was successfully deleted.",
+        }
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "NotFoundException",
+            "description": "The 'evidence_id' does not exist.",
+        },
+        {
+            "name": "InvalidRequestException",
+            "description": "The 'evidence_id' parameter is not valid.",
+        },
+    ]
+
+
+@register_toolkit()
+class EvidenceManagement(FunctionToolkit):
+    name_for_human = "EvidenceManagementAI"
+    description_for_human = "Toolkit for managing evidence related to legal cases, including uploading, retrieving, and deleting evidence files."
+    name_for_model = "EvidenceManagementAI"
+    description_for_model = "The EvidenceManagementAI toolkit allows users to upload, retrieve, and delete evidence files associated with legal cases."
+    tool_classes = [
+        UploadEvidence,
+        ReadEvidence,
+        SendEvidence,
+        RetrieveEvidence,
+        DeleteEvidence,
+    ]
+
+
+class DNAComAnalysis(VirtualFunctionTool):
+    name = "DNAComAnalysis"
+    summary = "Analyze DNA communication signals to identify patterns, mutations, and potential areas of interest."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "dna_sequence",
+            "type": "string",
+            "description": "The DNA sequence to be analyzed.",
+            "required": True,
+        },
+        {
+            "name": "analysis_type",
+            "type": "string",
+            "description": "The type of analysis to perform (e.g., 'mutation_detection', 'pattern_identification').",
+            "required": True,
+        },
+        {
+            "name": "reference_sequence",
+            "type": "string",
+            "description": "A reference DNA sequence to compare against, if applicable.",
+            "required": False,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "analysis_results",
+            "type": "array",
+            "description": "A list of results from the DNA analysis, including identified mutations, patterns, or other findings.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the DNA analysis was successfully completed.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "InvalidDNASequenceException",
+            "description": "The 'dna_sequence' parameter is not a valid DNA sequence.",
+        },
+        {
+            "name": "UnsupportedAnalysisTypeException",
+            "description": "The 'analysis_type' parameter is not supported or recognized.",
+        },
+    ]
+
+
+@register_toolkit()
+class DNAComToolkit(FunctionToolkit):
+    name_for_human = "DNAComToolkit"
+    description_for_human = "Toolkit for analyzing DNA communication signals, identifying patterns, mutations, and other areas of interest."
+    name_for_model = "DNAComToolkit"
+    description_for_model = "The DNAComToolkit allows users to analyze DNA communication signals, detect mutations, identify patterns, and compare DNA sequences against reference sequences."
+    tool_classes = [
+        DNAComAnalysis,
+        # Add other related tools here if needed.
+    ]
+
+
+class SearchLegalCases(VirtualFunctionTool):
+    name = "SearchLegalCases"
+    summary = "Search for legal cases by case number, title, or keywords."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "case_number",
+            "type": "string",
+            "description": "The unique case number to search for.",
+            "required": False,
+        },
+        {
+            "name": "case_title",
+            "type": "string",
+            "description": "The title of the case to search for.",
+            "required": False,
+        },
+        {
+            "name": "keywords",
+            "type": "string",
+            "description": "Keywords related to the case to search for.",
+            "required": False,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "cases",
+            "type": "array",
+            "description": "A list of legal cases matching the search criteria, including case number, title, summary, and court decision.",
+        }
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "NotFoundException",
+            "description": "No cases found matching the search criteria.",
+        },
+        {
+            "name": "InvalidRequestException",
+            "description": "The search parameters provided are not valid.",
+        },
+    ]
+
+
+class AccessLegalDocuments(VirtualFunctionTool):
+    name = "AccessLegalDocuments"
+    summary = "Access legal documents such as contracts, wills, and agreements."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "document_id",
+            "type": "string",
+            "description": "The unique identifier of the legal document to access.",
+            "required": True,
+        }
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "document",
+            "type": "string",
+            "description": "The contents of the legal document requested.",
+        }
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "NotFoundException",
+            "description": "The 'document_id' parameter does not exist.",
+        },
+        {
+            "name": "UnauthorizedAccessException",
+            "description": "The user does not have permission to access the document.",
+        },
+    ]
+
+
+class LegalConsultation(VirtualFunctionTool):
+    name = "LegalConsultation"
+    summary = "Schedule a legal consultation by providing the lawyer's unique identifier, consultation date and time, and legal issue."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "lawyer_id",
+            "type": "string",
+            "description": "The unique identifier of the chosen lawyer.",
+            "required": True,
+        },
+        {
+            "name": "date",
+            "type": "string",
+            "description": "Date of the consultation in the format 'YYYY-MM-DD'.",
+            "required": True,
+        },
+        {
+            "name": "time",
+            "type": "string",
+            "description": "Time of the consultation in the format 'HH:mm'.",
+            "required": True,
+        },
+        {
+            "name": "legal_issue",
+            "type": "string",
+            "description": "The legal issue to discuss during the consultation.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "consultation_id",
+            "type": "string",
+            "description": "A unique identifier for the consultation if successfully scheduled, otherwise null.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the consultation was successfully scheduled.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "NotFoundException",
+            "description": "The 'lawyer_id' parameter does not exist.",
+        },
+        {
+            "name": "InvalidRequestException",
+            "description": "The 'date' or 'time' parameter is not in the correct format or the 'legal_issue' parameter is not valid.",
+        },
+    ]
+
+
+@register_toolkit()
+class AILegalResearch(FunctionToolkit):
+    name_for_human = "AILegalResearch"
+    description_for_human = "Toolkit for legal research and services, including searching legal cases, accessing legal documents, and scheduling legal consultations."
+    name_for_model = "AILegalResearch"
+    description_for_model = "The AILegalResearch toolkit allows users to search for legal cases, access legal documents, and schedule legal consultations."
+    tool_classes = [
+        SearchLegalCases,
+        AccessLegalDocuments,
+        LegalConsultation,
+    ]
+
+
+class DebatePrepAnalyzer(VirtualFunctionTool):
+    name = "DebatePrepAnalyzer"
+    summary = "Analyze a debate performance by assessing key metrics such as argument strength, delivery style, and use of evidence."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "transcript",
+            "type": "string",
+            "description": "The transcript of the debate to be analyzed.",
+            "required": True,
+        },
+        {
+            "name": "metrics",
+            "type": "array",
+            "description": "A list of metrics to assess (e.g., 'argument_strength', 'delivery_style', 'use_of_evidence').",
+            "required": True,
+        },
+        {
+            "name": "debate_type",
+            "type": "string",
+            "description": "The type of debate (e.g., 'presidential', 'academic', 'informal').",
+            "required": False,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "analysis_report",
+            "type": "object",
+            "description": "A report containing the results of the analysis, including scores and feedback for each metric.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the analysis was successfully completed.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "InvalidTranscriptException",
+            "description": "The 'transcript' parameter is not valid or contains errors.",
+        },
+        {
+            "name": "UnsupportedMetricException",
+            "description": "One or more of the requested 'metrics' are not supported by the analyzer.",
+        },
+    ]
+
+
+@register_toolkit()
+class DebateToolset(FunctionToolkit):
+    name_for_human = "DebateToolset"
+    description_for_human = "Toolkit for preparing and analyzing debate performances."
+    name_for_model = "DebateToolset"
+    description_for_model = "The DebateToolset allows users to analyze debate performances by evaluating key metrics such as argument strength, delivery style, and use of evidence. Useful for both preparation and post-debate analysis."
+    tool_classes = [
+        DebatePrepAnalyzer,
+    ]
+
+
+class EnrollFace(VirtualFunctionTool):
+    name = "EnrollFace"
+    summary = "Enroll a new face into the facial recognition system by providing a user ID and the face image."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "user_id",
+            "type": "string",
+            "description": "The unique identifier of the user to enroll.",
+            "required": True,
+        },
+        {
+            "name": "face_image",
+            "type": "string",
+            "description": "The image of the user's face encoded in base64 format.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "enrollment_id",
+            "type": "string",
+            "description": "A unique identifier for the enrollment if successful, otherwise null.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the face was successfully enrolled.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "InvalidImageException",
+            "description": "The provided face image is not valid or cannot be processed.",
+        },
+        {
+            "name": "UserNotFoundException",
+            "description": "The 'user_id' does not exist in the system.",
+        },
+    ]
+
+
+class IdentifyFace(VirtualFunctionTool):
+    name = "IdentifyFace"
+    summary = "Identify a person by matching a given face image against enrolled faces in the system."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "face_image",
+            "type": "string",
+            "description": "The image of the face to identify, encoded in base64 format.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "user_id",
+            "type": "string",
+            "description": "The unique identifier of the identified user if a match is found, otherwise null.",
+        },
+        {
+            "name": "confidence_score",
+            "type": "float",
+            "description": "The confidence score of the match, ranging from 0.0 to 1.0.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "InvalidImageException",
+            "description": "The provided face image is not valid or cannot be processed.",
+        },
+        {
+            "name": "MatchNotFoundException",
+            "description": "No matching face was found in the system.",
+        },
+    ]
+
+
+class DeleteEnrolledFace(VirtualFunctionTool):
+    name = "DeleteEnrolledFace"
+    summary = "Delete an enrolled face from the system using the enrollment ID."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "enrollment_id",
+            "type": "string",
+            "description": "The unique identifier of the enrollment to delete.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the face was successfully deleted.",
+        }
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "EnrollmentNotFoundException",
+            "description": "The 'enrollment_id' does not exist in the system.",
+        },
+    ]
+
+
+@register_toolkit()
+class FacialRecognitionSystem(FunctionToolkit):
+    name_for_human = "FacialRecognitionSystem"
+    description_for_human = (
+        "Toolkit for enrolling, identifying, and managing facial recognition data."
+    )
+    name_for_model = "FacialRecognitionSystem"
+    description_for_model = "The FacialRecognitionSystem toolkit allows users to enroll new faces, identify individuals based on face images, and manage (delete) enrolled faces."
+    tool_classes = [
+        EnrollFace,
+        IdentifyFace,
+        DeleteEnrolledFace,
+    ]
+
+
+class VotingValidationEngine(VirtualFunctionTool):
+    name = "VotingValidationEngine"
+    summary = (
+        "Validate the authenticity and eligibility of a voter's identity and ballot."
+    )
+    parameters: List[ArgParameter] = [
+        {
+            "name": "voter_id",
+            "type": "string",
+            "description": "The unique identifier of the voter.",
+            "required": True,
+        },
+        {
+            "name": "ballot_id",
+            "type": "string",
+            "description": "The unique identifier of the electronic ballot.",
+            "required": True,
+        },
+        {
+            "name": "validation_token",
+            "type": "string",
+            "description": "A security token used to verify the authenticity of the voter's submission.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "is_valid",
+            "type": "boolean",
+            "description": "A boolean indicating whether the voter and ballot are valid.",
+        },
+        {
+            "name": "validation_timestamp",
+            "type": "string",
+            "description": "The timestamp when the validation was completed, in ISO 8601 format.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "VoterNotFoundException",
+            "description": "The 'voter_id' parameter does not exist in the voter registry.",
+        },
+        {
+            "name": "BallotNotFoundException",
+            "description": "The 'ballot_id' parameter does not match any existing electronic ballots.",
+        },
+        {
+            "name": "InvalidTokenException",
+            "description": "The 'validation_token' provided is not valid or has expired.",
+        },
+    ]
+
+
+class ElectronicBallotHandler(VirtualFunctionTool):
+    name = "ElectronicBallotHandler"
+    summary = "Handle the submission, storage, and verification of electronic ballots in an election."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "voter_id",
+            "type": "string",
+            "description": "The unique identifier of the voter submitting the ballot.",
+            "required": True,
+        },
+        {
+            "name": "ballot_content",
+            "type": "string",
+            "description": "The content of the electronic ballot, including selected options.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "submission_id",
+            "type": "string",
+            "description": "A unique identifier for the ballot submission if successful.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the ballot was successfully submitted and stored.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "DuplicateSubmissionException",
+            "description": "The voter has already submitted a ballot with the same 'voter_id'.",
+        },
+        {
+            "name": "InvalidBallotFormatException",
+            "description": "The 'ballot_content' parameter is not in the correct format or is invalid.",
+        },
+    ]
+
+
+class SymptomDatabaseLookup(VirtualFunctionTool):
+    name = "SymptomDatabaseLookup"
+    summary = "Lookup potential health conditions or diagnoses based on a list of symptoms provided."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "symptoms",
+            "type": "array",
+            "description": "A list of symptoms to search for in the symptom database (e.g., ['fever', 'cough', 'fatigue']).",
+            "required": True,
+        },
+        {
+            "name": "age",
+            "type": "integer",
+            "description": "The age of the patient to narrow down potential conditions.",
+            "required": False,
+        },
+        {
+            "name": "gender",
+            "type": "string",
+            "description": "The gender of the patient to provide more accurate results (e.g., 'male', 'female', 'other').",
+            "required": False,
+        },
+        {
+            "name": "location",
+            "type": "string",
+            "description": "The geographic location to consider region-specific diseases or conditions.",
+            "required": False,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "possible_conditions",
+            "type": "array",
+            "description": "A list of potential health conditions or diagnoses based on the provided symptoms.",
+        },
+        {
+            "name": "recommendations",
+            "type": "array",
+            "description": "A list of recommended next steps (e.g., 'see a doctor', 'take a specific test').",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "InvalidRequestException",
+            "description": "The 'symptoms' parameter is missing or invalid.",
+        },
+        {
+            "name": "NoMatchFoundException",
+            "description": "No matching conditions were found for the provided symptoms.",
+        },
+    ]
+
+
+#################### MedicalTriage ####################
+
+
+class ScheduleDoctorAppointment(VirtualFunctionTool):
+    name = "ScheduleDoctorAppointment"
+    summary = "Schedule a doctor appointment by providing the doctor's unique identifier, appointment date and time, and reason for appointment."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "doctor_name",
+            "type": "string",
+            "description": "The name of the chosen doctor.",
+            "required": False,
+        },
+        {
+            "name": "date",
+            "type": "string",
+            "description": "Date of the appointment in the format 'YYYY-MM-DD'.",
+            "required": True,
+        },
+        {
+            "name": "time",
+            "type": "string",
+            "description": "Time of the appointment in the format 'HH:mm'.",
+            "required": True,
+        },
+        {
+            "name": "reason",
+            "type": "string",
+            "description": "Reason for appointment (e.g., 'checkup', 'consultation', 'follow-up').",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "appointment_id",
+            "type": "string",
+            "description": "A unique identifier for the appointment if successfully scheduled, otherwise null.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the appointment was successfully scheduled.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "NotFoundException",
+            "description": "The 'doctor_id' parameter does not exist.",
+        },
+        {
+            "name": "InvalidRequestException",
+            "description": "The 'date' or 'time' parameter is not in the correct format or the 'reason' parameter is not valid.",
+        },
+    ]
+
+
+class AssessSymptomswithDatabase(VirtualFunctionTool):
+    name = "AssessSymptomswithDatabase"
+    summary = "Assess symptoms by querying a medical database to provide potential diagnoses or recommendations based on user input."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "symptoms",
+            "type": "array",
+            "description": "A list of symptoms described by the user (e.g., 'fever', 'headache', 'nausea').",
+            "required": True,
+        },
+        {
+            "name": "user_age",
+            "type": "integer",
+            "description": "The age of the user, which may affect the assessment.",
+            "required": False,
+        },
+        {
+            "name": "user_gender",
+            "type": "string",
+            "description": "The gender of the user, which may affect the assessment (e.g., 'male', 'female', 'non-binary').",
+            "required": False,
+        },
+        {
+            "name": "medical_history",
+            "type": "array",
+            "description": "A list of past medical conditions or treatments relevant to the assessment.",
+            "required": False,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "potential_diagnoses",
+            "type": "array",
+            "description": "A list of potential diagnoses based on the symptoms and user information provided.",
+        },
+        {
+            "name": "recommendations",
+            "type": "array",
+            "description": "A list of recommended actions, such as seeing a doctor, taking specific tests, or monitoring symptoms.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "InvalidInputException",
+            "description": "The input parameters (e.g., symptoms, user_age) are not valid or are incomplete.",
+        },
+        {
+            "name": "DatabaseAccessException",
+            "description": "There was an error accessing the medical database.",
+        },
+    ]
+
+
+class CategorizeUrgency(VirtualFunctionTool):
+    name = "CategorizeUrgency"
+    summary = (
+        "Categorize the urgency of a situation or task based on the provided details."
+    )
+    parameters: List[ArgParameter] = [
+        {
+            "name": "task_details",
+            "type": "string",
+            "description": "A description of the situation or task that needs to be categorized.",
+            "required": True,
+        },
+        {
+            "name": "deadline",
+            "type": "string",
+            "description": "The deadline for the task in the format 'YYYY-MM-DD'.",
+            "required": False,
+        },
+        {
+            "name": "impact_level",
+            "type": "string",
+            "description": "The potential impact level of the task if not completed on time (e.g., 'low', 'medium', 'high').",
+            "required": False,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "urgency_level",
+            "type": "string",
+            "description": "The categorized urgency level of the task (e.g., 'low', 'medium', 'high').",
+        }
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "InvalidRequestException",
+            "description": "The 'task_details' parameter is missing or not descriptive enough to categorize.",
+        },
+        {
+            "name": "InvalidDateFormatException",
+            "description": "The 'deadline' parameter is not in the correct format 'YYYY-MM-DD'.",
+        },
+    ]
+
+
+class RecordPatientInfo(VirtualFunctionTool):
+    name = "RecordPatientInfo"
+    summary = "Record a patient's personal information and medical details for future reference."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "patient_id",
+            "type": "string",
+            "description": "The unique identifier for the patient.",
+            "required": False,
+        },
+        {
+            "name": "name",
+            "type": "string",
+            "description": "The full name of the patient.",
+            "required": True,
+        },
+        {
+            "name": "age",
+            "type": "integer",
+            "description": "The age of the patient.",
+            "required": False,
+        },
+        {
+            "name": "gender",
+            "type": "string",
+            "description": "The gender of the patient.",
+            "required": False,
+        },
+        {
+            "name": "medical_history",
+            "type": "string",
+            "description": "A summary of the patient's medical history, including past diagnoses, treatments, and surgeries.",
+            "required": False,
+        },
+        {
+            "name": "current_medications",
+            "type": "string",
+            "description": "List of medications the patient is currently taking.",
+            "required": False,
+        },
+        {
+            "name": "allergies",
+            "type": "string",
+            "description": "Any known allergies the patient has.",
+            "required": False,
+        },
+        {
+            "name": "emergency_contact",
+            "type": "string",
+            "description": "Contact information for the patient's emergency contact.",
+            "required": False,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "confirmation",
+            "type": "string",
+            "description": "A confirmation message indicating that the patient's information has been successfully recorded.",
+        }
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "InvalidRequestException",
+            "description": "One or more required parameters (e.g., 'patient_id', 'name', 'age', 'gender') are missing or incorrectly formatted.",
+        },
+    ]
+
+
+class CommunicateWithMedicalTeam(VirtualFunctionTool):
+    name = "CommunicateWithMedicalTeam"
+    summary = "Facilitate communication between a patient and their medical team."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "patient_id",
+            "type": "string",
+            "description": "The unique identifier for the patient.",
+            "required": True,
+        },
+        {
+            "name": "message",
+            "type": "string",
+            "description": "The message or query to be sent to the medical team.",
+            "required": True,
+        },
+        {
+            "name": "recipient_role",
+            "type": "string",
+            "description": "The role of the recipient within the medical team (e.g., 'doctor', 'nurse', 'therapist').",
+            "required": True,
+        },
+        {
+            "name": "priority",
+            "type": "string",
+            "description": "The priority level of the message (e.g., 'low', 'medium', 'high').",
+            "required": False,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "confirmation",
+            "type": "string",
+            "description": "Confirmation that the message has been successfully sent to the medical team.",
+        },
+        {
+            "name": "response_time_estimate",
+            "type": "string",
+            "description": "An estimated time for when the patient can expect a response.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "InvalidRecipientException",
+            "description": "The 'recipient_role' is not recognized or is not available.",
+        },
+        {
+            "name": "MessageTooShortException",
+            "description": "The 'message' is too short or lacks sufficient detail to be actionable.",
+        },
+    ]
+
+
+class GenerateTriageReport(VirtualFunctionTool):
+    name = "GenerateTriageReport"
+    summary = "Generate a triage report based on patient symptoms and urgency level."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "patient_id",
+            "type": "string",
+            "description": "The unique identifier for the patient.",
+            "required": True,
+        },
+        {
+            "name": "symptoms",
+            "type": "string",
+            "description": "A detailed description of the patient's symptoms.",
+            "required": True,
+        },
+        {
+            "name": "vital_signs",
+            "type": "string",
+            "description": "The patient's vital signs (e.g., blood pressure, heart rate, temperature).",
+            "required": False,
+        },
+        {
+            "name": "urgency_level",
+            "type": "string",
+            "description": "The assessed urgency level (e.g., 'low', 'medium', 'high').",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "triage_report",
+            "type": "string",
+            "description": "The generated triage report, including symptoms, vital signs, urgency level, and recommended next steps.",
+        },
+        {
+            "name": "report_id",
+            "type": "string",
+            "description": "A unique identifier for the triage report.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "InvalidInputException",
+            "description": "The 'symptoms' parameter is missing or not detailed enough to generate a triage report.",
+        },
+        {
+            "name": "UrgencyLevelNotProvidedException",
+            "description": "The 'urgency_level' parameter is missing or not valid.",
+        },
+    ]
+
+
+class ScheduleER(VirtualFunctionTool):
+    name = "ScheduleER"
+    summary = "Schedule an emergency room visit for a patient based on urgency and availability."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "patient_id",
+            "type": "string",
+            "description": "The unique identifier for the patient.",
+            "required": True,
+        },
+        {
+            "name": "urgency_level",
+            "type": "string",
+            "description": "The urgency level of the situation (e.g., 'low', 'medium', 'high').",
+            "required": True,
+        },
+        {
+            "name": "symptoms",
+            "type": "string",
+            "description": "A brief description of the symptoms prompting the ER visit.",
+            "required": True,
+        },
+        {
+            "name": "preferred_hospital",
+            "type": "string",
+            "description": "The name or location of the preferred hospital for the ER visit.",
+            "required": False,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "appointment_id",
+            "type": "string",
+            "description": "A unique identifier for the scheduled ER visit.",
+        },
+        {
+            "name": "confirmation",
+            "type": "string",
+            "description": "Confirmation that the ER visit has been successfully scheduled.",
+        },
+        {
+            "name": "estimated_wait_time",
+            "type": "string",
+            "description": "An estimated wait time before the patient can be seen in the ER.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "InvalidUrgencyLevelException",
+            "description": "The 'urgency_level' parameter is not valid or not recognized.",
+        },
+        {
+            "name": "NoAvailableERException",
+            "description": "No available emergency room slots at the preferred or nearest hospital.",
+        },
+        {
+            "name": "InvalidInputException",
+            "description": "One or more required parameters are missing or incorrectly formatted.",
+        },
+    ]
+
+
+@register_toolkit()
+class MedicalTriage(FunctionToolkit):
+    name_for_human = "Medical Triage"
+    description_for_human = "Tool for assessing and prioritizing patient treatment based on the severity of their condition."
+    name_for_model = "MedicalTriage"
+    description_for_model = "Tool for assessing and prioritizing patient treatment. Use it to evaluate symptoms, categorize patient urgency, suggest initial treatment steps, recommend further medical attention, and schedule ER visits."
+    tool_classes = [
+        AssessSymptomswithDatabase,
+        CategorizeUrgency,
+        RecordPatientInfo,
+        CommunicateWithMedicalTeam,
+        GenerateTriageReport,
+        ScheduleER,
+        ScheduleDoctorAppointment,
+    ]
+
+
+#################### MedManagementApp ####################
+class MedAppointmentScheduler(VirtualFunctionTool):
+    name = "MedAppointmentScheduler"
+    summary = "Schedule a medical appointment by providing the doctor's unique identifier, appointment date and time, and reason for appointment."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "doctor_id",
+            "type": "string",
+            "description": "The unique identifier of the chosen doctor.",
+            "required": True,
+        },
+        {
+            "name": "date",
+            "type": "string",
+            "description": "Date of the appointment in the format 'YYYY-MM-DD'.",
+            "required": True,
+        },
+        {
+            "name": "time",
+            "type": "string",
+            "description": "Time of the appointment in the format 'HH:mm'.",
+            "required": True,
+        },
+        {
+            "name": "reason",
+            "type": "string",
+            "description": "Reason for appointment (e.g., 'checkup', 'consultation').",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "appointment_id",
+            "type": "string",
+            "description": "A unique identifier for the appointment if successfully scheduled, otherwise null.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the appointment was successfully scheduled.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "NotFoundException",
+            "description": "The 'doctor_id' parameter does not exist.",
+        },
+        {
+            "name": "InvalidRequestException",
+            "description": "The 'date' or 'time' parameter is not in the correct format or the 'reason' parameter is not valid.",
+        },
+    ]
+
+
+class MedPatientRecordManager(VirtualFunctionTool):
+    name = "MedPatientRecordManager"
+    summary = "Manage and access patient records, including medical history, diagnoses, and treatment plans."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "patient_id",
+            "type": "string",
+            "description": "The unique identifier for the patient.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "patient_records",
+            "type": "array",
+            "description": "A list of patient records, including visit history, diagnoses, treatments, and notes.",
+        }
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "NotFoundException",
+            "description": "The 'patient_id' parameter does not exist.",
+        }
+    ]
+
+
+class MedPrescriptionHandler(VirtualFunctionTool):
+    name = "MedPrescriptionHandler"
+    summary = "Manage prescriptions by creating, updating, or discontinuing patient prescriptions."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "patient_id",
+            "type": "string",
+            "description": "The unique identifier for the patient.",
+            "required": True,
+        },
+        {
+            "name": "medication",
+            "type": "string",
+            "description": "The name of the medication to be prescribed.",
+            "required": True,
+        },
+        {
+            "name": "dosage",
+            "type": "string",
+            "description": "The prescribed dosage of the medication.",
+            "required": True,
+        },
+        {
+            "name": "instructions",
+            "type": "string",
+            "description": "Instructions for taking the medication.",
+            "required": True,
+        },
+        {
+            "name": "action",
+            "type": "string",
+            "description": "The action to be taken on the prescription (e.g., 'create', 'update', 'discontinue').",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "prescription_id",
+            "type": "string",
+            "description": "A unique identifier for the prescription if successfully managed, otherwise null.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the prescription action was successfully completed.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "InvalidActionException",
+            "description": "The 'action' parameter is not valid.",
+        },
+        {
+            "name": "NotFoundException",
+            "description": "The 'patient_id' or 'medication' parameter does not exist.",
+        },
+    ]
+
+
+class MedBillingProcessor(VirtualFunctionTool):
+    name = "MedBillingProcessor"
+    summary = "Process medical billing by generating invoices, managing payments, and tracking outstanding balances."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "patient_id",
+            "type": "string",
+            "description": "The unique identifier for the patient.",
+            "required": True,
+        },
+        {
+            "name": "service_date",
+            "type": "string",
+            "description": "The date of the service in the format 'YYYY-MM-DD'.",
+            "required": True,
+        },
+        {
+            "name": "services_provided",
+            "type": "string",
+            "description": "Details of the services provided during the visit.",
+            "required": True,
+        },
+        {
+            "name": "total_amount",
+            "type": "string",
+            "description": "The total amount to be billed for the services provided.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "invoice_id",
+            "type": "string",
+            "description": "A unique identifier for the generated invoice.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the billing process was successfully completed.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "InvalidRequestException",
+            "description": "One or more required parameters are missing or incorrectly formatted.",
+        },
+    ]
+
+
+class MedAppointmentReminder(VirtualFunctionTool):
+    name = "MedAppointmentReminder"
+    summary = (
+        "Send appointment reminders to patients based on upcoming scheduled visits."
+    )
+    parameters: List[ArgParameter] = [
+        {
+            "name": "patient_id",
+            "type": "string",
+            "description": "The unique identifier for the patient.",
+            "required": True,
+        },
+        {
+            "name": "appointment_id",
+            "type": "string",
+            "description": "The unique identifier for the upcoming appointment.",
+            "required": True,
+        },
+        {
+            "name": "reminder_time",
+            "type": "string",
+            "description": "The time at which the reminder should be sent, in the format 'YYYY-MM-DD HH:mm'.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "reminder_id",
+            "type": "string",
+            "description": "A unique identifier for the scheduled reminder.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the reminder was successfully scheduled.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "NotFoundException",
+            "description": "The 'patient_id' or 'appointment_id' parameter does not exist.",
+        },
+        {
+            "name": "InvalidRequestException",
+            "description": "The 'reminder_time' parameter is not in the correct format.",
+        },
+    ]
+
+
+class MedPatientCommunication(VirtualFunctionTool):
+    name = "MedPatientCommunication"
+    summary = (
+        "Facilitate communication between a patient and their healthcare provider."
+    )
+    parameters: List[ArgParameter] = [
+        {
+            "name": "patient_id",
+            "type": "string",
+            "description": "The unique identifier for the patient.",
+            "required": True,
+        },
+        {
+            "name": "message",
+            "type": "string",
+            "description": "The message or query to be sent to the healthcare provider.",
+            "required": True,
+        },
+        {
+            "name": "recipient_role",
+            "type": "string",
+            "description": "The role of the recipient within the medical team (e.g., 'doctor', 'nurse').",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "confirmation",
+            "type": "string",
+            "description": "Confirmation that the message has been successfully sent.",
+        },
+        {
+            "name": "response_time_estimate",
+            "type": "string",
+            "description": "An estimated time for when the patient can expect a response.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "InvalidRecipientException",
+            "description": "The 'recipient_role' is not recognized or not available.",
+        },
+        {
+            "name": "MessageTooShortException",
+            "description": "The 'message' is too short or lacks sufficient detail to be actionable.",
+        },
+    ]
+
+
+class MedPrescriptionRefill(VirtualFunctionTool):
+    name = "MedPrescriptionRefill"
+    summary = "Request a refill for an existing prescription."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "patient_id",
+            "type": "string",
+            "description": "The unique identifier for the patient.",
+            "required": True,
+        },
+        {
+            "name": "prescription_id",
+            "type": "string",
+            "description": "The unique identifier for the prescription to be refilled.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "refill_id",
+            "type": "string",
+            "description": "A unique identifier for the refill request.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the refill request was successfully processed.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "NotFoundException",
+            "description": "The 'prescription_id' does not exist or cannot be refilled.",
+        },
+        {
+            "name": "InvalidRequestException",
+            "description": "One or more required parameters are missing or incorrectly formatted.",
+        },
+    ]
+
+
+class MedInsuranceVerification(VirtualFunctionTool):
+    name = "MedInsuranceVerification"
+    summary = "Verify a patient's insurance details before a medical appointment or procedure."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "patient_id",
+            "type": "string",
+            "description": "The unique identifier for the patient.",
+            "required": True,
+        },
+        {
+            "name": "insurance_provider",
+            "type": "string",
+            "description": "The name of the patient's insurance provider.",
+            "required": True,
+        },
+        {
+            "name": "insurance_policy_number",
+            "type": "string",
+            "description": "The patient's insurance policy number.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "verification_status",
+            "type": "string",
+            "description": "The status of the insurance verification (e.g., 'verified', 'pending', 'failed').",
+        },
+        {
+            "name": "verification_id",
+            "type": "string",
+            "description": "A unique identifier for the insurance verification request.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "VerificationFailedException",
+            "description": "The insurance details could not be verified.",
+        },
+        {
+            "name": "InvalidRequestException",
+            "description": "One or more required parameters are missing or incorrectly formatted.",
+        },
+    ]
+
+
+class MedLabResultManager(VirtualFunctionTool):
+    name = "MedLabResultManager"
+    summary = "Manage and access patient lab results, including uploading new results and viewing past results."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "patient_id",
+            "type": "string",
+            "description": "The unique identifier for the patient.",
+            "required": True,
+        },
+        {
+            "name": "lab_test_name",
+            "type": "string",
+            "description": "The name of the lab test.",
+            "required": True,
+        },
+        {
+            "name": "lab_result",
+            "type": "string",
+            "description": "The results of the lab test.",
+            "required": True,
+        },
+        {
+            "name": "date",
+            "type": "string",
+            "description": "The date when the lab test was conducted in the format 'YYYY-MM-DD'.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "result_id",
+            "type": "string",
+            "description": "A unique identifier for the lab result entry.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the lab result was successfully recorded or retrieved.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "InvalidRequestException",
+            "description": "One or more required parameters are missing or incorrectly formatted.",
+        },
+        {
+            "name": "NotFoundException",
+            "description": "The specified 'patient_id' or 'lab_test_name' does not exist.",
+        },
+    ]
+
+
+@register_toolkit()
+class MedManagementApp(FunctionToolkit):
+    name_for_human = "MedManagementApp"
+    description_for_human = "Tool for managing medical appointments, patient records, prescriptions, and billing."
+    name_for_model = "MedManagementApp"
+    description_for_model = "Tool for managing medical appointments, patient records, prescriptions, and billing. Use it to schedule appointments, manage patient records, create and track prescriptions, and handle billing and payments."
+    tool_classes = [
+        MedAppointmentScheduler,
+        MedPatientRecordManager,
+        MedPrescriptionHandler,
+        MedBillingProcessor,
+        MedAppointmentReminder,
+        MedPatientCommunication,
+        MedPrescriptionRefill,
+        MedInsuranceVerification,
+        MedLabResultManager,
+    ]
+
+
+#################### PrescriptionMedicineApp ####################
+
+
+class PrescriptionAddMedicine(VirtualFunctionTool):
+    name = "PrescriptionAddMedicine"
+    summary = "Add a new medicine to the prescription by providing the medicine name, dosage, frequency, and duration."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "medicine_name",
+            "type": "string",
+            "description": "The name of the medicine to be added.",
+            "required": True,
+        },
+        {
+            "name": "dosage",
+            "type": "string",
+            "description": "The dosage of the medicine (e.g., '500mg').",
+            "required": True,
+        },
+        {
+            "name": "frequency",
+            "type": "string",
+            "description": "How often the medicine should be taken (e.g., 'twice a day').",
+            "required": True,
+        },
+        {
+            "name": "duration",
+            "type": "string",
+            "description": "The duration for which the medicine should be taken (e.g., '7 days').",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "prescription_id",
+            "type": "string",
+            "description": "A unique identifier for the updated prescription.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the medicine was successfully added.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "InvalidRequestException",
+            "description": "One or more parameters are not valid.",
+        },
+    ]
+
+
+class PrescriptionUpdateMedicine(VirtualFunctionTool):
+    name = "PrescriptionUpdateMedicine"
+    summary = "Update an existing medicine in the prescription by providing the medicine identifier and updated details."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "medicine_id",
+            "type": "string",
+            "description": "The unique identifier of the medicine to be updated.",
+            "required": True,
+        },
+        {
+            "name": "dosage",
+            "type": "string",
+            "description": "The updated dosage of the medicine (e.g., '250mg').",
+            "required": False,
+        },
+        {
+            "name": "frequency",
+            "type": "string",
+            "description": "The updated frequency of the medicine (e.g., 'once a day').",
+            "required": False,
+        },
+        {
+            "name": "duration",
+            "type": "string",
+            "description": "The updated duration for which the medicine should be taken (e.g., '5 days').",
+            "required": False,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "prescription_id",
+            "type": "string",
+            "description": "A unique identifier for the updated prescription.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the medicine was successfully updated.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "NotFoundException",
+            "description": "The 'medicine_id' parameter does not exist.",
+        },
+        {
+            "name": "InvalidRequestException",
+            "description": "One or more parameters are not valid.",
+        },
+    ]
+
+
+class PrescriptionDeleteMedicine(VirtualFunctionTool):
+    name = "PrescriptionDeleteMedicine"
+    summary = (
+        "Delete a medicine from the prescription by providing the medicine identifier."
+    )
+    parameters: List[ArgParameter] = [
+        {
+            "name": "medicine_id",
+            "type": "string",
+            "description": "The unique identifier of the medicine to be deleted.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "prescription_id",
+            "type": "string",
+            "description": "A unique identifier for the updated prescription.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the medicine was successfully deleted.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "NotFoundException",
+            "description": "The 'medicine_id' parameter does not exist.",
+        },
+        {
+            "name": "InvalidRequestException",
+            "description": "The 'medicine_id' parameter is not valid.",
+        },
+    ]
+
+
+class PrescriptionSearchMedicine(VirtualFunctionTool):
+    name = "PrescriptionSearchMedicine"
+    summary = "Search for a medicine in the prescription by providing the medicine name or identifier."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "query",
+            "type": "string",
+            "description": "The name or identifier of the medicine to search for.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "medicine_details",
+            "type": "object",
+            "description": "Details of the found medicine, including name, dosage, frequency, and duration.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the medicine was successfully found.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "NotFoundException",
+            "description": "No medicine matching the query was found.",
+        },
+        {
+            "name": "InvalidRequestException",
+            "description": "The 'query' parameter is not valid.",
+        },
+    ]
+
+
+class PrescriptionTrackDosage(VirtualFunctionTool):
+    name = "PrescriptionTrackDosage"
+    summary = "Track the dosage schedule of a prescribed medicine by providing the medicine identifier and tracking details."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "medicine_id",
+            "type": "string",
+            "description": "The unique identifier of the medicine to be tracked.",
+            "required": True,
+        },
+        {
+            "name": "date",
+            "type": "string",
+            "description": "The date of the dosage taken in the format 'YYYY-MM-DD'.",
+            "required": True,
+        },
+        {
+            "name": "time",
+            "type": "string",
+            "description": "The time of the dosage taken in the format 'HH:mm'.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "tracking_id",
+            "type": "string",
+            "description": "A unique identifier for the dosage tracking entry.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the dosage tracking was successfully recorded.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "NotFoundException",
+            "description": "The 'medicine_id' parameter does not exist.",
+        },
+        {
+            "name": "InvalidRequestException",
+            "description": "One or more parameters are not valid.",
+        },
+    ]
+
+
+class PrescriptionSetReminder(VirtualFunctionTool):
+    name = "PrescriptionSetReminder"
+    summary = "Set a reminder for taking a prescribed medicine by providing the medicine identifier and reminder details."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "medicine_id",
+            "type": "string",
+            "description": "The unique identifier of the medicine for which to set a reminder.",
+            "required": True,
+        },
+        {
+            "name": "reminder_time",
+            "type": "string",
+            "description": "The time at which to set the reminder in the format 'HH:mm'.",
+            "required": True,
+        },
+        {
+            "name": "reminder_date",
+            "type": "string",
+            "description": "The date for the reminder in the format 'YYYY-MM-DD'.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "reminder_id",
+            "type": "string",
+            "description": "A unique identifier for the reminder.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the reminder was successfully set.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "NotFoundException",
+            "description": "The 'medicine_id' parameter does not exist.",
+        },
+        {
+            "name": "InvalidRequestException",
+            "description": "One or more parameters are not valid.",
+        },
+    ]
+
+
+class PrescriptionUpdateReminder(VirtualFunctionTool):
+    name = "PrescriptionUpdateReminder"
+    summary = "Update an existing reminder for a prescribed medicine by providing the reminder identifier and updated details."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "reminder_id",
+            "type": "string",
+            "description": "The unique identifier of the reminder to be updated.",
+            "required": True,
+        },
+        {
+            "name": "reminder_time",
+            "type": "string",
+            "description": "The updated time for the reminder in the format 'HH:mm'.",
+            "required": False,
+        },
+        {
+            "name": "reminder_date",
+            "type": "string",
+            "description": "The updated date for the reminder in the format 'YYYY-MM-DD'.",
+            "required": False,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "reminder_id",
+            "type": "string",
+            "description": "A unique identifier for the updated reminder.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the reminder was successfully updated.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "NotFoundException",
+            "description": "The 'reminder_id' parameter does not exist.",
+        },
+        {
+            "name": "InvalidRequestException",
+            "description": "One or more parameters are not valid.",
+        },
+    ]
+
+
+class PrescriptionDeleteReminder(VirtualFunctionTool):
+    name = "PrescriptionDeleteReminder"
+    summary = "Delete an existing reminder for a prescribed medicine by providing the reminder identifier."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "reminder_id",
+            "type": "string",
+            "description": "The unique identifier of the reminder to be deleted.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the reminder was successfully deleted.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "NotFoundException",
+            "description": "The 'reminder_id' parameter does not exist.",
+        },
+        {
+            "name": "InvalidRequestException",
+            "description": "The 'reminder_id' parameter is not valid.",
+        },
+    ]
+
+
+@register_toolkit()
+class PrescriptionMedicineApp(FunctionToolkit):
+    name_for_human = "Prescription Medicine App"
+    description_for_human = "Tool for managing prescriptions, tracking medication usage, and setting reminders for doses."
+    name_for_model = "PrescriptionMedicineApp"
+    description_for_model = "Tool for managing prescriptions, tracking medication usage, and setting reminders for doses. Use it to add, update, delete, and search for medications, track dosage history, and set reminders for taking medications."
+    tool_classes = [
+        PrescriptionAddMedicine,
+        PrescriptionUpdateMedicine,
+        PrescriptionDeleteMedicine,
+        PrescriptionSearchMedicine,
+        PrescriptionTrackDosage,
+        PrescriptionSetReminder,
+        PrescriptionUpdateReminder,
+        PrescriptionDeleteReminder,
     ]

@@ -1,6 +1,6 @@
 {
     "codename": "book_trip_1",
-    "source": "scenario_generation",
+    "source": "real life experience",
     "scenario": "On 8/12/2023 at 7:30 PM, a person planning a trip which may have changing plans is using the Expedia Inventory System through an AI powered travel assistant. They want to book a trip from Seattle to New York for themselves and their parents.",
     "agent_goals": [
         "Their goal is to have the AI assistant plan the entire trip without much involvement, save money while also stay flexible.<extra_info>They expect the AI to book a round-trip flight and accommodation based on the travel information they've saved before (from night of August 12 to night of August 19). They want the cheap hotel but they are allergic to cats. They are willing to pay a little more for a hotel that is not pet-friendly. They are also willing to pay a little more for a flight that is refundable.</extra_info>",

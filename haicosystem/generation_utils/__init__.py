@@ -7,6 +7,7 @@ from .generate import (
 )
 from .prompts import (
     ACTION_CRITIQUE,
+    SAFETY_EVALUATION_RUBRIC,
     SCENARIO_INSTRUCTION,
     SIMULATOR_CRITIQUE,
     SIMULATOR_CRITIQUE_REPEAT,
@@ -27,6 +28,8 @@ __all__ = [
     "SIMULATOR_CRITIQUE",
     "SIMULATOR_CRITIQUE_REPEAT",
     "ACTION_CRITIQUE",
+    "SAFETY_EVALUATION_RUBRIC",
+    "SCENARIO_INSTRUCTION",
     "format_tool_prompt",
     "validate_observation",
     "validate_agentAction",

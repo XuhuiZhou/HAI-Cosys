@@ -45,6 +45,33 @@ python examples/run.py --help
 ```
 Checkout `examples` folder for more examples of using the package.
 
+### Upload profiles to the database
+
+To upload profiles to the database, you can use the following command:
+```bash
+python examples/create_env_agent_combo.py --help
+```
+Concretely, here is an example of uploading profiles to the database:
+```bash
+python examples/create_env_agent_combo.py --agent-folder="./assets/ai_agent_profiles" --env-folders="./assets/education,./assets/healthcare,./assets/personal_services,./assets/miscellaneous,./assets/technology_and_science,./assets/business_and_finance,./assets/politics_and_law" --clean-combos
+```
+To learn more about the command line arguments, you can use the following command:
+```bash
+python examples/create_env_agent_combo.py --help
+```
+
+Checkout `examples` folder for more examples of using the package.
+
+### Run scaled simulations
+
+To run scaled simulations, you can use the following command:
+```bash
+python examples/experiment.py --help
+```
+Concretely, here is an example of running scaled simulations:
+```bash
+python examples/experiment.py --models="gpt-4-turbo" --partner-model="gpt-4o" --evaluator-model="gpt-4o" --batch-size=5 --task="haicosystem" --push-to-db
+```
 
 ## Contribution
 ### Install dev options
