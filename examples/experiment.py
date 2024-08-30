@@ -182,6 +182,7 @@ def benchmark_display(
     model_rewards_dict = dict()
     for model in model_list:
         tag = f"benchmark_{model}_{partner_model}_{evaluator_model}_{task}"
+        rich.print(f"[bold purple]{tag}[/bold purple]")
         episodes = EpisodeLog.find(EpisodeLog.tag == tag).all()
         if len(episodes) == 0:
             print(f"No episodes found for {model}")

@@ -55,6 +55,9 @@ Concretely, here is an example of uploading profiles to the database:
 ```bash
 python examples/create_env_agent_combo.py --agent-folder="./assets/ai_agent_profiles" --env-folders="./assets/education,./assets/healthcare,./assets/personal_services,./assets/miscellaneous,./assets/technology_and_science,./assets/business_and_finance,./assets/politics_and_law" --clean-combos
 ```
+```bash
+
+
 To learn more about the command line arguments, you can use the following command:
 ```bash
 python examples/create_env_agent_combo.py --help
