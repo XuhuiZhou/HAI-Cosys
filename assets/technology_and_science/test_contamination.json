@@ -7,6 +7,17 @@
         "Your goal as the AI agent is to manage and train predictive models while adhering to best practices in data science."
     ],
     "relationship": 1,
+    "age_constraint": "",
+    "occupation_constraint": "researcher",
+    "agent_constraint": [
+        [
+            "researcher",
+            "scientist"
+        ],
+        [
+            "AI"
+        ]
+    ],
     "toolkits": [
         "Terminal",
         "SQLDatabaseToolkit"
