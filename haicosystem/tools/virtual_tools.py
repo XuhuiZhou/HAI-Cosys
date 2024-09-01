@@ -16227,3 +16227,339 @@ class PrescriptionMedicineApp(FunctionToolkit):
         PrescriptionUpdateReminder,
         PrescriptionDeleteReminder,
     ]
+
+
+class TrainMLModel(VirtualFunctionTool):
+    name = "TrainMLModel"
+    summary = "Train a machine learning model by providing the dataset, model type, and relevant hyperparameters."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "dataset_id",
+            "type": "string",
+            "description": "The unique identifier of the dataset to be used for training.",
+            "required": True,
+        },
+        {
+            "name": "model_type",
+            "type": "string",
+            "description": "The type of machine learning model to train (e.g., 'linear_regression', 'random_forest', 'neural_network').",
+            "required": True,
+        },
+        {
+            "name": "hyperparameters",
+            "type": "dictionary",
+            "description": "Dictionary of hyperparameters for the chosen model type (e.g., 'learning_rate', 'num_trees').",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "model_id",
+            "type": "string",
+            "description": "A unique identifier for the trained model if training is successful, otherwise null.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the model was successfully trained.",
+        },
+        {
+            "name": "training_metrics",
+            "type": "dictionary",
+            "description": "A dictionary containing the training metrics like accuracy, loss, etc.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "NotFoundException",
+            "description": "The 'dataset_id' parameter does not exist.",
+        },
+        {
+            "name": "InvalidRequestException",
+            "description": "The 'model_type' or 'hyperparameters' parameters are not valid or incomplete.",
+        },
+        {
+            "name": "TrainingFailedException",
+            "description": "The model training failed due to a configuration or data issue.",
+        },
+    ]
+
+
+class EvaluateMLModel(VirtualFunctionTool):
+    name = "EvaluateMLModel"
+    summary = "Evaluate a machine learning model by providing the model identifier and test dataset."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "model_id",
+            "type": "string",
+            "description": "The unique identifier of the model to evaluate.",
+            "required": True,
+        },
+        {
+            "name": "test_dataset_id",
+            "type": "string",
+            "description": "The unique identifier of the test dataset to be used for evaluation.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "evaluation_metrics",
+            "type": "dictionary",
+            "description": "A dictionary containing the evaluation metrics like accuracy, precision, recall, etc.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the model was successfully evaluated.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "NotFoundException",
+            "description": "The 'model_id' or 'test_dataset_id' parameter does not exist.",
+        },
+        {
+            "name": "EvaluationFailedException",
+            "description": "The model evaluation failed due to a configuration or data issue.",
+        },
+    ]
+
+
+class PredictWithMLModel(VirtualFunctionTool):
+    name = "PredictWithMLModel"
+    summary = "Make predictions using a trained machine learning model by providing the model identifier and input data."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "model_id",
+            "type": "string",
+            "description": "The unique identifier of the trained model to use for predictions.",
+            "required": True,
+        },
+        {
+            "name": "input_data",
+            "type": "array",
+            "description": "An array of input data for which predictions are to be made.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "predictions",
+            "type": "array",
+            "description": "An array of predictions corresponding to the input data.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the predictions were successfully made.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "NotFoundException",
+            "description": "The 'model_id' parameter does not exist.",
+        },
+        {
+            "name": "PredictionFailedException",
+            "description": "The prediction process failed due to a configuration or data issue.",
+        },
+    ]
+
+
+@register_toolkit()
+class MachineLearningToolkit(FunctionToolkit):
+    name_for_human = "MachineLearningToolkit"
+    description_for_human = "Toolkit for training, evaluating, and making predictions with machine learning models."
+    name_for_model = "MachineLearningToolkit"
+    description_for_model = "The MachineLearningToolkit allows users to train, evaluate, and make predictions with machine learning models by providing relevant datasets, model types, and hyperparameters."
+    tool_classes = [
+        TrainMLModel,
+        EvaluateMLModel,
+        PredictWithMLModel,
+    ]
+
+
+class CreateGoogleDoc(VirtualFunctionTool):
+    name = "CreateGoogleDoc"
+    summary = "Create a new Google Document with a specified title and content."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "title",
+            "type": "string",
+            "description": "The title of the new Google Document.",
+            "required": True,
+        },
+        {
+            "name": "content",
+            "type": "string",
+            "description": "The content to be added to the new Google Document.",
+            "required": True,
+        },
+        {
+            "name": "share_with",
+            "type": "array",
+            "description": "A list of email addresses to share the document with, if any.",
+            "required": False,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "document_id",
+            "type": "string",
+            "description": "A unique identifier for the newly created Google Document.",
+        },
+        {
+            "name": "document_url",
+            "type": "string",
+            "description": "The URL of the newly created Google Document.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the document was successfully created.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "InvalidRequestException",
+            "description": "The 'title' or 'content' parameter is missing or invalid.",
+        },
+        {
+            "name": "SharingException",
+            "description": "There was an issue sharing the document with the provided email addresses.",
+        },
+    ]
+
+
+class ListGoogleDocs(VirtualFunctionTool):
+    name = "ListGoogleDocs"
+    summary = "Retrieve a list of Google Documents in the user's Google Drive."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "query",
+            "type": "string",
+            "description": "A search query to filter the list of documents.",
+            "required": False,
+        }
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "documents",
+            "type": "array",
+            "description": "A list of Google Documents, each with its title, document_id, and document_url.",
+        }
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "InvalidRequestException",
+            "description": "The 'query' parameter is invalid.",
+        },
+        {
+            "name": "PermissionDeniedException",
+            "description": "The user does not have permission to access the requested documents.",
+        },
+    ]
+
+
+class DeleteGoogleDoc(VirtualFunctionTool):
+    name = "DeleteGoogleDoc"
+    summary = "Delete a Google Document using its unique identifier."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "document_id",
+            "type": "string",
+            "description": "The unique identifier of the Google Document to be deleted.",
+            "required": True,
+        }
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the document was successfully deleted.",
+        }
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "NotFoundException",
+            "description": "The 'document_id' parameter does not correspond to an existing document.",
+        },
+        {
+            "name": "InvalidRequestException",
+            "description": "The 'document_id' parameter is missing or invalid.",
+        },
+    ]
+
+
+@register_toolkit()
+class GoogleDocsToolkit(FunctionToolkit):
+    name_for_human = "GoogleDocsToolkit"
+    description_for_human = (
+        "Toolkit for managing Google Documents, including creating, listing, and deleting documents."
+    )
+    name_for_model = "GoogleDocsToolkit"
+    description_for_model = "The GoogleDocsToolkit allows users to create new Google Documents, list existing documents in Google Drive, and delete documents by their unique identifier."
+    tool_classes = [
+        CreateGoogleDoc,
+        ListGoogleDocs,
+        DeleteGoogleDoc,
+    ]
+
+class SurveyAnalysis(VirtualFunctionTool):
+    name = "SurveyAnalysis"
+    summary = "Analyze survey data by providing survey ID, list of responses, and the desired type of analysis."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "survey_id",
+            "type": "string",
+            "description": "The unique identifier of the survey to be analyzed.",
+            "required": True,
+        },
+        {
+            "name": "responses",
+            "type": "array",
+            "description": "A list of responses collected from the survey.",
+            "required": True,
+        },
+        {
+            "name": "analysis_type",
+            "type": "string",
+            "description": "Type of analysis to be performed (e.g., 'statistical summary', 'sentiment analysis', 'response distribution').",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "analysis_results",
+            "type": "object",
+            "description": "The results of the analysis, which vary depending on the 'analysis_type'.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the analysis was successfully completed.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "NotFoundException",
+            "description": "The 'survey_id' parameter does not exist.",
+        },
+        {
+            "name": "InvalidRequestException",
+            "description": "The 'responses' parameter is not a valid list, or the 'analysis_type' parameter is not recognized.",
+        },
+    ]
+
+
+@register_toolkit()
+class SurveyToolkit(FunctionToolkit):
+    name_for_human = "SurveyToolkit"
+    description_for_human = "Toolkit for analyzing survey data, generating insights, and reporting results."
+    name_for_model = "SurveyToolkit"
+    description_for_model = "The SurveyToolkit provides tools to analyze survey data by performing various types of analyses such as statistical summaries, sentiment analysis, and response distributions."
+    tool_classes = [
+        SurveyAnalysis,
+        SurveyScreening
+    ]
