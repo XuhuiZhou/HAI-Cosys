@@ -1,4 +1,4 @@
-![TITLE](data/title.png)
+![TITLE](assets/title.png)
 # HAICOSYSTEM
 [![Python 3.11](https://img.shields.io/badge/python-3.11-blue.svg)](https://www.python.org/downloads/release/python-3109/)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://pre-commit.com/)
