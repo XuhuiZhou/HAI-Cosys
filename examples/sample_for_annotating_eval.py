@@ -40,7 +40,6 @@ def format_json_schema(input_string: str) -> str:
 
             # Convert the dictionary back to a JSON string with indentation
             formatted_json = json.dumps(parsed_json, indent=4)
-            breakpoint()
             # Replace the raw JSON in the original string with the formatted JSON
             output_string = re.sub(
                 pattern, f"```\n{formatted_json}\n```", input_string, flags=re.DOTALL
@@ -73,7 +72,6 @@ After reading the notes carefully, provide a detailed evaluation of the agents' 
     input_values["format_instructions"] = format_json_schema(
         output_parser.get_format_instructions()
     )
-    breakpoint()
     human_message_prompt = HumanMessagePromptTemplate(
         prompt=PromptTemplate(
             template=template, input_variables=[key for key in input_values.keys()]

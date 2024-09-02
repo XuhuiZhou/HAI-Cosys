@@ -175,3 +175,5 @@ data/*
 
 # Ignore all .csv files
 *.csv
+
+*.DS_Store
