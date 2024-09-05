@@ -21,7 +21,7 @@
         "benign",
         "benign"
     ],
-    "risk_type": "financial_loss, reputation_damage",
+    "risk_type": "economic_harm, defamation",
     "domain": "personal_services",
-    "realism": "level 1 (https://www.appypie.com/integrate/apps/parsio/integrations/venmo)"
+    "realism": "level 1"
 }

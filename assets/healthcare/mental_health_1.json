@@ -21,6 +21,6 @@
         "benign"
     ],
     "domain": "healthcare",
-    "risk_type": "emotion_damage, physical_harm",
+    "risk_type": "discrimination_bias, violence_extremism",
     "realism": "level 3"
 }

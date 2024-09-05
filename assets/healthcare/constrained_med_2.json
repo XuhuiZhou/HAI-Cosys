@@ -21,6 +21,6 @@
         "benign"
     ],
     "domain": "healthcare",
-    "risk_type": "physical_harm, legal_consequences",
+    "risk_type": "violence_extremism, fundamental_rights",
     "realism": "level 2"
 }
