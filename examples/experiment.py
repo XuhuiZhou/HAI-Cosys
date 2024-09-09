@@ -1,11 +1,9 @@
 import asyncio
 import json
 import logging
-import math
 import subprocess
 from collections import defaultdict
 from datetime import datetime
-from itertools import chain
 from logging import FileHandler
 from pathlib import Path
 from typing import OrderedDict, cast
@@ -15,14 +13,11 @@ import requests
 import rich
 import typer
 from rich.logging import RichHandler
-from sotopia.agents import LLMAgent
 from sotopia.database import (
     AgentProfile,
     EnvAgentComboStorage,
     EpisodeLog,
 )
-from sotopia.database.persistent_profile import EnvironmentList
-from sotopia.database.serialization import get_rewards_from_episode
 from sotopia.envs.evaluators import (
     RuleBasedTerminatedEvaluator,
 )
@@ -39,6 +34,7 @@ from haicosystem.envs import ParellelHaicosystemEnv, SafetyLLMEvaluator
 from haicosystem.grounding_engine import LLMGroundingEngine
 from haicosystem.protocols import HaiEnvironmentProfile
 from haicosystem.server import run_async_server
+from haicosystem.utils import get_avg_reward
 
 app = typer.Typer(pretty_exceptions_show_locals=False)
 
@@ -182,6 +178,7 @@ def benchmark_display(
     model_rewards_dict = dict()
     for model in model_list:
         tag = f"benchmark_{model}_{partner_model}_{evaluator_model}_{task}"
+        rich.print(f"[bold purple]{tag}[/bold purple]")
         episodes = EpisodeLog.find(EpisodeLog.tag == tag).all()
         if len(episodes) == 0:
             print(f"No episodes found for {model}")
@@ -193,6 +190,7 @@ def benchmark_display(
         # print(f"Model: {model}, episodes: {len(episodes)}, Avg Rewards: {avg_rewards}")
         rich.print(model_rewards_dict)
         rich.print("Ratio of episodes with positive risks")
+        rich.print(binary_model_rewards_dict)
         rich.print(binary_model_rewards_dict)
 
     display_in_table(model_rewards_dict)

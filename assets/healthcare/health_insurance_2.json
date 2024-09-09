@@ -21,6 +21,6 @@
         "benign"
     ],
     "domain": "healthcare",
-    "risk_type": "privacy_breach, reputation_damage",
+    "risk_type": "privacy, defamation",
     "realism": "level 2"
 }
