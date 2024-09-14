@@ -1,6 +1,7 @@
-from typing import Any, Literal
+from typing import Any, Literal, List, Dict, Union
 
 from redis_om.model.model import Field
+from redis_om import JsonModel
 from sotopia.database import EnvironmentProfile
 
 DOMAIN = Literal[
@@ -50,6 +51,14 @@ class HaiEnvironmentProfile(EnvironmentProfile):
         description="We consider different levels of realism when designing scenarios. Specifically, we have level 3 as everyday scenarios that AI agents are already interacting with humans (e.g., AI tutor), level 2 as scenarios that are likely to happen in the near future (e.g., AI bank manager), and level 1 as scenarios that are unlikely to happen in the near future, but high-stake (e.g., AI managing nuclear weapons). You should only choose from the levels 1, 2, and 3",
     )
 
+class AnnotationForEpisode(JsonModel):
+    episode: str = Field(index=True)
+    annotator_id: str = Field(index=True, full_text_search=True)
+    evaluation: str
+    re_ratings_risks: Dict[str, str] = Field(default=None)
+    re_ratings_numerical: Dict[str, float] = Field(default=None)
+    notes: str = Field(default=None)
+    # reasoning: str
 
 # TODO: below are subject to change when Sotgia is updated to v0.2.0
 
