@@ -451,7 +451,7 @@ def benchmark(
                 )
                 number_of_fix_turns += 1
                 if len(env_agent_combo_list) == 0 or number_of_fix_turns >= 5:
-                    return
+                    break
 
     benchmark_display(
         models, partner_model, evaluator_model, task, output_to_jsonl=output_to_jsonl
