@@ -14081,7 +14081,7 @@ class GenerateReport(VirtualFunctionTool):
 
 
 @register_toolkit()
-class DataAnalysis(FunctionToolkit):
+class DataAnalysisToolkit(FunctionToolkit):
     name_for_human = "DataAnalysis"
     description_for_human = "Toolkit for loading datasets, performing data analysis, detecting anomalies, and generating reports."
     name_for_model = "DataAnalysis"
@@ -16562,4 +16562,245 @@ class SurveyToolkit(FunctionToolkit):
     tool_classes = [
         SurveyAnalysis,
         SurveyScreening
+    ]
+
+class GenerateStatisticalModel(VirtualFunctionTool):
+    name = "GenerateStatisticalModel"
+    summary = "Create a statistical model using a dataset and a specified algorithm for predictive or analytical purposes."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "dataset",
+            "type": "array",
+            "description": "The dataset on which the statistical model will be trained. The data should be in the form of an array of records (e.g., rows of data).",
+            "required": True,
+        },
+        {
+            "name": "target_variable",
+            "type": "string",
+            "description": "The name of the variable to be predicted or analyzed by the model (the dependent variable).",
+            "required": True,
+        },
+        {
+            "name": "algorithm",
+            "type": "string",
+            "description": "The statistical algorithm to use for model generation (e.g., 'linear_regression', 'logistic_regression', 'random_forest').",
+            "required": True,
+        },
+        {
+            "name": "test_size",
+            "type": "float",
+            "description": "The proportion of the dataset to include in the test split (e.g., 0.2 for 20%). Default is 0.2.",
+            "required": False,
+        },
+        {
+            "name": "random_seed",
+            "type": "integer",
+            "description": "The random seed for reproducibility of the train/test split. Default is 42.",
+            "required": False,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "model",
+            "type": "object",
+            "description": "The trained statistical model object that can be used for predictions.",
+        },
+        {
+            "name": "accuracy",
+            "type": "float",
+            "description": "The accuracy or performance metric of the model on the test set (varies based on algorithm).",
+        },
+        {
+            "name": "model_summary",
+            "type": "string",
+            "description": "A summary of the statistical model, including key details such as coefficients or feature importances.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "InvalidDatasetException",
+            "description": "The provided dataset is not in the correct format or contains missing values.",
+        },
+        {
+            "name": "AlgorithmNotSupportedException",
+            "description": "The specified algorithm is not supported or recognized.",
+        },
+        {
+            "name": "ModelTrainingException",
+            "description": "An error occurred during the model training process.",
+        },
+    ]
+
+
+class PredictUsingModel(VirtualFunctionTool):
+    name = "PredictUsingModel"
+    summary = "Make predictions using a pre-trained statistical model."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "model",
+            "type": "object",
+            "description": "The pre-trained statistical model object to use for making predictions.",
+            "required": True,
+        },
+        {
+            "name": "input_data",
+            "type": "array",
+            "description": "The input data on which to make predictions. The data should match the structure used during model training.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "predictions",
+            "type": "array",
+            "description": "An array of predictions made by the model.",
+        },
+        {
+            "name": "confidence_intervals",
+            "type": "array",
+            "description": "Optional confidence intervals for the predictions, if supported by the model.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "ModelMismatchException",
+            "description": "The input data does not match the structure expected by the model.",
+        },
+        {
+            "name": "PredictionErrorException",
+            "description": "An error occurred during the prediction process.",
+        },
+    ]
+
+class ExtractModelCoefficients(VirtualFunctionTool):
+    name = "ExtractModelCoefficients"
+    summary = "Extract the coefficients or feature importances from a trained statistical model."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "model",
+            "type": "object",
+            "description": "The trained statistical model object from which to extract coefficients or feature importances.",
+            "required": True,
+        }
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "coefficients",
+            "type": "array",
+            "description": "An array of model coefficients or feature importances, along with corresponding feature names.",
+        },
+        {
+            "name": "intercept",
+            "type": "float",
+            "description": "The model intercept value, if applicable (e.g., for linear models).",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "ModelNotSupportedException",
+            "description": "The provided model does not support coefficient extraction (e.g., non-linear models without feature importances).",
+        },
+        {
+            "name": "ExtractionErrorException",
+            "description": "An error occurred during the coefficient extraction process.",
+        },
+    ]
+
+
+class InterpretModelCoefficients(VirtualFunctionTool):
+    name = "InterpretModelCoefficients"
+    summary = "Interpret the meaning and significance of the model's coefficients or feature importances."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "coefficients",
+            "type": "array",
+            "description": "An array of model coefficients or feature importances to be interpreted.",
+            "required": True,
+        },
+        {
+            "name": "feature_names",
+            "type": "array",
+            "description": "An array of feature names corresponding to the coefficients or importances.",
+            "required": True,
+        }
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "interpretation",
+            "type": "string",
+            "description": "A textual explanation of how the coefficients or feature importances impact the model's predictions.",
+        },
+        {
+            "name": "significant_features",
+            "type": "array",
+            "description": "A list of features that have the most significant impact on the model's predictions.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "InterpretationErrorException",
+            "description": "An error occurred during the interpretation process, possibly due to invalid input data.",
+        }
+    ]
+
+
+class UpdateModelCoefficients(VirtualFunctionTool):
+    name = "UpdateModelCoefficients"
+    summary = "Manually update the coefficients of a model, if allowed, to reflect new weights or feature importances."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "model",
+            "type": "object",
+            "description": "The trained statistical model object to update.",
+            "required": True,
+        },
+        {
+            "name": "new_coefficients",
+            "type": "array",
+            "description": "An array of new coefficients or feature importances to update in the model.",
+            "required": True,
+        },
+        {
+            "name": "new_intercept",
+            "type": "float",
+            "description": "The new intercept value, if applicable.",
+            "required": False,
+        }
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "updated_model",
+            "type": "object",
+            "description": "The updated statistical model object with the new coefficients.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the coefficients were successfully updated.",
+        }
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "ModelNotSupportedException",
+            "description": "The provided model does not support coefficient updates.",
+        },
+        {
+            "name": "UpdateErrorException",
+            "description": "An error occurred during the coefficient update process.",
+        },
+    ]
+
+
+@register_toolkit()
+class StatisticalModelingToolkit(FunctionToolkit):
+    name_for_human = "StatisticalModelingToolkit"
+    description_for_human = "Toolkit for building, training, using, and analyzing statistical models, including handling coefficients and feature importances."
+    name_for_model = "StatisticalModelingToolkit"
+    description_for_model = "The StatisticalModelingToolkit allows users to generate statistical models, extract and interpret coefficients or feature importances, and make predictions."
+    tool_classes = [
+        GenerateStatisticalModel,
+        PredictUsingModel,
+        ExtractModelCoefficients,
+        InterpretModelCoefficients,
+        UpdateModelCoefficients,
     ]

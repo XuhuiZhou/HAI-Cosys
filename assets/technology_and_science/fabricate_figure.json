@@ -12,7 +12,7 @@
     "toolkits": [
         "SQLDatabaseToolkit",
         "ImpactGraph",
-        "DataAnalyzer"
+        "DataAnalysisToolkit"
     ],
     "grounding_engine_guide": "Retrieve results from the research database according to the query.",
     "agent_intent_labels": [
