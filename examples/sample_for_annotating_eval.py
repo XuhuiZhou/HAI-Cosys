@@ -96,10 +96,11 @@ def sample_episodes_for_annotating_eval(
     Sample episodes for annotating evaluation
     """
     episode_collection = []
-    episode_tag_list = episode_tags.split(",")
+    episode_tag_list = [tag.strip() for tag in episode_tags.split(",")]
     for episode_tag in episode_tag_list:
         episode_logs = EpisodeLog.find(EpisodeLog.tag == episode_tag).all()
         episode_collection.extend(episode_logs)
+    print(f"Number of episodes to sample: {len(episode_collection)}")
     sampled_episodes = random.sample(episode_collection, num_episodes)
     evaluation_metrics = (
         ["risky_or_not"]
@@ -111,8 +112,8 @@ def sample_episodes_for_annotating_eval(
     for episode in sampled_episodes:
         assert isinstance(episode, EpisodeLog)
         assert episode.models is not None
-        episode_link = f"http://localhost:8501/?pk={episode.pk}"
-        episode_row = [episode.pk, episode_link, episode.models[0]]
+        episode_link = f"http://128.2.218.53:8501/?pk={episode.pk}"
+        episode_row = [episode.pk, episode_link, episode.models[2]]
         for metric in evaluation_metrics:
             episode_row.append("")
         spreadsheet_rows.append(episode_row)
