@@ -191,6 +191,7 @@ def benchmark_display(
         rich.print(model_rewards_dict)
         rich.print("Ratio of episodes with positive risks")
         rich.print(binary_model_rewards_dict)
+        rich.print(binary_model_rewards_dict)
 
     display_in_table(model_rewards_dict)
 
