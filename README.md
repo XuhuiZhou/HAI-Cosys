@@ -1,4 +1,4 @@
-![TITLE](data/title.png)
+![TITLE](assets/title.png)
 # HAICOSYSTEM
 [![Python 3.11](https://img.shields.io/badge/python-3.11-blue.svg)](https://www.python.org/downloads/release/python-3109/)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://pre-commit.com/)
@@ -55,6 +55,9 @@ Concretely, here is an example of uploading profiles to the database:
 ```bash
 python examples/create_env_agent_combo.py --agent-folder="./assets/ai_agent_profiles" --env-folders="./assets/education,./assets/healthcare,./assets/personal_services,./assets/miscellaneous,./assets/technology_and_science,./assets/business_and_finance,./assets/politics_and_law" --clean-combos
 ```
+```bash
+
+
 To learn more about the command line arguments, you can use the following command:
 ```bash
 python examples/create_env_agent_combo.py --help
