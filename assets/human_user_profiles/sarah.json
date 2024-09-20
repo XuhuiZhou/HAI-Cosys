@@ -1,0 +1,17 @@
+{
+    "first_name": "Sarah",
+    "last_name": "Brown",
+    "age": 25,
+    "occupation": "Researcher",
+    "gender": "Woman",
+    "gender_pronoun": "She/her",
+    "public_info": "Sophia Brown loves cats.",
+    "big_five": "Openness to Experience - High; Conscientiousness - Low; Extraversion - Low; Agreeableness - High; Neuroticism - High",
+    "moral_values": ["Fairness/Reciprocity"],
+    "schwartz_personal_values": ["Universalism"],
+    "personality_and_values": "Sophia Brown, open-minded and sensitive, values fairness and is driven by a universal perspective in her research. Her decision-making style is analytical and thorough.",
+    "decision_making_style": "Analytical",
+    "secret": "She is an undercover agent for a secret organization.",
+    "mbti": "INFP",
+    "model_id": ""
+  }

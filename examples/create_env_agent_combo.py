@@ -25,15 +25,47 @@ def upload_agents_to_db(agent_file: str) -> None:
     print(f"Uploaded {agent_file} agent profiles to the database")
 
 
-def upload_envs_to_db(env_file: str) -> None:
+@app.command()
+def update_envs_on_db(env_file: str) -> None:
+    """
+    Update the environments to the database
+    """
+    with open(env_file, "r") as file:
+        env_profile_json = json.load(file)
+        env_profile_list = HaiEnvironmentProfile.find(
+            HaiEnvironmentProfile.codename == env_profile_json["codename"]
+        ).all()
+        assert len(env_profile_list) == 1
+        env_profile = env_profile_list[0]
+        print(env_profile.pk)
+        for key, value in env_profile_json.items():
+            if hasattr(env_profile, key):
+                if getattr(env_profile, key) != value:
+                    setattr(env_profile, key, value)
+                    print(f"Updated {key} to {value}")
+                else:
+                    print(f"No update for {key}")
+        env_profile.save()
+    print(f"Updated {env_file} environment profiles to the database")
+
+
+def upload_envs_to_db(env_file: str) -> str | None:
     """
     Upload the environments to the database
     """
     with open(env_file, "r") as file:
         env_profile_json = json.load(file)
         env_profile = HaiEnvironmentProfile.parse_obj(env_profile_json)
+        existing_env_profile = HaiEnvironmentProfile.find(
+            HaiEnvironmentProfile.codename == env_profile.codename
+        ).all()
+        if len(existing_env_profile) > 0:
+            print(f"Environment {env_profile.codename} already exists")
+            return existing_env_profile[0].pk
+            # return None
         env_profile.save()
     print(f"Uploaded {env_file} environment profiles to the database")
+    return env_profile.pk
 
 
 def _sample_env_agent_combo_and_push_to_db(
@@ -46,11 +78,20 @@ def _sample_env_agent_combo_and_push_to_db(
     # env_agent_combo_list = list(
     #     sampler.sample(agent_classes=[LLMAgent] * 2, replacement=False, size=1)
     # )
-    human_agent_profile_sample = random.sample(human_agent_profiles, sample_size)
+    env_profile = HaiEnvironmentProfile.get(pk=env_id)
+    if env_profile.domain == "technology_and_science":
+        human_agent_profile_sample = [
+            human_agent_profile
+            for human_agent_profile in human_agent_profiles
+            if human_agent_profile.occupation == "Researcher"
+        ]
+    else:
+        human_agent_profile_sample = random.sample(human_agent_profiles, sample_size)
     env_agent_combo_list = [
         (env_id, (human_agent_profile.pk, ai_agent_pk))
         for human_agent_profile in human_agent_profile_sample
     ]
+    breakpoint()
     for env_id, agent in env_agent_combo_list:
         EnvAgentComboStorage(
             env_id=env_id,
@@ -111,6 +152,9 @@ def create_env_agent_combo(
     env_stats: bool = typer.Option(
         False, help="Whether to print the environment statistics"
     ),
+    only_updated_envs: bool = typer.Option(
+        False, help="Whether to only update the environments that have been updated"
+    ),
 ) -> None:
     """
     Create environment-agent combo from the given JSON files
@@ -121,8 +165,12 @@ def create_env_agent_combo(
             abort=True,
         )
         for index, storage in enumerate(EnvAgentComboStorage.find().all()):
-            EnvAgentComboStorage.delete(storage.pk)
-            print(f"Cleaned {index + 1} environment-agent combos")
+            count = 0
+            env_profile = HaiEnvironmentProfile.get(pk=storage.env_id)  # type: ignore
+            if env_profile.domain == "technology_and_science":
+                EnvAgentComboStorage.delete(storage.pk)
+                print(f"Cleaned {count} environment-agent combos")
+                count += 1
 
         typer.confirm(
             "Are you sure you want to clean the existing AI agent profiles?", abort=True
@@ -152,12 +200,16 @@ def create_env_agent_combo(
         show_env_stats(env_paths)
         return
 
+    updated_envs = []
     for env_path in env_paths:
-        upload_envs_to_db(env_path)
+        updated_pk = upload_envs_to_db(env_path)
+        if updated_pk is not None:
+            updated_envs.append(updated_pk)
 
-    agent_files = os.listdir(agent_folder)
-    for agent_file in agent_files:
-        upload_agents_to_db(os.path.join(agent_folder, agent_file))
+    # agent_files = os.listdir(agent_folder)
+    # for agent_file in agent_files:
+    #     if agent_file.endswith(".json"):
+    #         upload_agents_to_db(os.path.join(agent_folder, agent_file))
 
     print("Created environment-agent combo")
     ai_agents: list[AgentProfile] = AgentProfile.find(
@@ -166,7 +218,11 @@ def create_env_agent_combo(
     human_agents: list[AgentProfile] = AgentProfile.find(
         AgentProfile.last_name != "AI"
     ).all()  # type: ignore
-    env_list: list[HaiEnvironmentProfile] = HaiEnvironmentProfile.find().all()  # type: ignore
+    env_list: list[HaiEnvironmentProfile] = []
+    if only_updated_envs:
+        env_list = [HaiEnvironmentProfile.get(pk=pk) for pk in updated_envs]
+    else:
+        env_list = HaiEnvironmentProfile.find().all()  # type: ignore
     print(f"# AI agents: {len(ai_agents)}")
     print(f"# Human agents: {len(human_agents)}")
     print(f"# Environments: {len(env_list)}")
