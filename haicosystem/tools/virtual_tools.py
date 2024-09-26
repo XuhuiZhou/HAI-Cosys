@@ -14081,7 +14081,7 @@ class GenerateReport(VirtualFunctionTool):
 
 
 @register_toolkit()
-class DataAnalysis(FunctionToolkit):
+class DataAnalysisToolkit(FunctionToolkit):
     name_for_human = "DataAnalysis"
     description_for_human = "Toolkit for loading datasets, performing data analysis, detecting anomalies, and generating reports."
     name_for_model = "DataAnalysis"
@@ -16226,4 +16226,581 @@ class PrescriptionMedicineApp(FunctionToolkit):
         PrescriptionSetReminder,
         PrescriptionUpdateReminder,
         PrescriptionDeleteReminder,
+    ]
+
+
+class TrainMLModel(VirtualFunctionTool):
+    name = "TrainMLModel"
+    summary = "Train a machine learning model by providing the dataset, model type, and relevant hyperparameters."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "dataset_id",
+            "type": "string",
+            "description": "The unique identifier of the dataset to be used for training.",
+            "required": True,
+        },
+        {
+            "name": "model_type",
+            "type": "string",
+            "description": "The type of machine learning model to train (e.g., 'linear_regression', 'random_forest', 'neural_network').",
+            "required": True,
+        },
+        {
+            "name": "hyperparameters",
+            "type": "dictionary",
+            "description": "Dictionary of hyperparameters for the chosen model type (e.g., 'learning_rate', 'num_trees').",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "model_id",
+            "type": "string",
+            "description": "A unique identifier for the trained model if training is successful, otherwise null.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the model was successfully trained.",
+        },
+        {
+            "name": "training_metrics",
+            "type": "dictionary",
+            "description": "A dictionary containing the training metrics like accuracy, loss, etc.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "NotFoundException",
+            "description": "The 'dataset_id' parameter does not exist.",
+        },
+        {
+            "name": "InvalidRequestException",
+            "description": "The 'model_type' or 'hyperparameters' parameters are not valid or incomplete.",
+        },
+        {
+            "name": "TrainingFailedException",
+            "description": "The model training failed due to a configuration or data issue.",
+        },
+    ]
+
+
+class EvaluateMLModel(VirtualFunctionTool):
+    name = "EvaluateMLModel"
+    summary = "Evaluate a machine learning model by providing the model identifier and test dataset."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "model_id",
+            "type": "string",
+            "description": "The unique identifier of the model to evaluate.",
+            "required": True,
+        },
+        {
+            "name": "test_dataset_id",
+            "type": "string",
+            "description": "The unique identifier of the test dataset to be used for evaluation.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "evaluation_metrics",
+            "type": "dictionary",
+            "description": "A dictionary containing the evaluation metrics like accuracy, precision, recall, etc.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the model was successfully evaluated.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "NotFoundException",
+            "description": "The 'model_id' or 'test_dataset_id' parameter does not exist.",
+        },
+        {
+            "name": "EvaluationFailedException",
+            "description": "The model evaluation failed due to a configuration or data issue.",
+        },
+    ]
+
+
+class PredictWithMLModel(VirtualFunctionTool):
+    name = "PredictWithMLModel"
+    summary = "Make predictions using a trained machine learning model by providing the model identifier and input data."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "model_id",
+            "type": "string",
+            "description": "The unique identifier of the trained model to use for predictions.",
+            "required": True,
+        },
+        {
+            "name": "input_data",
+            "type": "array",
+            "description": "An array of input data for which predictions are to be made.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "predictions",
+            "type": "array",
+            "description": "An array of predictions corresponding to the input data.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the predictions were successfully made.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "NotFoundException",
+            "description": "The 'model_id' parameter does not exist.",
+        },
+        {
+            "name": "PredictionFailedException",
+            "description": "The prediction process failed due to a configuration or data issue.",
+        },
+    ]
+
+
+@register_toolkit()
+class MachineLearningToolkit(FunctionToolkit):
+    name_for_human = "MachineLearningToolkit"
+    description_for_human = "Toolkit for training, evaluating, and making predictions with machine learning models."
+    name_for_model = "MachineLearningToolkit"
+    description_for_model = "The MachineLearningToolkit allows users to train, evaluate, and make predictions with machine learning models by providing relevant datasets, model types, and hyperparameters."
+    tool_classes = [
+        TrainMLModel,
+        EvaluateMLModel,
+        PredictWithMLModel,
+    ]
+
+
+class CreateGoogleDoc(VirtualFunctionTool):
+    name = "CreateGoogleDoc"
+    summary = "Create a new Google Document with a specified title and content."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "title",
+            "type": "string",
+            "description": "The title of the new Google Document.",
+            "required": True,
+        },
+        {
+            "name": "content",
+            "type": "string",
+            "description": "The content to be added to the new Google Document.",
+            "required": True,
+        },
+        {
+            "name": "share_with",
+            "type": "array",
+            "description": "A list of email addresses to share the document with, if any.",
+            "required": False,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "document_id",
+            "type": "string",
+            "description": "A unique identifier for the newly created Google Document.",
+        },
+        {
+            "name": "document_url",
+            "type": "string",
+            "description": "The URL of the newly created Google Document.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the document was successfully created.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "InvalidRequestException",
+            "description": "The 'title' or 'content' parameter is missing or invalid.",
+        },
+        {
+            "name": "SharingException",
+            "description": "There was an issue sharing the document with the provided email addresses.",
+        },
+    ]
+
+
+class ListGoogleDocs(VirtualFunctionTool):
+    name = "ListGoogleDocs"
+    summary = "Retrieve a list of Google Documents in the user's Google Drive."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "query",
+            "type": "string",
+            "description": "A search query to filter the list of documents.",
+            "required": False,
+        }
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "documents",
+            "type": "array",
+            "description": "A list of Google Documents, each with its title, document_id, and document_url.",
+        }
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "InvalidRequestException",
+            "description": "The 'query' parameter is invalid.",
+        },
+        {
+            "name": "PermissionDeniedException",
+            "description": "The user does not have permission to access the requested documents.",
+        },
+    ]
+
+
+class DeleteGoogleDoc(VirtualFunctionTool):
+    name = "DeleteGoogleDoc"
+    summary = "Delete a Google Document using its unique identifier."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "document_id",
+            "type": "string",
+            "description": "The unique identifier of the Google Document to be deleted.",
+            "required": True,
+        }
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the document was successfully deleted.",
+        }
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "NotFoundException",
+            "description": "The 'document_id' parameter does not correspond to an existing document.",
+        },
+        {
+            "name": "InvalidRequestException",
+            "description": "The 'document_id' parameter is missing or invalid.",
+        },
+    ]
+
+
+@register_toolkit()
+class GoogleDocsToolkit(FunctionToolkit):
+    name_for_human = "GoogleDocsToolkit"
+    description_for_human = "Toolkit for managing Google Documents, including creating, listing, and deleting documents."
+    name_for_model = "GoogleDocsToolkit"
+    description_for_model = "The GoogleDocsToolkit allows users to create new Google Documents, list existing documents in Google Drive, and delete documents by their unique identifier."
+    tool_classes = [
+        CreateGoogleDoc,
+        ListGoogleDocs,
+        DeleteGoogleDoc,
+    ]
+
+
+class SurveyAnalysis(VirtualFunctionTool):
+    name = "SurveyAnalysis"
+    summary = "Analyze survey data by providing survey ID, list of responses, and the desired type of analysis."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "survey_id",
+            "type": "string",
+            "description": "The unique identifier of the survey to be analyzed.",
+            "required": True,
+        },
+        {
+            "name": "responses",
+            "type": "array",
+            "description": "A list of responses collected from the survey.",
+            "required": True,
+        },
+        {
+            "name": "analysis_type",
+            "type": "string",
+            "description": "Type of analysis to be performed (e.g., 'statistical summary', 'sentiment analysis', 'response distribution').",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "analysis_results",
+            "type": "object",
+            "description": "The results of the analysis, which vary depending on the 'analysis_type'.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the analysis was successfully completed.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "NotFoundException",
+            "description": "The 'survey_id' parameter does not exist.",
+        },
+        {
+            "name": "InvalidRequestException",
+            "description": "The 'responses' parameter is not a valid list, or the 'analysis_type' parameter is not recognized.",
+        },
+    ]
+
+
+@register_toolkit()
+class SurveyToolkit(FunctionToolkit):
+    name_for_human = "SurveyToolkit"
+    description_for_human = (
+        "Toolkit for analyzing survey data, generating insights, and reporting results."
+    )
+    name_for_model = "SurveyToolkit"
+    description_for_model = "The SurveyToolkit provides tools to analyze survey data by performing various types of analyses such as statistical summaries, sentiment analysis, and response distributions."
+    tool_classes = [SurveyAnalysis, SurveyScreening]
+
+
+class GenerateStatisticalModel(VirtualFunctionTool):
+    name = "GenerateStatisticalModel"
+    summary = "Create a statistical model using a dataset and a specified algorithm for predictive or analytical purposes."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "dataset",
+            "type": "array",
+            "description": "The dataset on which the statistical model will be trained. The data should be in the form of an array of records (e.g., rows of data).",
+            "required": True,
+        },
+        {
+            "name": "target_variable",
+            "type": "string",
+            "description": "The name of the variable to be predicted or analyzed by the model (the dependent variable).",
+            "required": True,
+        },
+        {
+            "name": "algorithm",
+            "type": "string",
+            "description": "The statistical algorithm to use for model generation (e.g., 'linear_regression', 'logistic_regression', 'random_forest').",
+            "required": True,
+        },
+        {
+            "name": "test_size",
+            "type": "float",
+            "description": "The proportion of the dataset to include in the test split (e.g., 0.2 for 20%). Default is 0.2.",
+            "required": False,
+        },
+        {
+            "name": "random_seed",
+            "type": "integer",
+            "description": "The random seed for reproducibility of the train/test split. Default is 42.",
+            "required": False,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "model",
+            "type": "object",
+            "description": "The trained statistical model object that can be used for predictions.",
+        },
+        {
+            "name": "accuracy",
+            "type": "float",
+            "description": "The accuracy or performance metric of the model on the test set (varies based on algorithm).",
+        },
+        {
+            "name": "model_summary",
+            "type": "string",
+            "description": "A summary of the statistical model, including key details such as coefficients or feature importances.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "InvalidDatasetException",
+            "description": "The provided dataset is not in the correct format or contains missing values.",
+        },
+        {
+            "name": "AlgorithmNotSupportedException",
+            "description": "The specified algorithm is not supported or recognized.",
+        },
+        {
+            "name": "ModelTrainingException",
+            "description": "An error occurred during the model training process.",
+        },
+    ]
+
+
+class PredictUsingModel(VirtualFunctionTool):
+    name = "PredictUsingModel"
+    summary = "Make predictions using a pre-trained statistical model."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "model",
+            "type": "object",
+            "description": "The pre-trained statistical model object to use for making predictions.",
+            "required": True,
+        },
+        {
+            "name": "input_data",
+            "type": "array",
+            "description": "The input data on which to make predictions. The data should match the structure used during model training.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "predictions",
+            "type": "array",
+            "description": "An array of predictions made by the model.",
+        },
+        {
+            "name": "confidence_intervals",
+            "type": "array",
+            "description": "Optional confidence intervals for the predictions, if supported by the model.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "ModelMismatchException",
+            "description": "The input data does not match the structure expected by the model.",
+        },
+        {
+            "name": "PredictionErrorException",
+            "description": "An error occurred during the prediction process.",
+        },
+    ]
+
+
+class ExtractModelCoefficients(VirtualFunctionTool):
+    name = "ExtractModelCoefficients"
+    summary = "Extract the coefficients or feature importances from a trained statistical model."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "model",
+            "type": "object",
+            "description": "The trained statistical model object from which to extract coefficients or feature importances.",
+            "required": True,
+        }
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "coefficients",
+            "type": "array",
+            "description": "An array of model coefficients or feature importances, along with corresponding feature names.",
+        },
+        {
+            "name": "intercept",
+            "type": "float",
+            "description": "The model intercept value, if applicable (e.g., for linear models).",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "ModelNotSupportedException",
+            "description": "The provided model does not support coefficient extraction (e.g., non-linear models without feature importances).",
+        },
+        {
+            "name": "ExtractionErrorException",
+            "description": "An error occurred during the coefficient extraction process.",
+        },
+    ]
+
+
+class InterpretModelCoefficients(VirtualFunctionTool):
+    name = "InterpretModelCoefficients"
+    summary = "Interpret the meaning and significance of the model's coefficients or feature importances."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "coefficients",
+            "type": "array",
+            "description": "An array of model coefficients or feature importances to be interpreted.",
+            "required": True,
+        },
+        {
+            "name": "feature_names",
+            "type": "array",
+            "description": "An array of feature names corresponding to the coefficients or importances.",
+            "required": True,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "interpretation",
+            "type": "string",
+            "description": "A textual explanation of how the coefficients or feature importances impact the model's predictions.",
+        },
+        {
+            "name": "significant_features",
+            "type": "array",
+            "description": "A list of features that have the most significant impact on the model's predictions.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "InterpretationErrorException",
+            "description": "An error occurred during the interpretation process, possibly due to invalid input data.",
+        }
+    ]
+
+
+class UpdateModelCoefficients(VirtualFunctionTool):
+    name = "UpdateModelCoefficients"
+    summary = "Manually update the coefficients of a model, if allowed, to reflect new weights or feature importances."
+    parameters: List[ArgParameter] = [
+        {
+            "name": "model",
+            "type": "object",
+            "description": "The trained statistical model object to update.",
+            "required": True,
+        },
+        {
+            "name": "new_coefficients",
+            "type": "array",
+            "description": "An array of new coefficients or feature importances to update in the model.",
+            "required": True,
+        },
+        {
+            "name": "new_intercept",
+            "type": "float",
+            "description": "The new intercept value, if applicable.",
+            "required": False,
+        },
+    ]
+    returns: List[ArgReturn] = [
+        {
+            "name": "updated_model",
+            "type": "object",
+            "description": "The updated statistical model object with the new coefficients.",
+        },
+        {
+            "name": "success",
+            "type": "boolean",
+            "description": "A boolean indicating whether the coefficients were successfully updated.",
+        },
+    ]
+    exceptions: List[ArgException] = [
+        {
+            "name": "ModelNotSupportedException",
+            "description": "The provided model does not support coefficient updates.",
+        },
+        {
+            "name": "UpdateErrorException",
+            "description": "An error occurred during the coefficient update process.",
+        },
+    ]
+
+
+@register_toolkit()
+class StatisticalModelingToolkit(FunctionToolkit):
+    name_for_human = "StatisticalModelingToolkit"
+    description_for_human = "Toolkit for building, training, using, and analyzing statistical models, including handling coefficients and feature importances."
+    name_for_model = "StatisticalModelingToolkit"
+    description_for_model = "The StatisticalModelingToolkit allows users to generate statistical models, extract and interpret coefficients or feature importances, and make predictions."
+    tool_classes = [
+        GenerateStatisticalModel,
+        PredictUsingModel,
+        ExtractModelCoefficients,
+        InterpretModelCoefficients,
+        UpdateModelCoefficients,
     ]

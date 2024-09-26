@@ -1,0 +1,17 @@
+{
+    "first_name": "Alisa",
+    "last_name": "Green",
+    "age": 45,
+    "occupation": "Researcher",
+    "gender": "Woman",
+    "gender_pronoun": "She/her",
+    "public_info": "Alisa Greenberg is a hard-working and successful researcher.",
+    "big_five": "Openness to Experience - High; Conscientiousness - High; Extraversion - Low; Agreeableness - Low; Neuroticism - Low",
+    "moral_values": ["Authority&Loyalty"],
+    "schwartz_personal_values": ["Self-Direction"],
+    "personality_and_values": "Alisa Greenberg, a strong respecter of rules and schedules, values authority and loyalty. She approaches decisions rationally and practically.",
+    "decision_making_style": "Rational",
+    "secret": "She anonymously donates to charity.",
+    "mbti": "INTJ",
+    "model_id": ""
+  }

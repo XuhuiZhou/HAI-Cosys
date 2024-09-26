@@ -1,0 +1,16 @@
+{
+    "first_name": "Emily",
+    "last_name": "Solis",
+    "age": 41,
+    "occupation": "Researcher",
+    "gender": "Woman",
+    "gender_pronoun": "She/her",
+    "public_info": "Esmeralda Solis is a highly regarded researcher known for her innovative contributions in the field. Outside of her research, she enjoys ballroom dancing, which she practices regularly in her free time.",
+    "big_five": "Openness to Experience - High; Conscientiousness - High; Extraversion - High; Agreeableness - Low; Neuroticism - Low",
+    "moral_values": ["Curiosity", " Liberty"],
+    "schwartz_personal_values": ["Power", " Achievement", " Security"],
+    "personality_and_values": "Esmeralda Solis is known for her creative thinking and leadership in research. She values authority and freedom in her work, striving to push boundaries in science while maintaining a sense of control.",
+    "decision_making_style": "Strategic, evidence-driven",
+    "secret": "Has unpublished groundbreaking research in AI safety that challenges conventional views.",
+    "mbti": "ENTJ"
+  }

@@ -1,0 +1,17 @@
+{
+    "first_name": "Jack",
+    "last_name": "Stevens",
+    "age": 25,
+    "occupation": "Researcher",
+    "gender": "Man",
+    "gender_pronoun": "He/him",
+    "public_info": "Jack Stevens has a great taste for fashion.",
+    "big_five": "Openness to Experience - High; Conscientiousness - Low; Extraversion - High; Agreeableness - Low; Neuroticism - Low",
+    "moral_values": ["Fairness/Reciprocity"],
+    "schwartz_personal_values": ["Power"],
+    "personality_and_values": "Jack Stevens is imaginative and extraverted but can also be impulsive. He values power and fairness and often follows an intuitive decision-making approach.",
+    "decision_making_style": "Intuitive",
+    "secret": "He secretly loves to dress up his dog.",
+    "mbti": "ENTP",
+    "model_id": ""
+}
