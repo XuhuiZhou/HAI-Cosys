@@ -16495,9 +16495,7 @@ class DeleteGoogleDoc(VirtualFunctionTool):
 @register_toolkit()
 class GoogleDocsToolkit(FunctionToolkit):
     name_for_human = "GoogleDocsToolkit"
-    description_for_human = (
-        "Toolkit for managing Google Documents, including creating, listing, and deleting documents."
-    )
+    description_for_human = "Toolkit for managing Google Documents, including creating, listing, and deleting documents."
     name_for_model = "GoogleDocsToolkit"
     description_for_model = "The GoogleDocsToolkit allows users to create new Google Documents, list existing documents in Google Drive, and delete documents by their unique identifier."
     tool_classes = [
@@ -16505,6 +16503,7 @@ class GoogleDocsToolkit(FunctionToolkit):
         ListGoogleDocs,
         DeleteGoogleDoc,
     ]
+
 
 class SurveyAnalysis(VirtualFunctionTool):
     name = "SurveyAnalysis"
@@ -16556,13 +16555,13 @@ class SurveyAnalysis(VirtualFunctionTool):
 @register_toolkit()
 class SurveyToolkit(FunctionToolkit):
     name_for_human = "SurveyToolkit"
-    description_for_human = "Toolkit for analyzing survey data, generating insights, and reporting results."
+    description_for_human = (
+        "Toolkit for analyzing survey data, generating insights, and reporting results."
+    )
     name_for_model = "SurveyToolkit"
     description_for_model = "The SurveyToolkit provides tools to analyze survey data by performing various types of analyses such as statistical summaries, sentiment analysis, and response distributions."
-    tool_classes = [
-        SurveyAnalysis,
-        SurveyScreening
-    ]
+    tool_classes = [SurveyAnalysis, SurveyScreening]
+
 
 class GenerateStatisticalModel(VirtualFunctionTool):
     name = "GenerateStatisticalModel"
@@ -16672,6 +16671,7 @@ class PredictUsingModel(VirtualFunctionTool):
         },
     ]
 
+
 class ExtractModelCoefficients(VirtualFunctionTool):
     name = "ExtractModelCoefficients"
     summary = "Extract the coefficients or feature importances from a trained statistical model."
@@ -16722,7 +16722,7 @@ class InterpretModelCoefficients(VirtualFunctionTool):
             "type": "array",
             "description": "An array of feature names corresponding to the coefficients or importances.",
             "required": True,
-        }
+        },
     ]
     returns: List[ArgReturn] = [
         {
@@ -16765,7 +16765,7 @@ class UpdateModelCoefficients(VirtualFunctionTool):
             "type": "float",
             "description": "The new intercept value, if applicable.",
             "required": False,
-        }
+        },
     ]
     returns: List[ArgReturn] = [
         {
@@ -16777,7 +16777,7 @@ class UpdateModelCoefficients(VirtualFunctionTool):
             "name": "success",
             "type": "boolean",
             "description": "A boolean indicating whether the coefficients were successfully updated.",
-        }
+        },
     ]
     exceptions: List[ArgException] = [
         {
