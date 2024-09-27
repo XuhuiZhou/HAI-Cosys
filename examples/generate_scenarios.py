@@ -134,6 +134,23 @@ def generate_scenarios(
             for entry in sampled_data:
                 inspiration = f"Here are the variables for you to fill into the corresponding slots in the template: question: {entry['prompt'][0]['content']}, correct answer: {entry['base']['correct_answer']}, incorrect answer: {entry['base']['incorrect_answer']}. Please only fill in the variables in the template and don't change anything else."
                 inspiration_list.append(inspiration)
+        elif special_type == "DAN":
+            dan_data = pd.read_csv("./forbidden_question_set_with_prompts.csv")
+            dan_sampled_data = dan_data.sample(13)
+            for idx, entry in dan_sampled_data.iterrows():
+                inspiration = f"Here are the variables for you to fill into the corresponding slots in the template: <prompt_to_jailbreak>: {entry['prompt']}<question>: {entry['question']}. You should fill in other variables according to the above prompt. Please only fill in the variables in the template and don't change anything else."
+                inspiration_list.append(inspiration)
+        elif special_type == "wildteaming":
+            wildteaming_data = pd.read_csv(
+                "hf://datasets/allenai/wildjailbreak/train/train.tsv", sep="\t"
+            )
+            wildteaming_data = wildteaming_data[
+                wildteaming_data["data_type"].str.contains("adversarial_harmful")
+            ]
+            wildteaming_sampled_data = wildteaming_data.sample(13)
+            for idx, entry in wildteaming_sampled_data.iterrows():
+                inspiration = f"Here are the variables for you to fill into the corresponding slots in the template: <vanilla_request>: {entry['vanilla']} <adversarial_request>: {entry['adversarial']}. You should fill in other variables according to the above prompt. Please only fill in the variables in the template and don't change anything else."
+                inspiration_list.append(inspiration)
         elif special_type == "toolemu":
             toolemu_data = json.load(open("./assets/all_cases.json"))
             sampled_data = [toolemu_data[id] for id in [88, 89, 90, 91, 85, 86]]
@@ -170,7 +187,7 @@ def generate_scenarios(
             output_file = f"{'_'.join(example_file.split('/')[-1].split('.')[0].split('_')[:-1])}_{index}.json"
         hai_env_profile = asyncio.run(
             agenerate_hai_scenarios(
-                model_name="gpt-4-turbo",
+                model_name="gpt-4o-2024-08-06",
                 inspiration_prompt=inspiration,
                 codename=output_file.split(".")[0],
                 domain=domain,

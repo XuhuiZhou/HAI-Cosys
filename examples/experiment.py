@@ -191,8 +191,10 @@ def benchmark_display(
         episodes = EpisodeLog.find(EpisodeLog.tag == tag).all()
         if filter_env_ids:
             episodes = [
-                episode for episode in episodes if episode.environment in filter_env_ids
-            ]  # type: ignore
+                episode
+                for episode in episodes
+                if episode.environment in filter_env_ids  # type: ignore
+            ]
         if len(episodes) == 0:
             print(f"No episodes found for {model}")
             continue
