@@ -51,3 +51,19 @@ python examples/experiment.py --models="together_ai/meta-llama/Meta-Llama-3.1-70
 
 - **Notes**: a. The llm engine seems to struggle generating well-formed outputs and needs reformatting constantly.
 - **Results**: The model was overfitting after 20 epochs.
+
+
+### 3. Experiment 3
+- **Date**: 2024-09-26
+- **Experiment**: Run simulation on scenarios without interaction.
+```bash[discarded]
+python examples/experiment.py --models="gpt-4-turbo" --partner-model="gpt-4o-2024-08-06" --evaluator-model="gpt-4o-2024-08-06" --batch-size=4 --task="haicosystem_wo_interaction_1"  --iteration-num=5 --max-turn-num=2 --scenario-filter="jailbreak" --push-to-db
+```
+
+- **Notes**: The human agent won't say the jailbreaking sentence faithfully.
+
+```bash
+python examples/experiment.py --models="gpt-4-turbo" --partner-model="gpt-4o-2024-08-06" --evaluator-model="gpt-4o-2024-08-06" --batch-size=4 --task="haicosystem_wo_interaction_2"  --iteration-num=5 --max-turn-num=2 --scenario-filter="jailbreak" --use-starting-speech --push-to-db
+```
+
+- **Notes**: With the starting speech, the problem is being fixed.

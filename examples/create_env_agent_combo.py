@@ -26,7 +26,7 @@ def upload_agents_to_db(agent_file: str) -> None:
 
 
 @app.command()
-def update_envs_on_db(env_file: str) -> None:
+def update_env_on_db(env_file: str) -> None:
     """
     Update the environments to the database
     """
@@ -47,6 +47,17 @@ def update_envs_on_db(env_file: str) -> None:
                     print(f"No update for {key}")
         env_profile.save()
     print(f"Updated {env_file} environment profiles to the database")
+
+
+@app.command()
+def update_envs_on_db(env_folder: str) -> None:
+    """
+    Update the environments to the database
+    """
+    env_files = os.listdir(env_folder)
+    for env_file in env_files:
+        if env_file.endswith(".json"):
+            update_env_on_db(os.path.join(env_folder, env_file))
 
 
 def upload_envs_to_db(env_file: str) -> str | None:

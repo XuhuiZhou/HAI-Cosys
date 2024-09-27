@@ -31,8 +31,8 @@ async def arun_one_episode(
     env: ParellelHaicosystemEnv,
     agent_list: Sequence[BaseAgent[Observation, AgentAction]],
     omniscient: bool = False,
-    script_like: bool = False,
     json_in_script: bool = False,
+    use_starting_speech: bool = False,
     tag: str | None = None,
     push_to_db: bool = False,
 ) -> list[tuple[str, str, Message]]:
@@ -64,16 +64,13 @@ async def arun_one_episode(
                 for agent_name in env.agents
             ]
         )
-        if script_like:
-            # manually mask one message
-            agent_mask = env.action_mask
-            for idx in range(len(agent_mask)):
-                print("Current mask: ", agent_mask)
-                if agent_mask[idx] == 0:
-                    print("Action not taken: ", actions[idx])
-                    actions[idx] = AgentAction(action_type="none", argument="")
-                else:
-                    print("Current action taken: ", actions[idx])
+        if use_starting_speech and env.turn_number == 0 and env.profile.starting_speech:
+            # replace the first message with the starting speech of the first agent
+            # TODO: this is a temp solution, we need to find a way to avoid the first agent still generating their own speech, which won't influence the results but might be confusing when debugging
+            actions[0] = AgentAction(
+                action_type="speak",
+                argument=env.profile.starting_speech,
+            )
 
         # actions = cast(list[AgentAction], actions)
         for idx, agent_name in enumerate(env.agents):
@@ -211,6 +208,7 @@ async def run_async_server(
     tag: str | None = None,
     push_to_db: bool = False,
     using_async: bool = True,
+    use_starting_speech: bool = False,
 ) -> list[list[tuple[str, str, Message]]]:
     """
     Doc incomplete
@@ -271,6 +269,7 @@ async def run_async_server(
             agent_list=env_agent_combo[1],
             tag=tag,
             push_to_db=push_to_db,
+            use_starting_speech=use_starting_speech,
         )
         for env_agent_combo in env_agent_combo_iter
     ]
