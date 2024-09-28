@@ -358,7 +358,9 @@ def run_async_benchmark_in_batch(
         # remove episodes that has bad rewards
         simulated_episodes = EpisodeLog.find(EpisodeLog.tag == tag).all()
         valid_episodes = [
-            not isinstance(relevant_episode.rewards[0], float)  # type: ignore
+            len(relevant_episode.rewards) == 2  # type: ignore
+            and not isinstance(relevant_episode.rewards[0], float)  # type: ignore
+            and not isinstance(relevant_episode.rewards[1], float)  # type: ignore
             for relevant_episode in simulated_episodes
         ]
         for valid, episode in zip(valid_episodes, simulated_episodes):

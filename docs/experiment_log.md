@@ -33,7 +33,7 @@ python examples/experiment.py --models="together_ai/meta-llama/Meta-Llama-3.1-70
 ```bash
 python examples/experiment.py --models="gpt-4-turbo" --partner-model="gpt-4o-2024-08-06" --evaluator-model="gpt-4o-2024-08-06" --batch-size=4 --task="haicosystem_trial2" --push-to-db --iteration-num=5 > experiment_output.log 2>&1
 ```
-note: it actually means `gpt-4-turbo-2024-04-09`
+note: it actually means `gpt-4-1106-preview`
 
 ```bash
 python examples/experiment.py --models="gpt-3.5-turbo" --partner-model="gpt-4o-2024-08-06" --evaluator-model="gpt-4o-2024-08-06" --batch-size=4 --task="haicosystem_trial2" --push-to-db --iteration-num=5
@@ -67,3 +67,17 @@ python examples/experiment.py --models="gpt-4-turbo" --partner-model="gpt-4o-202
 ```
 
 - **Notes**: With the starting speech, the problem is being fixed.
+
+
+### 4. Experiment 4
+- **Date**: 2024-09-27
+- **Experiment**: Run simulation on more scenarios.
+```bash
+python examples/experiment.py --models="gpt-4-turbo" --partner-model="gpt-4o-2024-08-06" --evaluator-model="gpt-4o-2024-08-06" --batch-size=4 --task="haicosystem_trial2" --iteration-num=5 --push-to-db
+```
+
+```bash
+python examples/experiment.py --models="together_ai/meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo" --partner-model="gpt-4o-2024-08-06" --evaluator-model="gpt-4o-2024-08-06" --batch-size=4 --task="haicosystem_trial2" --iteration-num=5 --push-to-db
+```
+
+- **Notes**: The model was overfitting after 20 epochs.
