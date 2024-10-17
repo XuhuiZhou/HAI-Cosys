@@ -56,7 +56,9 @@ logging.basicConfig(
 )
 
 
-def initilize_benchmark_combo(url: str) -> list[EnvAgentComboStorage]:
+def initilize_benchmark_combo(
+    url: str, filter_env_ids: list[str] = []
+) -> list[EnvAgentComboStorage]:
     if url:
         response = requests.get(url)
         # Check if the request was successful
@@ -74,6 +76,12 @@ def initilize_benchmark_combo(url: str) -> list[EnvAgentComboStorage]:
             list_of_env_agent_combo_storage.append(env_agent_combo_storage)
     else:
         list_of_env_agent_combo_storage = EnvAgentComboStorage.find().all()  # type: ignore
+        if filter_env_ids:
+            list_of_env_agent_combo_storage = [
+                combo
+                for combo in list_of_env_agent_combo_storage
+                if combo.env_id in filter_env_ids
+            ]
     return list_of_env_agent_combo_storage
 
 
@@ -168,6 +176,7 @@ def benchmark_display(
     evaluator_model: str = "gpt-4o",
     task: str = "hard",
     output_to_jsonl: bool = False,
+    filter_env_ids: list[str] = [],
 ) -> None:
     """
     Usage: sotopia benchmark-display --model-list gpt-4o --model-list together_ai/meta-llama-Llama-3-70b-chat-hf
@@ -180,6 +189,12 @@ def benchmark_display(
         tag = f"benchmark_{model}_{partner_model}_{evaluator_model}_{task}"
         rich.print(f"[bold purple]{tag}[/bold purple]")
         episodes = EpisodeLog.find(EpisodeLog.tag == tag).all()
+        if filter_env_ids:
+            episodes = [
+                episode
+                for episode in episodes
+                if episode.environment in filter_env_ids  # type: ignore
+            ]
         if len(episodes) == 0:
             print(f"No episodes found for {model}")
             continue
@@ -236,6 +251,7 @@ def check_existing_episodes(
 def _list_all_env_agent_combo_not_in_db(
     model_names: dict[str, LLM_Name],
     env_agent_combo_storage_index_list: list[tuple[EnvAgentComboStorage, str]],
+    max_turn_num: int = 20,
     tag: str = "",
     task: str = "",
 ) -> list[EnvAgentCombo[Observation, AgentAction]]:
@@ -268,7 +284,9 @@ def _list_all_env_agent_combo_not_in_db(
             model_name=model_names["env"],
             action_order="round-robin",
             evaluators=[
-                RuleBasedTerminatedEvaluator(max_turn_number=20, max_stale_turn=3),
+                RuleBasedTerminatedEvaluator(
+                    max_turn_number=max_turn_num, max_stale_turn=3
+                ),
             ],
             terminal_evaluators=[
                 SafetyLLMEvaluator(model_names["env"]),
@@ -300,6 +318,7 @@ def run_async_benchmark_in_batch(
     tag: str = "",
     push_to_db: bool = False,
     verbose: bool = False,
+    use_starting_speech: bool = False,
 ) -> None:
     env_agent_combo_batch: list[EnvAgentCombo[Observation, AgentAction]] = []
     loop = asyncio.get_event_loop()
@@ -318,6 +337,7 @@ def run_async_benchmark_in_batch(
                     env_agent_combo_list=env_agent_combo_batch,
                     push_to_db=push_to_db,
                     tag=tag,
+                    use_starting_speech=use_starting_speech,
                 )
             )
             env_agent_combo_batch = []
@@ -332,12 +352,15 @@ def run_async_benchmark_in_batch(
                     env_agent_combo_list=env_agent_combo_batch,
                     push_to_db=push_to_db,
                     tag=tag,
+                    use_starting_speech=use_starting_speech,
                 )
             )
         # remove episodes that has bad rewards
         simulated_episodes = EpisodeLog.find(EpisodeLog.tag == tag).all()
         valid_episodes = [
-            not isinstance(relevant_episode.rewards[0], float)  # type: ignore
+            len(relevant_episode.rewards) == 2  # type: ignore
+            and not isinstance(relevant_episode.rewards[0], float)  # type: ignore
+            and not isinstance(relevant_episode.rewards[1], float)  # type: ignore
             for relevant_episode in simulated_episodes
         ]
         for valid, episode in zip(valid_episodes, simulated_episodes):
@@ -373,6 +396,17 @@ def benchmark(
         default_model_list,
         help=f"All the language model you want to benchmark. Default is the pre-loaded model list {default_model_list}.",
     ),
+    max_turn_num: int = typer.Option(
+        20, help="The maximum number of turns for an interaction."
+    ),
+    scenario_filter: str = typer.Option(
+        "",
+        help="The key word to filter the relevant scenarios from the codename of the scenarios.",
+    ),
+    use_starting_speech: bool = typer.Option(
+        False,
+        help="Use the starting speech of the environment.",
+    ),
     partner_model: str = typer.Option(
         "together_ai/meta-llama/Llama-3-70b-chat-hf",
         help="The partner model you want to use.",
@@ -398,13 +432,26 @@ def benchmark(
     output_to_jsonl: bool = typer.Option(False, help="Output to jsonl."),
     push_to_db: bool = typer.Option(False, help="Push to db."),
 ) -> None:
-    if only_show_performance:
-        benchmark_display(models, partner_model, evaluator_model, task, output_to_jsonl)
-        return
-
     """A simple command-line interface example."""
     _set_up_logs(print_logs=print_logs)
-    benchmark_combo_all = initilize_benchmark_combo(url)
+    filter_env_ids: list[str] = []  # if filter_env_ids is empty, all envs will be used
+    if scenario_filter:
+        for env_profile in HaiEnvironmentProfile.find().all():
+            assert isinstance(env_profile, HaiEnvironmentProfile)
+            if scenario_filter in env_profile.codename:
+                assert isinstance(env_profile.pk, str)
+                filter_env_ids.append(env_profile.pk)
+    if only_show_performance:
+        benchmark_display(
+            models,
+            partner_model,
+            evaluator_model,
+            task,
+            output_to_jsonl,
+            filter_env_ids,
+        )
+        return
+    benchmark_combo_all = initilize_benchmark_combo(url, filter_env_ids)
     benchmark_combo_trunks = group_combos_into_env_id_trunks(benchmark_combo_all)
     for iter_num, benchmark_combo in enumerate(benchmark_combo_trunks):
         if iter_num >= iteration_num:
@@ -431,9 +478,12 @@ def benchmark(
                 model_names=model_names,
                 tag=tag,
                 env_agent_combo_storage_index_list=env_agent_combo_storage_index_list,
+                max_turn_num=max_turn_num,
                 task=task,
             )
-            number_of_fix_turns = 0
+            number_of_fix_turns = (
+                0  # maximum number of times to fix the problematic episodes
+            )
             while True:
                 run_async_benchmark_in_batch(
                     env_agent_combo_list=env_agent_combo_list,
@@ -441,19 +491,26 @@ def benchmark(
                     tag=tag,
                     verbose=False,
                     push_to_db=push_to_db,
+                    use_starting_speech=use_starting_speech,
                 )
                 env_agent_combo_list = _list_all_env_agent_combo_not_in_db(
                     model_names=model_names,
                     tag=tag,
                     env_agent_combo_storage_index_list=env_agent_combo_storage_index_list,
                     task=task,
+                    max_turn_num=max_turn_num,
                 )
                 number_of_fix_turns += 1
                 if len(env_agent_combo_list) == 0 or number_of_fix_turns >= 5:
                     break
 
     benchmark_display(
-        models, partner_model, evaluator_model, task, output_to_jsonl=output_to_jsonl
+        models,
+        partner_model,
+        evaluator_model,
+        task,
+        output_to_jsonl=output_to_jsonl,
+        filter_env_ids=filter_env_ids,
     )
 
 

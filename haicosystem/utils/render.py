@@ -148,7 +148,8 @@ def render_for_humans(episode: EpisodeLog) -> list[messageForRendering]:
                     "content": f"{reasoning}\n{'=' * 100}\nEval scores: {str(reward_for_agent[1])}",
                 }
             )
-        except AssertionError:
+        except Exception:
+            reward_for_agent = 0.0
             messages_for_rendering.append(
                 {
                     "role": f"Agent {idx + 1}",

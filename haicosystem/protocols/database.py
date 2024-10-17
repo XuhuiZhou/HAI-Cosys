@@ -19,6 +19,10 @@ class HaiEnvironmentProfile(EnvironmentProfile):
         default_factory=lambda: [],
         description="The toolkits that are available in the environment for the agents to use, if a toolkit is assigned in the inspiration prompt, it should be included in the toolkits list",
     )
+    starting_speech: str = Field(
+        default_factory=lambda: "",
+        description="The starting speech of the human user, using this to control the behavior of the human user",
+    )
     grounding_engine_guide: str = Field(
         default_factory=lambda: "",
         description="The guide for the grounding engine to generate certain observation when the agent is interacting with the environment",

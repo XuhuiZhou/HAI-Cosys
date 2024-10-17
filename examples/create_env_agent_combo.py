@@ -26,7 +26,7 @@ def upload_agents_to_db(agent_file: str) -> None:
 
 
 @app.command()
-def update_envs_on_db(env_file: str) -> None:
+def update_env_on_db(env_file: str) -> None:
     """
     Update the environments to the database
     """
@@ -49,6 +49,17 @@ def update_envs_on_db(env_file: str) -> None:
     print(f"Updated {env_file} environment profiles to the database")
 
 
+@app.command()
+def update_envs_on_db(env_folder: str) -> None:
+    """
+    Update the environments to the database
+    """
+    env_files = os.listdir(env_folder)
+    for env_file in env_files:
+        if env_file.endswith(".json"):
+            update_env_on_db(os.path.join(env_folder, env_file))
+
+
 def upload_envs_to_db(env_file: str) -> str | None:
     """
     Upload the environments to the database
@@ -61,8 +72,7 @@ def upload_envs_to_db(env_file: str) -> str | None:
         ).all()
         if len(existing_env_profile) > 0:
             print(f"Environment {env_profile.codename} already exists")
-            return existing_env_profile[0].pk
-            # return None
+            return None
         env_profile.save()
     print(f"Uploaded {env_file} environment profiles to the database")
     return env_profile.pk
@@ -91,7 +101,6 @@ def _sample_env_agent_combo_and_push_to_db(
         (env_id, (human_agent_profile.pk, ai_agent_pk))
         for human_agent_profile in human_agent_profile_sample
     ]
-    breakpoint()
     for env_id, agent in env_agent_combo_list:
         EnvAgentComboStorage(
             env_id=env_id,
@@ -154,6 +163,9 @@ def create_env_agent_combo(
     ),
     only_updated_envs: bool = typer.Option(
         False, help="Whether to only update the environments that have been updated"
+    ),
+    only_envs_without_combos: bool = typer.Option(
+        False, help="Whether to only update the environments that have no agent combos"
     ),
 ) -> None:
     """
@@ -221,6 +233,13 @@ def create_env_agent_combo(
     env_list: list[HaiEnvironmentProfile] = []
     if only_updated_envs:
         env_list = [HaiEnvironmentProfile.get(pk=pk) for pk in updated_envs]
+    elif only_envs_without_combos:
+        env_list = [
+            env  # type: ignore
+            for env in HaiEnvironmentProfile.find().all()
+            if EnvAgentComboStorage.find(EnvAgentComboStorage.env_id == env.pk).all()
+            == []
+        ]
     else:
         env_list = HaiEnvironmentProfile.find().all()  # type: ignore
     print(f"# AI agents: {len(ai_agents)}")

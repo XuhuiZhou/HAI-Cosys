@@ -10,7 +10,7 @@ from typing import (
 )
 
 from langchain.tools import BaseTool
-from typing_extensions import TypedDict
+from typing_extensions import Optional, TypedDict
 
 PRIMITIVE_TYPES = {
     "integer": int,
@@ -30,14 +30,14 @@ class SimulatedObservation(NamedTuple):
     thought_summary: str
     log: str
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.observation
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.observation
 
 
-def insert_indent(s: str, indent: str = "\t", insert_first=True) -> str:
+def insert_indent(s: str, indent: str = "\t", insert_first: bool = True) -> str:
     prefix = indent if insert_first else ""
     return prefix + s.rstrip("\n ").replace("\n", "\n" + indent) + "\n"
 
@@ -116,7 +116,7 @@ class InvalidTool(DummyToolWithMessage):
         return f'{{"error": "InvalidRequestException: {err_msg}"}}'
 
 
-def special_fix_for_json_obj(s: str, pos: int) -> str:
+def special_fix_for_json_obj(s: str, pos: int) -> Optional[str]:
     """Fix the string to make it a valid JSON object."""
     if pos >= len(s):
         return None
@@ -130,7 +130,9 @@ def special_fix_for_json_obj(s: str, pos: int) -> str:
     return None
 
 
-def get_first_json_object_str(s: str, enable_check=True, *args, **kwargs) -> str:
+def get_first_json_object_str(
+    s: str, enable_check: bool = True, *args: Any, **kwargs: Any
+) -> Optional[str]:
     """Get the first JSON object from a string"""
     # print("[DEBUG] raw action string:", s)
     # allow ```json {JSON object} ``` format
@@ -169,7 +171,7 @@ def load_dict(tool_input: str) -> Dict[str, Any]:
     try:
         params = json.loads(tool_input, strict=False)
         # set strict=False to allow single quote, comments, escape characters, etc
-        return params
+        return params  # type: ignore
     except Exception as e:
         msg = str(e)
         if msg.startswith("Invalid \\escape"):
@@ -189,7 +191,7 @@ def match_type(value: Any, expected_type: type) -> bool:
     return isinstance(value, int) and expected_type == float
 
 
-def check_type(name: str, value: Any, expected_type: type):
+def check_type(name: str, value: Any, expected_type: type) -> None:
     if not match_type(value, expected_type):
         raise ValueError(
             f"Invalid type for {name}: {type(value).__name__}, "
@@ -197,7 +199,7 @@ def check_type(name: str, value: Any, expected_type: type):
         )
 
 
-def validate_inputs(parameters: List[ArgParameter], inputs: Dict[str, Any]):
+def validate_inputs(parameters: List[ArgParameter], inputs: Dict[str, Any]) -> None:
     """Validate the inputs for a tool."""
     remains = set(inputs.keys())
     for param in parameters:
@@ -206,14 +208,15 @@ def validate_inputs(parameters: List[ArgParameter], inputs: Dict[str, Any]):
             remains.remove(name)
         if name in inputs:
             expected_type = PRIMITIVE_TYPES[param["type"]]
-            check_type(name, inputs[name], expected_type)
+            if expected_type is not None:
+                check_type(name, inputs[name], expected_type)
         elif param.get("required", False):
             raise ValueError(f"Missing required parameter: {name}.")
     if remains:
         raise ValueError(f"Unexpected parameters: {remains}.")
 
 
-def validate_outputs(returns: List[ArgReturn], outputs: Dict[str, Any]):
+def validate_outputs(returns: List[ArgReturn], outputs: Dict[str, Any]) -> None:
     """Validate the outputs for a tool."""
     if not isinstance(outputs, dict):
         raise ValueError(
@@ -229,26 +232,29 @@ def validate_outputs(returns: List[ArgReturn], outputs: Dict[str, Any]):
         if name not in outputs:
             raise ValueError(f"Missing return: {name}.")
         expected_type = PRIMITIVE_TYPES[ret["type"]]
-        check_type(name, outputs[name], expected_type)
+        if expected_type is not None:
+            check_type(name, outputs[name], expected_type)
     if remains:
         raise ValueError(f"Unexpected returns: {list(remains)}.")
 
 
 def run_with_input_validation(
-    run_func: Callable,
+    run_func: Callable[..., str],
     inputs: Dict[str, str],
     tool: BaseTool,
     raw_inputs: str,
-    **kwargs,
-):
+    **kwargs: Any,
+) -> str:
     """Run a tool with inputs, where the format of raw inputs is validated."""
     try:
         params = load_dict(raw_inputs)
-        validate_inputs(tool.parameters, params)
+        validate_inputs(tool.parameters, params)  # type: ignore
     except Exception as e:
-        return DummyToolWithMessage().run(
+        validated_output = DummyToolWithMessage().run(
             f'{{"error": "InvalidRequestException: {e}"}}', **kwargs
         )
+        assert isinstance(validated_output, str)
+        return validated_output
 
     return run_func(inputs, **kwargs)
 
@@ -267,7 +273,7 @@ def format_toolkit_dict(
     add_risks: bool = True,
     indent: str = "\t",
     use_simple_tool_desc: bool = False,
-):
+) -> str:
     """Format a toolkit specified as a dictionary into a string."""
     toolkit_name = toolkit[namekey]
     desc = f"<{toolkit_name}> toolkit with following tool APIs:\n"

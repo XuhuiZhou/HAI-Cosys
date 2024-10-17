@@ -1,4 +1,4 @@
-from typing import Type
+from typing import Callable, Dict, Optional, Type
 
 from pydantic import BaseModel, Field
 
@@ -12,24 +12,26 @@ class ToolOutputParserCollection(BaseModel):
     )
 
 
-__TOOLKITS_DICT__ = {}
-__TOOLKITS_OUTPUT_PARSER_DICT__ = {}
+__TOOLKITS_DICT__: Dict[str, FunctionToolkit] = {}
+__TOOLKITS_OUTPUT_PARSER_DICT__: Dict[str, ToolOutputParserCollection] = {}
 
 
-def get_toolkit_dict():
+def get_toolkit_dict() -> Dict[str, FunctionToolkit]:
     return __TOOLKITS_DICT__
 
 
-def toolkits_factory(name: str) -> FunctionToolkit:
+def toolkits_factory(name: str) -> Optional[FunctionToolkit]:
     return __TOOLKITS_DICT__.get(name, None)
 
 
-def toolkits_output_parser_factory(name: str) -> ToolOutputParserCollection:
+def toolkits_output_parser_factory(name: str) -> Optional[ToolOutputParserCollection]:
     return __TOOLKITS_OUTPUT_PARSER_DICT__.get(name, None)
 
 
-def register_toolkit(overwrite=None):
-    def register_function_fn(cls):
+def register_toolkit(
+    overwrite: Optional[str] = None,
+) -> Callable[[Type[FunctionToolkit]], Type[FunctionToolkit]]:
+    def register_function_fn(cls: Type[FunctionToolkit]) -> Type[FunctionToolkit]:
         name = overwrite
         if name is None:
             name = cls.__name__
@@ -37,15 +39,19 @@ def register_toolkit(overwrite=None):
             raise ValueError(f"Name {name} already registered!")
         if not issubclass(cls, BaseToolkit):
             raise ValueError(f"Class {cls} is not a subclass of {BaseToolkit}")
-        __TOOLKITS_DICT__[name] = cls
+        __TOOLKITS_DICT__[name] = cls  # type: ignore
         # print(f"Toolkit registered: [{name}]")
         return cls
 
     return register_function_fn
 
 
-def register_toolkit_output_parser(overwrite=None):
-    def register_function_fn(cls):
+def register_toolkit_output_parser(
+    overwrite: Optional[str] = None,
+) -> Callable[[Type[ToolOutputParserCollection]], Type[ToolOutputParserCollection]]:
+    def register_function_fn(
+        cls: Type[ToolOutputParserCollection],
+    ) -> Type[ToolOutputParserCollection]:
         name = overwrite
         if name is None:
             name = cls().name
