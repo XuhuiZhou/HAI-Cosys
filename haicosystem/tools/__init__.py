@@ -15,7 +15,7 @@ def get_toolkits_by_names(names: list[str]) -> list[FunctionToolkit]:
     for name in names:
         toolkit = toolkits_factory(name)
         if toolkit:
-            toolkits.append(toolkit())
+            toolkits.append(toolkit())  # type: ignore
         else:
             print(f"Warning: toolkit {name} not found")
     return toolkits

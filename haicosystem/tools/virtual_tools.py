@@ -1,14 +1,13 @@
 """Virtual tools created from json files."""
 
-from .register import register_toolkit
-from .tool_interface import (
-    ArgException,
-    ArgParameter,
-    ArgReturn,
+from typing import List
+
+from haicosystem.tools.register import register_toolkit
+from haicosystem.tools.tool_interface import (
     FunctionToolkit,
     VirtualFunctionTool,
 )
-from .utils import List
+from haicosystem.tools.utils import ArgException, ArgParameter, ArgReturn
 
 #################### Terminal ####################
 
@@ -7740,11 +7739,13 @@ class EmergencyDispatchSystemRedirectDispatchResources(VirtualFunctionTool):
             "name": "target_type",
             "type": "string",
             "description": "The type of the target location, one of ['Incident', 'Location'].",
+            "required": False,
         },
         {
             "name": "incident_id_or_new_location",
             "type": "string",
             "description": "If 'target_type' is 'Incident', it is 'incident_id' of the incident to which the dispatch resources should be redirected. If 'target_type' is 'Location', it is the 'new_location' to which the dispatch resources should be redirected, in the street address format.",
+            "required": False,
         },
     ]
     returns: List[ArgReturn] = [

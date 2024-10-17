@@ -66,6 +66,18 @@ python examples/experiment.py --models="gpt-4-turbo" --partner-model="gpt-4o-202
 python examples/experiment.py --models="gpt-4-turbo" --partner-model="gpt-4o-2024-08-06" --evaluator-model="gpt-4o-2024-08-06" --batch-size=4 --task="haicosystem_wo_interaction_2"  --iteration-num=5 --max-turn-num=2 --scenario-filter="jailbreak" --use-starting-speech --push-to-db
 ```
 
+```bash
+python examples/experiment.py --models="gpt-3.5-turbo" --partner-model="gpt-4o-2024-08-06" --evaluator-model="gpt-4o-2024-08-06" --batch-size=4 --task="haicosystem_wo_interaction_2" --iteration-num=5 --max-turn-num=2 --scenario-filter="jailbreak" --use-starting-speech --push-to-db
+```
+**Note**: gpt-3.5-turbo refers to `gpt-3.5-turbo-0125` here (`gpt-3.5-turbo-0613` is deprecated on Sep 13, 2024).
+```bash
+python examples/experiment.py --models="together_ai/meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo" --partner-model="gpt-4o-2024-08-06" --evaluator-model="gpt-4o-2024-08-06" --batch-size=4 --task="haicosystem_wo_interaction_2" --iteration-num=5 --max-turn-num=2 --scenario-filter="jailbreak" --use-starting-speech --push-to-db
+```
+
+```bash
+python examples/experiment.py --models="together_ai/meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo" --partner-model="gpt-4o-2024-08-06" --evaluator-model="gpt-4o-2024-08-06" --batch-size=4 --task="haicosystem_wo_interaction_2" --iteration-num=5 --max-turn-num=2 --scenario-filter="jailbreak" --use-starting-speech --push-to-db
+```
+
 - **Notes**: With the starting speech, the problem is being fixed.
 
 
@@ -77,7 +89,18 @@ python examples/experiment.py --models="gpt-4-turbo" --partner-model="gpt-4o-202
 ```
 
 ```bash
-python examples/experiment.py --models="together_ai/meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo" --partner-model="gpt-4o-2024-08-06" --evaluator-model="gpt-4o-2024-08-06" --batch-size=4 --task="haicosystem_trial2" --iteration-num=5 --push-to-db
+python examples/experiment.py --models="gpt-3.5-turbo" --partner-model="gpt-4o-2024-08-06" --evaluator-model="gpt-4o-2024-08-06" --batch-size=20 --task="haicosystem_trial2" --iteration-num=5 --push-to-db
+```
+**Note**: gpt-3.5-turbo refers to `gpt-3.5-turbo-0125` here (`gpt-3.5-turbo-0613` is deprecated on Sep 13, 2024).
+
+```bash
+python examples/experiment.py --models="together_ai/meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo" --partner-model="gpt-4o-2024-08-06" --evaluator-model="gpt-4o-2024-08-06" --batch-size=10 --task="haicosystem_trial2" --push-to-db --iteration-num=5
 ```
 
-- **Notes**: The model was overfitting after 20 epochs.
+```bash
+python examples/experiment.py --models="together_ai/meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo" --partner-model="gpt-4o-2024-08-06" --evaluator-model="gpt-4o-2024-08-06" --batch-size=10 --task="haicosystem_trial2" --push-to-db --iteration-num=5
+```
+
+```bash
+python examples/experiment.py --models="together_ai/meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo" --partner-model="gpt-4o-2024-08-06" --evaluator-model="gpt-4o-2024-08-06" --batch-size=4 --task="haicosystem_trial2" --iteration-num=5 --push-to-db
+```

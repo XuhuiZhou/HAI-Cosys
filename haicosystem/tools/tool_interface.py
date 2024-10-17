@@ -1,17 +1,14 @@
 """Tool interface"""
 
 from abc import abstractmethod
+from typing import Any, Callable, Dict, Iterator, List
 
 from langchain.tools import BaseTool
 
 from .utils import (
-    Any,
     ArgException,
     ArgParameter,
     ArgReturn,
-    Callable,
-    Dict,
-    List,
     create_str,
     insert_indent,
     load_dict,
@@ -24,19 +21,19 @@ class FunctionTool(BaseTool):
     Function tool is defined according to our specifciation that resembles Python function docstring, see `tool_interface.md`.
     """
 
-    name: str = None
-    summary: str = None
-    parameters: List[ArgParameter] = None
-    returns: List[ArgReturn] = None
-    exceptions: List[ArgException] = None
-    description: str = None
+    name: str = ""
+    summary: str = ""
+    parameters: List[ArgParameter] = []
+    returns: List[ArgReturn] = []
+    exceptions: List[ArgException] = []
+    description: str = ""
 
     def __init__(self, **kwargs: Any) -> None:
         super().__init__(**kwargs)
         if self.description is None and self.summary:
             self.description = self.create_description()
 
-    def create_description(self, detail_level="high") -> str:
+    def create_description(self, detail_level: str = "high") -> str:
         # create a description for the tool, including the parameters and return values
         # we use the Python docstring format
         if detail_level not in ["none", "low", "medium", "high"]:
@@ -47,7 +44,7 @@ class FunctionTool(BaseTool):
         include_desc = detail_level in ["medium", "high"]
         include_exceptions = detail_level in ["high"]
 
-        def get_combined_desc(name, items):
+        def get_combined_desc(name: str, items: List[Any]) -> str:
             prefix = f"  {name}:"
             item_strs = [create_str(item, include_desc=include_desc) for item in items]
             if include_desc:
@@ -84,7 +81,7 @@ class FunctionTool(BaseTool):
     def _aruntool(self, tool_input: Dict[str, Any]) -> Dict[str, Any]:
         """Run the tool asynchronously"""
 
-    def _process(self, run_func: Callable, tool_input: str) -> str:
+    def _process(self, run_func: Callable[..., Dict[str, Any]], tool_input: str) -> str:
         try:
             inputs = self.parse_parameters(tool_input)
         except Exception as e:
@@ -95,14 +92,16 @@ class FunctionTool(BaseTool):
     def _run(self, tool_input: str) -> str:
         return self._process(self._runtool, tool_input)
 
-    def _arun(self, tool_input: str) -> str:
+    def _arun(self, tool_input: str) -> str:  # type: ignore
         return self._process(self._aruntool, tool_input)
 
 
 class VirtualFunctionTool(FunctionTool):
     """Virtual function tool that does not require implemented"""
 
-    def __init__(self, name_prefix: str = "", tool_spec: Dict[str, Any] = {}, **kwargs):
+    def __init__(
+        self, name_prefix: str = "", tool_spec: Dict[str, Any] = {}, **kwargs: Any
+    ) -> None:
         super().__init__(**kwargs)
         for k, v in tool_spec.items():
             if k == "name":
@@ -113,14 +112,17 @@ class VirtualFunctionTool(FunctionTool):
         if self.description is None:
             self.description = self.create_description()
 
+    @abstractmethod
     def parse_return(self, tool_output: Dict[str, Any]) -> str:
         # parse the output dictionary into a string
         pass
 
+    @abstractmethod
     def _runtool(self, tool_input: Dict[str, Any]) -> Dict[str, Any]:
         # run the tool
         pass
 
+    @abstractmethod
     def _aruntool(self, tool_input: Dict[str, Any]) -> Dict[str, Any]:
         # run the tool asynchronously
         pass
@@ -135,7 +137,7 @@ class BaseToolkit:
     name: str
     tool_classes: List[Any]
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.tools = self.load_tools()
 
     @abstractmethod
@@ -165,12 +167,12 @@ class BaseToolkit:
         return self.create_description("high")
 
     @staticmethod
-    def toolkit_marker(s) -> str:
+    def toolkit_marker(s: str) -> str:
         """Get the toolkit marker"""
         return f"<{s}>"
 
     @staticmethod
-    def toolapi_marker(s) -> str:
+    def toolapi_marker(s: str) -> str:
         """Get the tool API marker"""
         # return f"[{s}]"
         return s
@@ -193,20 +195,20 @@ class BaseToolkit:
                 return True
         return False
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[BaseTool]:
         """Iterate over the tools"""
         for tool in self.tools:
             yield tool
 
-    def __len__(self):
+    def __len__(self) -> int:
         """Get the number of tools"""
         return len(self.tools)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Get the representation of the toolkit"""
         return f"<Toolkit {self.name} with {len(self.tools)} tools>"
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Get the string representation of the toolkit"""
         return self.__repr__()
 
@@ -223,7 +225,7 @@ class FunctionToolkit(BaseToolkit):
     description_for_model: str
     tool_classes: List[Any]
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.name = self.name_for_model
 
