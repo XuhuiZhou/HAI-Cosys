@@ -1,7 +1,6 @@
 import logging
 from typing import Type
 
-from beartype import beartype
 from langchain.output_parsers import PydanticOutputParser
 from langchain.tools.base import BaseTool
 from langchain_core.output_parsers import JsonOutputParser
@@ -18,7 +17,6 @@ from haicosystem.protocols import (
 log = logging.getLogger("generate")
 
 
-@beartype
 async def validate_observation(
     obs: SimulatedObservation,
     tool_output_parser: Type[BaseModel] | None,
@@ -63,7 +61,6 @@ async def validate_observation(
             return False, f"{{'error': {e}}}"
 
 
-@beartype
 async def validate_agentAction(
     action: HaiAgentAction,
     tool_output_parser: Type[LangchainAgentAction],

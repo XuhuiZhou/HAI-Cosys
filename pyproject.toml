@@ -10,13 +10,14 @@ packages = [{include = "haicosystem"}]
 python = ">=3.11, <3.13"
 # sotopia = "0.1.0-rc.1"
 types-requests = "^2.31"
+langchain = "0.3.1"
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "*"
 nbmake = "*"
 types-setuptools = "*"
 ruff = "*"
-sotopia = { git = "https://github.com/sotopia-lab/sotopia.git"}
+sotopia = { git = "https://github.com/sotopia-lab/sotopia.git", branch = "feature/benchmark_with_customed_agents" }
 #sotopia = { path = "../sotopia" }
 
 [tool.poetry.group.test.dependencies]

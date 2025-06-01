@@ -2,7 +2,6 @@ import logging
 
 from sotopia.agents import LLMAgent
 from sotopia.database import AgentProfile
-from sotopia.generation_utils.langchain_callback_handler import LoggingCallbackHandler
 from sotopia.messages import Observation
 
 from haicosystem.generation_utils import (
@@ -13,7 +12,6 @@ from haicosystem.generation_utils import (
 from haicosystem.protocols import HaiAgentAction, LangchainAgentAction
 
 log = logging.getLogger("llm_agent")
-logging_handler = LoggingCallbackHandler("langchain")
 
 
 class LLMAgentHuman(LLMAgent):

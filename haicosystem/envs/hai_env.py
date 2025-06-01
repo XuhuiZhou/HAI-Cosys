@@ -5,7 +5,6 @@ import random
 from collections import defaultdict
 from typing import Any, Literal
 
-from beartype import beartype
 from pydantic import Field
 from sotopia.database import EnvironmentProfile
 from sotopia.envs import ParallelSotopiaEnv
@@ -40,7 +39,6 @@ class ScriptEnvironmentResponsePlus(ScriptEnvironmentResponse):
     )
 
 
-@beartype
 def unweighted_aggregate_response(
     responses: list[
         tuple[str, tuple[tuple[str, int | float | bool], str]] | SimulatedObservation
@@ -148,7 +146,7 @@ class ParellelHaicosystemEnv(ParallelSotopiaEnv):
         env_profile: HaiEnvironmentProfile | None = None,
     ):
         super().__init__(
-            env_profile=EnvironmentProfile(),
+            env_profile=EnvironmentProfile(pk="", scenario=""),
             available_action_types=available_action_types,
             action_order=action_order,  # type: ignore
             model_name=model_name,
@@ -216,7 +214,6 @@ class ParellelHaicosystemEnv(ParallelSotopiaEnv):
         )  # TODO: only agent_2 is able to use the tools; now if the tool is not there, agent_2 can not call tools
         return new_scenario
 
-    @beartype
     async def astep(
         self, actions: dict[str, AgentAction] | dict[str, dict[str, int | str]]
     ) -> tuple[

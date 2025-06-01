@@ -28,7 +28,7 @@ def get_toolkit_output_parser_by_names(names: list[str]) -> dict[str, Type[BaseM
         if parser:
             parsers.update(parser.tool_name_to_output_parser)
         else:
-            print(f"Warning: toolkit output parser {name} not found")
+            pass
     return parsers
 
 

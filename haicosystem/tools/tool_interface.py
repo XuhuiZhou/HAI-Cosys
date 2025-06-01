@@ -112,20 +112,17 @@ class VirtualFunctionTool(FunctionTool):
         if self.description is None:
             self.description = self.create_description()
 
-    @abstractmethod
     def parse_return(self, tool_output: Dict[str, Any]) -> str:
-        # parse the output dictionary into a string
-        pass
+        """Default implementation - this is a virtual function simulated by LLM"""
+        raise NotImplementedError("This is a virtual function simulated by LLM")
 
-    @abstractmethod
     def _runtool(self, tool_input: Dict[str, Any]) -> Dict[str, Any]:
-        # run the tool
-        pass
+        """Default implementation - this is a virtual function simulated by LLM"""
+        raise NotImplementedError("This is a virtual function simulated by LLM")
 
-    @abstractmethod
     def _aruntool(self, tool_input: Dict[str, Any]) -> Dict[str, Any]:
-        # run the tool asynchronously
-        pass
+        """Default implementation - this is a virtual function simulated by LLM"""
+        raise NotImplementedError("This is a virtual function simulated by LLM")
 
 
 class BaseToolkit:

@@ -4,7 +4,6 @@ import logging
 from typing import Literal, Sequence, Type, TypeVar, cast
 
 import gin
-from beartype import beartype
 from rich import print
 from sotopia.agents import Agents
 from sotopia.agents.base_agent import BaseAgent
@@ -134,7 +133,7 @@ async def aevaluate_one_episode(
     tag: str | None = None,
     push_to_db: bool = False,
 ) -> None:
-    history = episode.rewards_prompt  # TODO: confusing naming here, the rewards_prompt actually only stores the history
+    history = "\n".join(episode.render_for_humans()[1][:-2])
     assert len(history) > 0, "The history should not be empty"
     evaluator = SafetyLLMEvaluator(
         model_name=model,
@@ -178,7 +177,6 @@ async def aevaluate_one_episode(
         rewards=[info[agent_name]["complete_rating"] for agent_name in episode.agents],
         rewards_prompt="TBD",
     )
-
     if push_to_db:
         try:
             epilog.save()
@@ -198,7 +196,6 @@ def get_agent_class(
         return LLMAgentBot
 
 
-@beartype
 async def run_async_server(
     model_dict: dict[str, str] = {},
     agents_roles: dict[str, str] = {"agent1": "human", "agent2": "ai"},

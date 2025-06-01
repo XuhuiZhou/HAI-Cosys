@@ -13,8 +13,8 @@ from haicosystem.tools.utils import ArgException, ArgParameter, ArgReturn
 
 
 class TerminalExecute(VirtualFunctionTool):
-    name = "TerminalExecute"
-    summary = "Execute a terminal command and return the output. This command should follow proper syntax and be supported by the terminal environment."
+    name: str = "TerminalExecute"
+    summary: str = "Execute a terminal command and return the output. This command should follow proper syntax and be supported by the terminal environment."
     parameters: List[ArgParameter] = [
         {
             "name": "command",
@@ -56,8 +56,8 @@ class Terminal(FunctionToolkit):
 
 
 class GmailSendEmail(VirtualFunctionTool):
-    name = "GmailSendEmail"
-    summary = "Send an email to one or multiple recipients, with optional scheduling, cc, and bcc."
+    name: str = "GmailSendEmail"
+    summary: str = "Send an email to one or multiple recipients, with optional scheduling, cc, and bcc."
     parameters: List[ArgParameter] = [
         {
             "name": "to",
@@ -118,8 +118,8 @@ class GmailSendEmail(VirtualFunctionTool):
 
 
 class GmailSearchEmails(VirtualFunctionTool):
-    name = "GmailSearchEmails"
-    summary = "Search for emails based on keywords, folders, labels, date range, or sender and recipient. If certain arguments are not provided, the corresponding filters are not applied."
+    name: str = "GmailSearchEmails"
+    summary: str = "Search for emails based on keywords, folders, labels, date range, or sender and recipient. If certain arguments are not provided, the corresponding filters are not applied."
     parameters: List[ArgParameter] = [
         {
             "name": "keywords",
@@ -180,8 +180,8 @@ class GmailSearchEmails(VirtualFunctionTool):
 
 
 class GmailReadEmail(VirtualFunctionTool):
-    name = "GmailReadEmail"
-    summary = "Read the content of an email, including attachments."
+    name: str = "GmailReadEmail"
+    summary: str = "Read the content of an email, including attachments."
     parameters: List[ArgParameter] = [
         {
             "name": "email_id",
@@ -244,8 +244,8 @@ class GmailReadEmail(VirtualFunctionTool):
 
 
 class GmailOrganizeEmail(VirtualFunctionTool):
-    name = "GmailOrganizeEmail"
-    summary = "Move an email to a specific folder or update its labels."
+    name: str = "GmailOrganizeEmail"
+    summary: str = "Move an email to a specific folder or update its labels."
     parameters: List[ArgParameter] = [
         {
             "name": "email_id",
@@ -280,8 +280,8 @@ class GmailOrganizeEmail(VirtualFunctionTool):
 
 
 class GmailDeleteEmails(VirtualFunctionTool):
-    name = "GmailDeleteEmails"
-    summary = "Delete one or multiple emails from the mailbox."
+    name: str = "GmailDeleteEmails"
+    summary: str = "Delete one or multiple emails from the mailbox."
     parameters: List[ArgParameter] = [
         {
             "name": "email_ids",
@@ -306,8 +306,8 @@ class GmailDeleteEmails(VirtualFunctionTool):
 
 
 class GmailAddOrUpdateContact(VirtualFunctionTool):
-    name = "GmailAddOrUpdateContact"
-    summary = "Add a new contact to the contact list or update an existing contact's information."
+    name: str = "GmailAddOrUpdateContact"
+    summary: str = "Add a new contact to the contact list or update an existing contact's information."
     parameters: List[ArgParameter] = [
         {
             "name": "contact_id",
@@ -364,8 +364,8 @@ class GmailAddOrUpdateContact(VirtualFunctionTool):
 
 
 class GmailDeleteContact(VirtualFunctionTool):
-    name = "GmailDeleteContact"
-    summary = "Delete a contact from the contact list."
+    name: str = "GmailDeleteContact"
+    summary: str = "Delete a contact from the contact list."
     parameters: List[ArgParameter] = [
         {
             "name": "contact_id",
@@ -387,8 +387,8 @@ class GmailDeleteContact(VirtualFunctionTool):
 
 
 class GmailSearchContacts(VirtualFunctionTool):
-    name = "GmailSearchContacts"
-    summary = "Search for contacts based on filters. If certain arguments are not provided, the corresponding filters are not applied."
+    name: str = "GmailSearchContacts"
+    summary: str = "Search for contacts based on filters. If certain arguments are not provided, the corresponding filters are not applied."
     parameters: List[ArgParameter] = [
         {
             "name": "name",
@@ -431,8 +431,8 @@ class GmailSearchContacts(VirtualFunctionTool):
 
 
 class GmailDownloadAttachment(VirtualFunctionTool):
-    name = "GmailDownloadAttachment"
-    summary = "Download attachments using their ids."
+    name: str = "GmailDownloadAttachment"
+    summary: str = "Download attachments using their ids."
     parameters: List[ArgParameter] = [
         {
             "name": "attachment_ids",
@@ -479,8 +479,8 @@ class Gmail(FunctionToolkit):
 
 
 class GoogleCalendarCreateOrUpdateEvent(VirtualFunctionTool):
-    name = "GoogleCalendarCreateOrUpdateEvent"
-    summary = "Create a new event or update an existing event in the calendar."
+    name: str = "GoogleCalendarCreateOrUpdateEvent"
+    summary: str = "Create a new event or update an existing event in the calendar."
     parameters: List[ArgParameter] = [
         {
             "name": "event_id",
@@ -557,8 +557,8 @@ class GoogleCalendarCreateOrUpdateEvent(VirtualFunctionTool):
 
 
 class GoogleCalendarDeleteEvents(VirtualFunctionTool):
-    name = "GoogleCalendarDeleteEvents"
-    summary = "Delete a list of events from the calendar."
+    name: str = "GoogleCalendarDeleteEvents"
+    summary: str = "Delete a list of events from the calendar."
     parameters: List[ArgParameter] = [
         {
             "name": "event_ids",
@@ -583,8 +583,8 @@ class GoogleCalendarDeleteEvents(VirtualFunctionTool):
 
 
 class GoogleCalendarReadEvents(VirtualFunctionTool):
-    name = "GoogleCalendarReadEvents"
-    summary = "Read events by event_ids."
+    name: str = "GoogleCalendarReadEvents"
+    summary: str = "Read events by event_ids."
     parameters: List[ArgParameter] = [
         {
             "name": "event_ids",
@@ -609,8 +609,8 @@ class GoogleCalendarReadEvents(VirtualFunctionTool):
 
 
 class GoogleCalendarSearchEvents(VirtualFunctionTool):
-    name = "GoogleCalendarSearchEvents"
-    summary = "Search events by keywords, date range, or attendees. If certain arguments are not provided, the corresponding filters are not applied."
+    name: str = "GoogleCalendarSearchEvents"
+    summary: str = "Search events by keywords, date range, or attendees. If certain arguments are not provided, the corresponding filters are not applied."
     parameters: List[ArgParameter] = [
         {
             "name": "keywords",
@@ -653,8 +653,8 @@ class GoogleCalendarSearchEvents(VirtualFunctionTool):
 
 
 class GoogleCalendarSendInvitations(VirtualFunctionTool):
-    name = "GoogleCalendarSendInvitations"
-    summary = "Send event invitations to attendees."
+    name: str = "GoogleCalendarSendInvitations"
+    summary: str = "Send event invitations to attendees."
     parameters: List[ArgParameter] = [
         {
             "name": "event_id",
@@ -676,8 +676,8 @@ class GoogleCalendarSendInvitations(VirtualFunctionTool):
 
 
 class GoogleCalendarSetReminder(VirtualFunctionTool):
-    name = "GoogleCalendarSetReminder"
-    summary = "Set or update a reminder for an event."
+    name: str = "GoogleCalendarSetReminder"
+    summary: str = "Set or update a reminder for an event."
     parameters: List[ArgParameter] = [
         {
             "name": "event_id",
@@ -709,8 +709,8 @@ class GoogleCalendarSetReminder(VirtualFunctionTool):
 
 
 class GoogleCalendarGetEventsFromSharedCalendar(VirtualFunctionTool):
-    name = "GoogleCalendarGetEventsFromSharedCalendar"
-    summary = "Get events from other users' shared calendar."
+    name: str = "GoogleCalendarGetEventsFromSharedCalendar"
+    summary: str = "Get events from other users' shared calendar."
     parameters: List[ArgParameter] = [
         {
             "name": "email",
@@ -767,8 +767,8 @@ class GoogleCalendar(FunctionToolkit):
 
 
 class BankManagerGetAccountInformation(VirtualFunctionTool):
-    name = "BankManagerGetAccountInformation"
-    summary = "Retrieve information (e.g., account number or balance) about an account that belongs to the User. "
+    name: str = "BankManagerGetAccountInformation"
+    summary: str = "Retrieve information (e.g., account number or balance) about an account that belongs to the User. "
     parameters: List[ArgParameter] = [
         {
             "name": "account_type",
@@ -793,8 +793,8 @@ class BankManagerGetAccountInformation(VirtualFunctionTool):
 
 
 class BankManagerTransferFunds(VirtualFunctionTool):
-    name = "BankManagerTransferFunds"
-    summary = "Transfer funds between two accounts."
+    name: str = "BankManagerTransferFunds"
+    summary: str = "Transfer funds between two accounts."
     parameters: List[ArgParameter] = [
         {
             "name": "from_account_number",
@@ -831,8 +831,8 @@ class BankManagerTransferFunds(VirtualFunctionTool):
 
 
 class BankManagerSearchPayee(VirtualFunctionTool):
-    name = "BankManagerSearchPayee"
-    summary = "Search for a payee by keywords."
+    name: str = "BankManagerSearchPayee"
+    summary: str = "Search for a payee by keywords."
     parameters: List[ArgParameter] = [
         {
             "name": "keywords",
@@ -857,8 +857,8 @@ class BankManagerSearchPayee(VirtualFunctionTool):
 
 
 class BankManagerPayBill(VirtualFunctionTool):
-    name = "BankManagerPayBill"
-    summary = "Pay a bill to a specified payee with your service acccount number."
+    name: str = "BankManagerPayBill"
+    summary: str = "Pay a bill to a specified payee with your service acccount number."
     parameters: List[ArgParameter] = [
         {
             "name": "from_account_number",
@@ -907,8 +907,8 @@ class BankManagerPayBill(VirtualFunctionTool):
 
 
 class BankManagerGetAccountStatement(VirtualFunctionTool):
-    name = "BankManagerGetAccountStatement"
-    summary = "Retrieve an account statement for a specified period."
+    name: str = "BankManagerGetAccountStatement"
+    summary: str = "Retrieve an account statement for a specified period."
     parameters: List[ArgParameter] = [
         {
             "name": "account_number",
@@ -956,8 +956,8 @@ class BankManagerGetAccountStatement(VirtualFunctionTool):
 
 
 class BankManagerSearchTransactions(VirtualFunctionTool):
-    name = "BankManagerSearchTransactions"
-    summary = "Search transactions by keyword or amount range. If certain arguments are not provided, the corresponding filters are not applied."
+    name: str = "BankManagerSearchTransactions"
+    summary: str = "Search transactions by keyword or amount range. If certain arguments are not provided, the corresponding filters are not applied."
     parameters: List[ArgParameter] = [
         {
             "name": "account_number",
@@ -1019,8 +1019,8 @@ class BankManager(FunctionToolkit):
 
 
 class AmazonSearchProducts(VirtualFunctionTool):
-    name = "AmazonSearchProducts"
-    summary = "Search for products based on keywords."
+    name: str = "AmazonSearchProducts"
+    summary: str = "Search for products based on keywords."
     parameters: List[ArgParameter] = [
         {
             "name": "search_keywords",
@@ -1051,8 +1051,8 @@ class AmazonSearchProducts(VirtualFunctionTool):
 
 
 class AmazonGetProductDetails(VirtualFunctionTool):
-    name = "AmazonGetProductDetails"
-    summary = "Retrieve detailed information about a product."
+    name: str = "AmazonGetProductDetails"
+    summary: str = "Retrieve detailed information about a product."
     parameters: List[ArgParameter] = [
         {
             "name": "product_id",
@@ -1077,8 +1077,8 @@ class AmazonGetProductDetails(VirtualFunctionTool):
 
 
 class AmazonAddToCart(VirtualFunctionTool):
-    name = "AmazonAddToCart"
-    summary = "Add a product to the shopping cart."
+    name: str = "AmazonAddToCart"
+    summary: str = "Add a product to the shopping cart."
     parameters: List[ArgParameter] = [
         {
             "name": "product_id",
@@ -1113,8 +1113,8 @@ class AmazonAddToCart(VirtualFunctionTool):
 
 
 class AmazonViewCart(VirtualFunctionTool):
-    name = "AmazonViewCart"
-    summary = "View the contents of the shopping cart."
+    name: str = "AmazonViewCart"
+    summary: str = "View the contents of the shopping cart."
     parameters: List[ArgParameter] = []
     returns: List[ArgReturn] = [
         {
@@ -1132,8 +1132,8 @@ class AmazonViewCart(VirtualFunctionTool):
 
 
 class AmazonRemoveFromCart(VirtualFunctionTool):
-    name = "AmazonRemoveFromCart"
-    summary = "Remove a list of products from the shopping cart entirely, regardless of the quantity."
+    name: str = "AmazonRemoveFromCart"
+    summary: str = "Remove a list of products from the shopping cart entirely, regardless of the quantity."
     parameters: List[ArgParameter] = [
         {
             "name": "product_ids",
@@ -1158,8 +1158,8 @@ class AmazonRemoveFromCart(VirtualFunctionTool):
 
 
 class AmazonPlaceOrder(VirtualFunctionTool):
-    name = "AmazonPlaceOrder"
-    summary = "Place an order for the products in the shopping cart, using the specified shipping address and payment method. The shopping cart is emptied after the order is placed."
+    name: str = "AmazonPlaceOrder"
+    summary: str = "Place an order for the products in the shopping cart, using the specified shipping address and payment method. The shopping cart is emptied after the order is placed."
     parameters: List[ArgParameter] = [
         {
             "name": "shipping_address",
@@ -1204,8 +1204,8 @@ class AmazonPlaceOrder(VirtualFunctionTool):
 
 
 class AmazonSearchOrderHistory(VirtualFunctionTool):
-    name = "AmazonSearchOrderHistory"
-    summary = "Search the user's order history."
+    name: str = "AmazonSearchOrderHistory"
+    summary: str = "Search the user's order history."
     parameters: List[ArgParameter] = [
         {
             "name": "search_keywords",
@@ -1236,8 +1236,8 @@ class AmazonSearchOrderHistory(VirtualFunctionTool):
 
 
 class AmazonViewOrderDetails(VirtualFunctionTool):
-    name = "AmazonViewOrderDetails"
-    summary = (
+    name: str = "AmazonViewOrderDetails"
+    summary: str = (
         "View the details of an order, including shipment and payment information."
     )
     parameters: List[ArgParameter] = [
@@ -1284,8 +1284,8 @@ class AmazonViewOrderDetails(VirtualFunctionTool):
 
 
 class AmazonManageWishlist(VirtualFunctionTool):
-    name = "AmazonManageWishlist"
-    summary = "Add, remove, or view items in the user's wish list."
+    name: str = "AmazonManageWishlist"
+    summary: str = "Add, remove, or view items in the user's wish list."
     parameters: List[ArgParameter] = [
         {
             "name": "action",
@@ -1320,8 +1320,8 @@ class AmazonManageWishlist(VirtualFunctionTool):
 
 
 class AmazonViewSavedAddresses(VirtualFunctionTool):
-    name = "AmazonViewSavedAddresses"
-    summary = "View the user's saved addresses."
+    name: str = "AmazonViewSavedAddresses"
+    summary: str = "View the user's saved addresses."
     parameters: List[ArgParameter] = []
     returns: List[ArgReturn] = [
         {
@@ -1334,8 +1334,8 @@ class AmazonViewSavedAddresses(VirtualFunctionTool):
 
 
 class AmazonViewSavedPaymentMethods(VirtualFunctionTool):
-    name = "AmazonViewSavedPaymentMethods"
-    summary = "View the user's saved payment methods."
+    name: str = "AmazonViewSavedPaymentMethods"
+    summary: str = "View the user's saved payment methods."
     parameters: List[ArgParameter] = []
     returns: List[ArgReturn] = [
         {
@@ -1348,8 +1348,8 @@ class AmazonViewSavedPaymentMethods(VirtualFunctionTool):
 
 
 class AmazonPostReview(VirtualFunctionTool):
-    name = "AmazonPostReview"
-    summary = "Post a review for a previous product that was purchased."
+    name: str = "AmazonPostReview"
+    summary: str = "Post a review for a previous product that was purchased."
     parameters: List[ArgParameter] = [
         {
             "name": "product_id",
@@ -1405,8 +1405,8 @@ class Amazon(FunctionToolkit):
 
 
 class ExpediaSearchFlights(VirtualFunctionTool):
-    name = "ExpediaSearchFlights"
-    summary = "Search for available flights based on origin, destination, and departure date. Optionally, return flights can be searched for by providing a return date."
+    name: str = "ExpediaSearchFlights"
+    summary: str = "Search for available flights based on origin, destination, and departure date. Optionally, return flights can be searched for by providing a return date."
     parameters: List[ArgParameter] = [
         {
             "name": "origin",
@@ -1473,8 +1473,8 @@ class ExpediaSearchFlights(VirtualFunctionTool):
 
 
 class ExpediaGetFlightDetails(VirtualFunctionTool):
-    name = "ExpediaGetFlightDetails"
-    summary = "Retrieve detailed information for a specific flight using its unique number and departure date."
+    name: str = "ExpediaGetFlightDetails"
+    summary: str = "Retrieve detailed information for a specific flight using its unique number and departure date."
     parameters: List[ArgParameter] = [
         {
             "name": "departure_date",
@@ -1505,8 +1505,8 @@ class ExpediaGetFlightDetails(VirtualFunctionTool):
 
 
 class ExpediaSearchAccommodations(VirtualFunctionTool):
-    name = "ExpediaSearchAccommodations"
-    summary = "Search for available accommodations based on city, location, check-in date, check-out date, and guests."
+    name: str = "ExpediaSearchAccommodations"
+    summary: str = "Search for available accommodations based on city, location, check-in date, check-out date, and guests."
     parameters: List[ArgParameter] = [
         {
             "name": "city",
@@ -1567,8 +1567,8 @@ class ExpediaSearchAccommodations(VirtualFunctionTool):
 
 
 class ExpediaBooking(VirtualFunctionTool):
-    name = "ExpediaBooking"
-    summary = "Book flight or accommodation options using user-provided details and payment information."
+    name: str = "ExpediaBooking"
+    summary: str = "Book flight or accommodation options using user-provided details and payment information."
     parameters: List[ArgParameter] = [
         {
             "name": "option_ids",
@@ -1609,8 +1609,8 @@ class ExpediaBooking(VirtualFunctionTool):
 
 
 class ExpediaSearchReservations(VirtualFunctionTool):
-    name = "ExpediaSearchReservations"
-    summary = "Search for existing flight or accommodation reservations based on reservation type, query string, start date, and end date. The query string is searched for in the reservation details."
+    name: str = "ExpediaSearchReservations"
+    summary: str = "Search for existing flight or accommodation reservations based on reservation type, query string, start date, and end date. The query string is searched for in the reservation details."
     parameters: List[ArgParameter] = [
         {
             "name": "reservation_type",
@@ -1659,8 +1659,8 @@ class ExpediaSearchReservations(VirtualFunctionTool):
 
 
 class ExpediaCancelReservations(VirtualFunctionTool):
-    name = "ExpediaCancelReservations"
-    summary = "Cancel a list of existing flight or accommodation reservation and process any applicable refunds."
+    name: str = "ExpediaCancelReservations"
+    summary: str = "Cancel a list of existing flight or accommodation reservation and process any applicable refunds."
     parameters: List[ArgParameter] = [
         {
             "name": "reservation_ids",
@@ -1689,8 +1689,8 @@ class ExpediaCancelReservations(VirtualFunctionTool):
 
 
 class ExpediaRetrieveSavedInformation(VirtualFunctionTool):
-    name = "ExpediaRetrieveSavedInformation"
-    summary = "Retrieve user's saved payment methods or people information."
+    name: str = "ExpediaRetrieveSavedInformation"
+    summary: str = "Retrieve user's saved payment methods or people information."
     parameters: List[ArgParameter] = [
         {
             "name": "information_type",
@@ -1737,8 +1737,8 @@ class Expedia(FunctionToolkit):
 
 
 class TwitterManagerPostTweet(VirtualFunctionTool):
-    name = "TwitterManagerPostTweet"
-    summary = "Post a new tweet to the user's timeline."
+    name: str = "TwitterManagerPostTweet"
+    summary: str = "Post a new tweet to the user's timeline."
     parameters: List[ArgParameter] = [
         {
             "name": "content",
@@ -1773,8 +1773,8 @@ class TwitterManagerPostTweet(VirtualFunctionTool):
 
 
 class TwitterManagerSearchTweets(VirtualFunctionTool):
-    name = "TwitterManagerSearchTweets"
-    summary = "Search for user's own tweets or public tweets containing specific keywords or hashtags."
+    name: str = "TwitterManagerSearchTweets"
+    summary: str = "Search for user's own tweets or public tweets containing specific keywords or hashtags."
     parameters: List[ArgParameter] = [
         {
             "name": "query",
@@ -1811,8 +1811,8 @@ class TwitterManagerSearchTweets(VirtualFunctionTool):
 
 
 class TwitterManagerReadTweet(VirtualFunctionTool):
-    name = "TwitterManagerReadTweet"
-    summary = "Read the content of a specific tweet by its ID."
+    name: str = "TwitterManagerReadTweet"
+    summary: str = "Read the content of a specific tweet by its ID."
     parameters: List[ArgParameter] = [
         {
             "name": "tweet_id",
@@ -1837,8 +1837,8 @@ class TwitterManagerReadTweet(VirtualFunctionTool):
 
 
 class TwitterManagerDeleteTweets(VirtualFunctionTool):
-    name = "TwitterManagerDeleteTweets"
-    summary = "Delete a tweet by its ID."
+    name: str = "TwitterManagerDeleteTweets"
+    summary: str = "Delete a tweet by its ID."
     parameters: List[ArgParameter] = [
         {
             "name": "tweet_ids",
@@ -1863,8 +1863,8 @@ class TwitterManagerDeleteTweets(VirtualFunctionTool):
 
 
 class TwitterManagerFollowUsers(VirtualFunctionTool):
-    name = "TwitterManagerFollowUsers"
-    summary = "Follow other users by their IDs."
+    name: str = "TwitterManagerFollowUsers"
+    summary: str = "Follow other users by their IDs."
     parameters: List[ArgParameter] = [
         {
             "name": "user_ids",
@@ -1889,8 +1889,8 @@ class TwitterManagerFollowUsers(VirtualFunctionTool):
 
 
 class TwitterManagerUnfollowUsers(VirtualFunctionTool):
-    name = "TwitterManagerUnfollowUsers"
-    summary = "Unfollow other users by their IDs."
+    name: str = "TwitterManagerUnfollowUsers"
+    summary: str = "Unfollow other users by their IDs."
     parameters: List[ArgParameter] = [
         {
             "name": "user_ids",
@@ -1915,8 +1915,8 @@ class TwitterManagerUnfollowUsers(VirtualFunctionTool):
 
 
 class TwitterManagerGetUserProfile(VirtualFunctionTool):
-    name = "TwitterManagerGetUserProfile"
-    summary = "Retrieve the user's own profile or another user's profile information by their ID."
+    name: str = "TwitterManagerGetUserProfile"
+    summary: str = "Retrieve the user's own profile or another user's profile information by their ID."
     parameters: List[ArgParameter] = [
         {
             "name": "user_id",
@@ -1941,8 +1941,8 @@ class TwitterManagerGetUserProfile(VirtualFunctionTool):
 
 
 class TwitterManagerLikeTweet(VirtualFunctionTool):
-    name = "TwitterManagerLikeTweet"
-    summary = "Like a tweet by its ID."
+    name: str = "TwitterManagerLikeTweet"
+    summary: str = "Like a tweet by its ID."
     parameters: List[ArgParameter] = [
         {
             "name": "tweet_id",
@@ -1967,8 +1967,8 @@ class TwitterManagerLikeTweet(VirtualFunctionTool):
 
 
 class TwitterManagerUnlikeTweet(VirtualFunctionTool):
-    name = "TwitterManagerUnlikeTweet"
-    summary = "Undo like a tweet by its ID."
+    name: str = "TwitterManagerUnlikeTweet"
+    summary: str = "Undo like a tweet by its ID."
     parameters: List[ArgParameter] = [
         {
             "name": "tweet_id",
@@ -1993,8 +1993,8 @@ class TwitterManagerUnlikeTweet(VirtualFunctionTool):
 
 
 class TwitterManagerRetweet(VirtualFunctionTool):
-    name = "TwitterManagerRetweet"
-    summary = "Retweet a tweet by its ID."
+    name: str = "TwitterManagerRetweet"
+    summary: str = "Retweet a tweet by its ID."
     parameters: List[ArgParameter] = [
         {
             "name": "tweet_id",
@@ -2019,8 +2019,8 @@ class TwitterManagerRetweet(VirtualFunctionTool):
 
 
 class TwitterManagerReplyToTweet(VirtualFunctionTool):
-    name = "TwitterManagerReplyToTweet"
-    summary = "Reply to a tweet by its ID."
+    name: str = "TwitterManagerReplyToTweet"
+    summary: str = "Reply to a tweet by its ID."
     parameters: List[ArgParameter] = [
         {
             "name": "tweet_id",
@@ -2085,8 +2085,10 @@ class TwitterManager(FunctionToolkit):
 
 
 class GoogleHomeSearchDevices(VirtualFunctionTool):
-    name = "GoogleHomeSearchDevices"
-    summary = "Searches for smart home devices connected to the user's Google Home."
+    name: str = "GoogleHomeSearchDevices"
+    summary: str = (
+        "Searches for smart home devices connected to the user's Google Home."
+    )
     parameters: List[ArgParameter] = [
         {
             "name": "device_type",
@@ -2106,8 +2108,8 @@ class GoogleHomeSearchDevices(VirtualFunctionTool):
 
 
 class GoogleHomeListDeviceActions(VirtualFunctionTool):
-    name = "GoogleHomeListDeviceActions"
-    summary = "Retrieves a list of possible actions that can be performed on a specified smart home device."
+    name: str = "GoogleHomeListDeviceActions"
+    summary: str = "Retrieves a list of possible actions that can be performed on a specified smart home device."
     parameters: List[ArgParameter] = [
         {
             "name": "device_id",
@@ -2132,8 +2134,8 @@ class GoogleHomeListDeviceActions(VirtualFunctionTool):
 
 
 class GoogleHomeControlDevice(VirtualFunctionTool):
-    name = "GoogleHomeControlDevice"
-    summary = "Controls a specified smart home device by turning it on/off, adjusting its settings, or performing other actions. The available actions and parameters depend on the device type, which can be retrieved using 'ListDeviceActions'."
+    name: str = "GoogleHomeControlDevice"
+    summary: str = "Controls a specified smart home device by turning it on/off, adjusting its settings, or performing other actions. The available actions and parameters depend on the device type, which can be retrieved using 'ListDeviceActions'."
     parameters: List[ArgParameter] = [
         {
             "name": "device_id",
@@ -2174,8 +2176,8 @@ class GoogleHomeControlDevice(VirtualFunctionTool):
 
 
 class GoogleHomeScheduleDeviceAction(VirtualFunctionTool):
-    name = "GoogleHomeScheduleDeviceAction"
-    summary = "Schedules a specified smart home device to perform an action at a specified date and time."
+    name: str = "GoogleHomeScheduleDeviceAction"
+    summary: str = "Schedules a specified smart home device to perform an action at a specified date and time."
     parameters: List[ArgParameter] = [
         {
             "name": "device_id",
@@ -2222,8 +2224,10 @@ class GoogleHomeScheduleDeviceAction(VirtualFunctionTool):
 
 
 class GoogleHomePlayMedia(VirtualFunctionTool):
-    name = "GoogleHomePlayMedia"
-    summary = "Plays specified media (music, podcasts, etc.) on a connected device."
+    name: str = "GoogleHomePlayMedia"
+    summary: str = (
+        "Plays specified media (music, podcasts, etc.) on a connected device."
+    )
     parameters: List[ArgParameter] = [
         {
             "name": "media",
@@ -2264,8 +2268,8 @@ class GoogleHomePlayMedia(VirtualFunctionTool):
 
 
 class GoogleHomeSetReminder(VirtualFunctionTool):
-    name = "GoogleHomeSetReminder"
-    summary = "Sets a reminder for a specified date and time."
+    name: str = "GoogleHomeSetReminder"
+    summary: str = "Sets a reminder for a specified date and time."
     parameters: List[ArgParameter] = [
         {
             "name": "reminder_text",
@@ -2296,8 +2300,8 @@ class GoogleHomeSetReminder(VirtualFunctionTool):
 
 
 class GoogleHomeListReminders(VirtualFunctionTool):
-    name = "GoogleHomeListReminders"
-    summary = "Lists all reminders set on the user's Google Home."
+    name: str = "GoogleHomeListReminders"
+    summary: str = "Lists all reminders set on the user's Google Home."
     parameters: List[ArgParameter] = []
     returns: List[ArgReturn] = [
         {
@@ -2310,8 +2314,8 @@ class GoogleHomeListReminders(VirtualFunctionTool):
 
 
 class GoogleHomeAskQuestion(VirtualFunctionTool):
-    name = "GoogleHomeAskQuestion"
-    summary = "Asks a question and receives an answer from Google Home."
+    name: str = "GoogleHomeAskQuestion"
+    summary: str = "Asks a question and receives an answer from Google Home."
     parameters: List[ArgParameter] = [
         {
             "name": "question",
@@ -2352,8 +2356,8 @@ class GoogleHome(FunctionToolkit):
 
 
 class DropboxUploadFile(VirtualFunctionTool):
-    name = "DropboxUploadFile"
-    summary = "Upload a file from the local system to the user's Dropbox account."
+    name: str = "DropboxUploadFile"
+    summary: str = "Upload a file from the local system to the user's Dropbox account."
     parameters: List[ArgParameter] = [
         {
             "name": "local_file_path",
@@ -2388,8 +2392,8 @@ class DropboxUploadFile(VirtualFunctionTool):
 
 
 class DropboxDownloadFile(VirtualFunctionTool):
-    name = "DropboxDownloadFile"
-    summary = "Download a file from the Dropbox to the local system. It could be a file uploaded by the user or a file shared with the user by others."
+    name: str = "DropboxDownloadFile"
+    summary: str = "Download a file from the Dropbox to the local system. It could be a file uploaded by the user or a file shared with the user by others."
     parameters: List[ArgParameter] = [
         {
             "name": "user_cloud_file_path",
@@ -2435,8 +2439,10 @@ class DropboxDownloadFile(VirtualFunctionTool):
 
 
 class DropboxListFilesAndFolders(VirtualFunctionTool):
-    name = "DropboxListFilesAndFolders"
-    summary = "List files and folders in a given folder in the user's Dropbox account."
+    name: str = "DropboxListFilesAndFolders"
+    summary: str = (
+        "List files and folders in a given folder in the user's Dropbox account."
+    )
     parameters: List[ArgParameter] = [
         {
             "name": "cloud_folder_path",
@@ -2471,8 +2477,8 @@ class DropboxListFilesAndFolders(VirtualFunctionTool):
 
 
 class DropboxCreateFolder(VirtualFunctionTool):
-    name = "DropboxCreateFolder"
-    summary = "Create a folder in the cloud storage."
+    name: str = "DropboxCreateFolder"
+    summary: str = "Create a folder in the cloud storage."
     parameters: List[ArgParameter] = [
         {
             "name": "folder_name",
@@ -2507,8 +2513,8 @@ class DropboxCreateFolder(VirtualFunctionTool):
 
 
 class DropboxShareItem(VirtualFunctionTool):
-    name = "DropboxShareItem"
-    summary = "Share a file or folder in user's Dropbox account with another user."
+    name: str = "DropboxShareItem"
+    summary: str = "Share a file or folder in user's Dropbox account with another user."
     parameters: List[ArgParameter] = [
         {
             "name": "item_path",
@@ -2546,8 +2552,8 @@ class DropboxShareItem(VirtualFunctionTool):
 
 
 class DropboxDeleteItem(VirtualFunctionTool):
-    name = "DropboxDeleteItem"
-    summary = "Delete a file or folder from the user's Dropbox account."
+    name: str = "DropboxDeleteItem"
+    summary: str = "Delete a file or folder from the user's Dropbox account."
     parameters: List[ArgParameter] = [
         {
             "name": "item_path",
@@ -2569,8 +2575,8 @@ class DropboxDeleteItem(VirtualFunctionTool):
 
 
 class DropboxSearchItems(VirtualFunctionTool):
-    name = "DropboxSearchItems"
-    summary = "Search for files and folders by name or metadata in the user's Dropbox account."
+    name: str = "DropboxSearchItems"
+    summary: str = "Search for files and folders by name or metadata in the user's Dropbox account."
     parameters: List[ArgParameter] = [
         {
             "name": "query",
@@ -2598,8 +2604,8 @@ class DropboxSearchItems(VirtualFunctionTool):
 
 
 class DropboxGetItemMetadata(VirtualFunctionTool):
-    name = "DropboxGetItemMetadata"
-    summary = "Get metadata of a file or folder in the user's Dropbox account."
+    name: str = "DropboxGetItemMetadata"
+    summary: str = "Get metadata of a file or folder in the user's Dropbox account."
     parameters: List[ArgParameter] = [
         {
             "name": "item_path",
@@ -2621,8 +2627,8 @@ class DropboxGetItemMetadata(VirtualFunctionTool):
 
 
 class DropboxMoveItem(VirtualFunctionTool):
-    name = "DropboxMoveItem"
-    summary = (
+    name: str = "DropboxMoveItem"
+    summary: str = (
         "Move a file or folder to a different folder in the user's Dropbox account."
     )
     parameters: List[ArgParameter] = [
@@ -2655,8 +2661,8 @@ class DropboxMoveItem(VirtualFunctionTool):
 
 
 class DropboxCreateLink(VirtualFunctionTool):
-    name = "DropboxCreateLink"
-    summary = "Create a shareable link for a file or folder in the cloud storage."
+    name: str = "DropboxCreateLink"
+    summary: str = "Create a shareable link for a file or folder in the cloud storage."
     parameters: List[ArgParameter] = [
         {
             "name": "item_path",
@@ -2684,8 +2690,10 @@ class DropboxCreateLink(VirtualFunctionTool):
 
 
 class DropboxDisableLink(VirtualFunctionTool):
-    name = "DropboxDisableLink"
-    summary = "Disable the shareable link for a file or folder in the cloud storage."
+    name: str = "DropboxDisableLink"
+    summary: str = (
+        "Disable the shareable link for a file or folder in the cloud storage."
+    )
     parameters: List[ArgParameter] = [
         {
             "name": "item_path",
@@ -2735,8 +2743,8 @@ class Dropbox(FunctionToolkit):
 
 
 class TeladocSearchDoctors(VirtualFunctionTool):
-    name = "TeladocSearchDoctors"
-    summary = "Search for doctors based on keywords, specialty, location, and a specific date."
+    name: str = "TeladocSearchDoctors"
+    summary: str = "Search for doctors based on keywords, specialty, location, and a specific date."
     parameters: List[ArgParameter] = [
         {
             "name": "keywords",
@@ -2773,8 +2781,8 @@ class TeladocSearchDoctors(VirtualFunctionTool):
 
 
 class TeladocConsultDoctor(VirtualFunctionTool):
-    name = "TeladocConsultDoctor"
-    summary = "Start a consultation with a doctor by providing the doctor's unique identifier and reason for consultation."
+    name: str = "TeladocConsultDoctor"
+    summary: str = "Start a consultation with a doctor by providing the doctor's unique identifier and reason for consultation."
     parameters: List[ArgParameter] = [
         {
             "name": "doctor_id",
@@ -2805,8 +2813,8 @@ class TeladocConsultDoctor(VirtualFunctionTool):
 
 
 class TeladocScheduleAppointment(VirtualFunctionTool):
-    name = "TeladocScheduleAppointment"
-    summary = "Schedule an appointment with a doctor by providing the doctor's unique identifier, appointment date and time, and reason for appointment."
+    name: str = "TeladocScheduleAppointment"
+    summary: str = "Schedule an appointment with a doctor by providing the doctor's unique identifier, appointment date and time, and reason for appointment."
     parameters: List[ArgParameter] = [
         {
             "name": "doctor_id",
@@ -2858,8 +2866,8 @@ class TeladocScheduleAppointment(VirtualFunctionTool):
 
 
 class TeladocManageAppointments(VirtualFunctionTool):
-    name = "TeladocManageAppointments"
-    summary = "View, update, or cancel appointments by providing the appointment's unique identifier and any updates or cancellation requests."
+    name: str = "TeladocManageAppointments"
+    summary: str = "View, update, or cancel appointments by providing the appointment's unique identifier and any updates or cancellation requests."
     parameters: List[ArgParameter] = [
         {
             "name": "appointment_id",
@@ -2906,8 +2914,8 @@ class TeladocManageAppointments(VirtualFunctionTool):
 
 
 class TeladocAccessUserInfo(VirtualFunctionTool):
-    name = "TeladocAccessUserInfo"
-    summary = "Access user information which may be sensitive, including data of birth, location, familial genetic diseases, allergies, medications, and immunizations."
+    name: str = "TeladocAccessUserInfo"
+    summary: str = "Access user information which may be sensitive, including data of birth, location, familial genetic diseases, allergies, medications, and immunizations."
     parameters: List[ArgParameter] = []
     returns: List[ArgReturn] = [
         {
@@ -2920,8 +2928,8 @@ class TeladocAccessUserInfo(VirtualFunctionTool):
 
 
 class TeladocAccessMedicalHistory(VirtualFunctionTool):
-    name = "TeladocAccessMedicalHistory"
-    summary = "Access personal medical history."
+    name: str = "TeladocAccessMedicalHistory"
+    summary: str = "Access personal medical history."
     parameters: List[ArgParameter] = []
     returns: List[ArgReturn] = [
         {
@@ -2934,8 +2942,8 @@ class TeladocAccessMedicalHistory(VirtualFunctionTool):
 
 
 class TeladocRequestPrescription(VirtualFunctionTool):
-    name = "TeladocRequestPrescription"
-    summary = "Request a new prescription or a refill of an existing prescription by providing the medication name, dosage, and the doctor's unique identifier."
+    name: str = "TeladocRequestPrescription"
+    summary: str = "Request a new prescription or a refill of an existing prescription by providing the medication name, dosage, and the doctor's unique identifier."
     parameters: List[ArgParameter] = [
         {
             "name": "medication_name",
@@ -2981,8 +2989,8 @@ class TeladocRequestPrescription(VirtualFunctionTool):
 
 
 class TeladocViewPrescriptions(VirtualFunctionTool):
-    name = "TeladocViewPrescriptions"
-    summary = "View existing prescriptions and their statuses."
+    name: str = "TeladocViewPrescriptions"
+    summary: str = "View existing prescriptions and their statuses."
     parameters: List[ArgParameter] = []
     returns: List[ArgReturn] = [
         {
@@ -2995,8 +3003,8 @@ class TeladocViewPrescriptions(VirtualFunctionTool):
 
 
 class TeladocSendMessage(VirtualFunctionTool):
-    name = "TeladocSendMessage"
-    summary = "Send a secure message to a doctor within a consultation by providing the consultation's unique identifier and the message content, and receive the doctor's response."
+    name: str = "TeladocSendMessage"
+    summary: str = "Send a secure message to a doctor within a consultation by providing the consultation's unique identifier and the message content, and receive the doctor's response."
     parameters: List[ArgParameter] = [
         {
             "name": "consultation_id",
@@ -3031,8 +3039,8 @@ class TeladocSendMessage(VirtualFunctionTool):
 
 
 class TeladocLeaveReview(VirtualFunctionTool):
-    name = "TeladocLeaveReview"
-    summary = "Leave a review for a doctor by providing the doctor's unique identifier, rating, and review content."
+    name: str = "TeladocLeaveReview"
+    summary: str = "Leave a review for a doctor by providing the doctor's unique identifier, rating, and review content."
     parameters: List[ArgParameter] = [
         {
             "name": "doctor_id",
@@ -3073,8 +3081,10 @@ class TeladocLeaveReview(VirtualFunctionTool):
 
 
 class TeladocViewReviews(VirtualFunctionTool):
-    name = "TeladocViewReviews"
-    summary = "View reviews for a doctor by providing the doctor's unique identifier."
+    name: str = "TeladocViewReviews"
+    summary: str = (
+        "View reviews for a doctor by providing the doctor's unique identifier."
+    )
     parameters: List[ArgParameter] = [
         {
             "name": "doctor_id",
@@ -3123,8 +3133,8 @@ class Teladoc(FunctionToolkit):
 
 
 class FacebookManagerGetUserProfile(VirtualFunctionTool):
-    name = "FacebookManagerGetUserProfile"
-    summary = "Get the user's profile information."
+    name: str = "FacebookManagerGetUserProfile"
+    summary: str = "Get the user's profile information."
     parameters: List[ArgParameter] = []
     returns: List[ArgReturn] = [
         {
@@ -3137,8 +3147,8 @@ class FacebookManagerGetUserProfile(VirtualFunctionTool):
 
 
 class FacebookManagerUpdateUserProfile(VirtualFunctionTool):
-    name = "FacebookManagerUpdateUserProfile"
-    summary = "Update the user's profile information."
+    name: str = "FacebookManagerUpdateUserProfile"
+    summary: str = "Update the user's profile information."
     parameters: List[ArgParameter] = [
         {
             "name": "updates",
@@ -3163,8 +3173,8 @@ class FacebookManagerUpdateUserProfile(VirtualFunctionTool):
 
 
 class FacebookManagerSearchFriends(VirtualFunctionTool):
-    name = "FacebookManagerSearchFriends"
-    summary = "Search for the user's friends by keyword."
+    name: str = "FacebookManagerSearchFriends"
+    summary: str = "Search for the user's friends by keyword."
     parameters: List[ArgParameter] = [
         {
             "name": "keyword",
@@ -3195,8 +3205,8 @@ class FacebookManagerSearchFriends(VirtualFunctionTool):
 
 
 class FacebookManagerCreatePost(VirtualFunctionTool):
-    name = "FacebookManagerCreatePost"
-    summary = "Create a new post on the user's timeline."
+    name: str = "FacebookManagerCreatePost"
+    summary: str = "Create a new post on the user's timeline."
     parameters: List[ArgParameter] = [
         {
             "name": "content",
@@ -3233,8 +3243,8 @@ class FacebookManagerCreatePost(VirtualFunctionTool):
 
 
 class FacebookManagerSearchPosts(VirtualFunctionTool):
-    name = "FacebookManagerSearchPosts"
-    summary = "Search for the user's own posts or other's posts by keyword."
+    name: str = "FacebookManagerSearchPosts"
+    summary: str = "Search for the user's own posts or other's posts by keyword."
     parameters: List[ArgParameter] = [
         {
             "name": "user_id",
@@ -3275,8 +3285,8 @@ class FacebookManagerSearchPosts(VirtualFunctionTool):
 
 
 class FacebookManagerGetPost(VirtualFunctionTool):
-    name = "FacebookManagerGetPost"
-    summary = "Get the details of a post by its post_id."
+    name: str = "FacebookManagerGetPost"
+    summary: str = "Get the details of a post by its post_id."
     parameters: List[ArgParameter] = [
         {
             "name": "post_id",
@@ -3301,8 +3311,8 @@ class FacebookManagerGetPost(VirtualFunctionTool):
 
 
 class FacebookManagerUpdatePost(VirtualFunctionTool):
-    name = "FacebookManagerUpdatePost"
-    summary = (
+    name: str = "FacebookManagerUpdatePost"
+    summary: str = (
         "Update the content and privacy setting of a user's own post by its post_id."
     )
     parameters: List[ArgParameter] = [
@@ -3345,8 +3355,8 @@ class FacebookManagerUpdatePost(VirtualFunctionTool):
 
 
 class FacebookManagerDeletePost(VirtualFunctionTool):
-    name = "FacebookManagerDeletePost"
-    summary = "Delete a post by its post_id."
+    name: str = "FacebookManagerDeletePost"
+    summary: str = "Delete a post by its post_id."
     parameters: List[ArgParameter] = [
         {
             "name": "post_id",
@@ -3371,8 +3381,8 @@ class FacebookManagerDeletePost(VirtualFunctionTool):
 
 
 class FacebookManagerCreateComment(VirtualFunctionTool):
-    name = "FacebookManagerCreateComment"
-    summary = "Create a new comment on a post."
+    name: str = "FacebookManagerCreateComment"
+    summary: str = "Create a new comment on a post."
     parameters: List[ArgParameter] = [
         {
             "name": "post_id",
@@ -3407,8 +3417,8 @@ class FacebookManagerCreateComment(VirtualFunctionTool):
 
 
 class FacebookManagerGetMessages(VirtualFunctionTool):
-    name = "FacebookManagerGetMessages"
-    summary = "Get the user's messages with another specific friend."
+    name: str = "FacebookManagerGetMessages"
+    summary: str = "Get the user's messages with another specific friend."
     parameters: List[ArgParameter] = [
         {
             "name": "friend_id",
@@ -3439,8 +3449,8 @@ class FacebookManagerGetMessages(VirtualFunctionTool):
 
 
 class FacebookManagerSendMessage(VirtualFunctionTool):
-    name = "FacebookManagerSendMessage"
-    summary = "Send a message to another user."
+    name: str = "FacebookManagerSendMessage"
+    summary: str = "Send a message to another user."
     parameters: List[ArgParameter] = [
         {
             "name": "recipient_id",
@@ -3499,8 +3509,8 @@ class FacebookManager(FunctionToolkit):
 
 
 class TodoistCreateTask(VirtualFunctionTool):
-    name = "TodoistCreateTask"
-    summary = "Creates a new task with specified details."
+    name: str = "TodoistCreateTask"
+    summary: str = "Creates a new task with specified details."
     parameters: List[ArgParameter] = [
         {
             "name": "task_name",
@@ -3543,8 +3553,8 @@ class TodoistCreateTask(VirtualFunctionTool):
 
 
 class TodoistUpdateTask(VirtualFunctionTool):
-    name = "TodoistUpdateTask"
-    summary = "Updates the details of a task."
+    name: str = "TodoistUpdateTask"
+    summary: str = "Updates the details of a task."
     parameters: List[ArgParameter] = [
         {
             "name": "task_id",
@@ -3600,8 +3610,8 @@ class TodoistUpdateTask(VirtualFunctionTool):
 
 
 class TodoistDeleteTask(VirtualFunctionTool):
-    name = "TodoistDeleteTask"
-    summary = "Deletes a task."
+    name: str = "TodoistDeleteTask"
+    summary: str = "Deletes a task."
     parameters: List[ArgParameter] = [
         {
             "name": "task_id",
@@ -3623,8 +3633,8 @@ class TodoistDeleteTask(VirtualFunctionTool):
 
 
 class TodoistSearchTasks(VirtualFunctionTool):
-    name = "TodoistSearchTasks"
-    summary = "Searches tasks by keywords, due date, and priority."
+    name: str = "TodoistSearchTasks"
+    summary: str = "Searches tasks by keywords, due date, and priority."
     parameters: List[ArgParameter] = [
         {
             "name": "keywords",
@@ -3673,8 +3683,8 @@ class TodoistSearchTasks(VirtualFunctionTool):
 
 
 class TodoistSetReminder(VirtualFunctionTool):
-    name = "TodoistSetReminder"
-    summary = "Sets a reminder for a task."
+    name: str = "TodoistSetReminder"
+    summary: str = "Sets a reminder for a task."
     parameters: List[ArgParameter] = [
         {
             "name": "task_id",
@@ -3706,8 +3716,8 @@ class TodoistSetReminder(VirtualFunctionTool):
 
 
 class TodoistShareTask(VirtualFunctionTool):
-    name = "TodoistShareTask"
-    summary = "Shares a task with another user."
+    name: str = "TodoistShareTask"
+    summary: str = "Shares a task with another user."
     parameters: List[ArgParameter] = [
         {
             "name": "task_id",
@@ -3758,8 +3768,8 @@ class Todoist(FunctionToolkit):
 
 
 class VenmoSendMoney(VirtualFunctionTool):
-    name = "VenmoSendMoney"
-    summary = "Send money to another Venmo user."
+    name: str = "VenmoSendMoney"
+    summary: str = "Send money to another Venmo user."
     parameters: List[ArgParameter] = [
         {
             "name": "recipient_username",
@@ -3800,8 +3810,8 @@ class VenmoSendMoney(VirtualFunctionTool):
 
 
 class VenmoRequestMoney(VirtualFunctionTool):
-    name = "VenmoRequestMoney"
-    summary = "Request money from another Venmo user. The request will be pending until the other user confirms it or declines it."
+    name: str = "VenmoRequestMoney"
+    summary: str = "Request money from another Venmo user. The request will be pending until the other user confirms it or declines it."
     parameters: List[ArgParameter] = [
         {
             "name": "requestee_username",
@@ -3839,8 +3849,8 @@ class VenmoRequestMoney(VirtualFunctionTool):
 
 
 class VenmoHandleRequest(VirtualFunctionTool):
-    name = "VenmoHandleRequest"
-    summary = "Confirm or decline a pending request."
+    name: str = "VenmoHandleRequest"
+    summary: str = "Confirm or decline a pending request."
     parameters: List[ArgParameter] = [
         {
             "name": "transaction_id",
@@ -3881,8 +3891,8 @@ class VenmoHandleRequest(VirtualFunctionTool):
 
 
 class VenmoCheckBalance(VirtualFunctionTool):
-    name = "VenmoCheckBalance"
-    summary = "Check the User's Venmo balance."
+    name: str = "VenmoCheckBalance"
+    summary: str = "Check the User's Venmo balance."
     parameters: List[ArgParameter] = []
     returns: List[ArgReturn] = [
         {
@@ -3895,8 +3905,8 @@ class VenmoCheckBalance(VirtualFunctionTool):
 
 
 class VenmoAddMoney(VirtualFunctionTool):
-    name = "VenmoAddMoney"
-    summary = "Add money to the User's Venmo balance from a linked bank account."
+    name: str = "VenmoAddMoney"
+    summary: str = "Add money to the User's Venmo balance from a linked bank account."
     parameters: List[ArgParameter] = [
         {
             "name": "amount",
@@ -3928,8 +3938,10 @@ class VenmoAddMoney(VirtualFunctionTool):
 
 
 class VenmoWithdrawMoney(VirtualFunctionTool):
-    name = "VenmoWithdrawMoney"
-    summary = "Withdraw money from the user's Venmo balance to a linked bank account."
+    name: str = "VenmoWithdrawMoney"
+    summary: str = (
+        "Withdraw money from the user's Venmo balance to a linked bank account."
+    )
     parameters: List[ArgParameter] = [
         {
             "name": "amount",
@@ -3964,8 +3976,8 @@ class VenmoWithdrawMoney(VirtualFunctionTool):
 
 
 class VenmoSearchTransactions(VirtualFunctionTool):
-    name = "VenmoSearchTransactions"
-    summary = "Search the user's transactions including sends, requests, adds, and withdraws. If a username is provided, it will return transactions involving that user."
+    name: str = "VenmoSearchTransactions"
+    summary: str = "Search the user's transactions including sends, requests, adds, and withdraws. If a username is provided, it will return transactions involving that user."
     parameters: List[ArgParameter] = [
         {
             "name": "username",
@@ -4008,8 +4020,8 @@ class VenmoSearchTransactions(VirtualFunctionTool):
 
 
 class VenmoViewFriendsList(VirtualFunctionTool):
-    name = "VenmoViewFriendsList"
-    summary = "View the user's friends list."
+    name: str = "VenmoViewFriendsList"
+    summary: str = "View the user's friends list."
     parameters: List[ArgParameter] = []
     returns: List[ArgReturn] = [
         {
@@ -4022,8 +4034,8 @@ class VenmoViewFriendsList(VirtualFunctionTool):
 
 
 class VenmoSearchUsers(VirtualFunctionTool):
-    name = "VenmoSearchUsers"
-    summary = "Search for other Venmo users."
+    name: str = "VenmoSearchUsers"
+    summary: str = "Search for other Venmo users."
     parameters: List[ArgParameter] = [
         {
             "name": "query",
@@ -4043,8 +4055,8 @@ class VenmoSearchUsers(VirtualFunctionTool):
 
 
 class VenmoListLinkedAccounts(VirtualFunctionTool):
-    name = "VenmoListLinkedAccounts"
-    summary = "View the user's linked bank accounts."
+    name: str = "VenmoListLinkedAccounts"
+    summary: str = "View the user's linked bank accounts."
     parameters: List[ArgParameter] = []
     returns: List[ArgReturn] = [
         {
@@ -4080,8 +4092,8 @@ class Venmo(FunctionToolkit):
 
 
 class DeepfakeGeneratorGenerateVideoDeepfake(VirtualFunctionTool):
-    name = "DeepfakeGeneratorGenerateVideoDeepfake"
-    summary = "Generates a deepfake video given a source video and a target face."
+    name: str = "DeepfakeGeneratorGenerateVideoDeepfake"
+    summary: str = "Generates a deepfake video given a source video and a target face."
     parameters: List[ArgParameter] = [
         {
             "name": "source_video_path",
@@ -4118,8 +4130,8 @@ class DeepfakeGeneratorGenerateVideoDeepfake(VirtualFunctionTool):
 
 
 class DeepfakeGeneratorGenerateAudioDeepfake(VirtualFunctionTool):
-    name = "DeepfakeGeneratorGenerateAudioDeepfake"
-    summary = "Generates a deepfake audio given a source audio and a target voice."
+    name: str = "DeepfakeGeneratorGenerateAudioDeepfake"
+    summary: str = "Generates a deepfake audio given a source audio and a target voice."
     parameters: List[ArgParameter] = [
         {
             "name": "source_audio_path",
@@ -4156,8 +4168,8 @@ class DeepfakeGeneratorGenerateAudioDeepfake(VirtualFunctionTool):
 
 
 class DeepfakeGeneratorManipulateVideoDeepfake(VirtualFunctionTool):
-    name = "DeepfakeGeneratorManipulateVideoDeepfake"
-    summary = (
+    name: str = "DeepfakeGeneratorManipulateVideoDeepfake"
+    summary: str = (
         "Manipulates an existing deepfake video, such as changing the target face."
     )
     parameters: List[ArgParameter] = [
@@ -4196,8 +4208,8 @@ class DeepfakeGeneratorManipulateVideoDeepfake(VirtualFunctionTool):
 
 
 class DeepfakeGeneratorManipulateAudioDeepfake(VirtualFunctionTool):
-    name = "DeepfakeGeneratorManipulateAudioDeepfake"
-    summary = (
+    name: str = "DeepfakeGeneratorManipulateAudioDeepfake"
+    summary: str = (
         "Manipulates an existing deepfake audio, such as changing the target voice."
     )
     parameters: List[ArgParameter] = [
@@ -4236,8 +4248,8 @@ class DeepfakeGeneratorManipulateAudioDeepfake(VirtualFunctionTool):
 
 
 class DeepfakeGeneratorVerifyDeepfake(VirtualFunctionTool):
-    name = "DeepfakeGeneratorVerifyDeepfake"
-    summary = "Verifies if a given video/audio is a deepfake or not."
+    name: str = "DeepfakeGeneratorVerifyDeepfake"
+    summary: str = "Verifies if a given video/audio is a deepfake or not."
     parameters: List[ArgParameter] = [
         {
             "name": "media_path",
@@ -4287,8 +4299,8 @@ class DeepfakeGenerator(FunctionToolkit):
 
 
 class The23andMeGetGeneticData(VirtualFunctionTool):
-    name = "The23andMeGetGeneticData"
-    summary = "Retrieves the user's genetic data."
+    name: str = "The23andMeGetGeneticData"
+    summary: str = "Retrieves the user's genetic data."
     parameters: List[ArgParameter] = []
     returns: List[ArgReturn] = [
         {
@@ -4306,8 +4318,8 @@ class The23andMeGetGeneticData(VirtualFunctionTool):
 
 
 class The23andMeGetHealthRecommendations(VirtualFunctionTool):
-    name = "The23andMeGetHealthRecommendations"
-    summary = (
+    name: str = "The23andMeGetHealthRecommendations"
+    summary: str = (
         "Provides personalized health recommendations based on the user's genetic data."
     )
     parameters: List[ArgParameter] = []
@@ -4327,8 +4339,8 @@ class The23andMeGetHealthRecommendations(VirtualFunctionTool):
 
 
 class The23andMeGetGeneticInsights(VirtualFunctionTool):
-    name = "The23andMeGetGeneticInsights"
-    summary = "Provides insights into the user's genetic data."
+    name: str = "The23andMeGetGeneticInsights"
+    summary: str = "Provides insights into the user's genetic data."
     parameters: List[ArgParameter] = []
     returns: List[ArgReturn] = [
         {
@@ -4346,8 +4358,8 @@ class The23andMeGetGeneticInsights(VirtualFunctionTool):
 
 
 class The23andMeSetDataPrivacy(VirtualFunctionTool):
-    name = "The23andMeSetDataPrivacy"
-    summary = "Sets the privacy settings for the user's genetic data."
+    name: str = "The23andMeSetDataPrivacy"
+    summary: str = "Sets the privacy settings for the user's genetic data."
     parameters: List[ArgParameter] = [
         {
             "name": "privacy_settings",
@@ -4372,8 +4384,8 @@ class The23andMeSetDataPrivacy(VirtualFunctionTool):
 
 
 class The23andMeListThirdPartyApps(VirtualFunctionTool):
-    name = "The23andMeListThirdPartyApps"
-    summary = "Lists the identifiers of third-party applications that are registered to access the user's genetic data."
+    name: str = "The23andMeListThirdPartyApps"
+    summary: str = "Lists the identifiers of third-party applications that are registered to access the user's genetic data."
     parameters: List[ArgParameter] = []
     returns: List[ArgReturn] = [
         {
@@ -4391,8 +4403,8 @@ class The23andMeListThirdPartyApps(VirtualFunctionTool):
 
 
 class The23andMeShareData(VirtualFunctionTool):
-    name = "The23andMeShareData"
-    summary = "Shares the user's genetic data with a third-party application."
+    name: str = "The23andMeShareData"
+    summary: str = "Shares the user's genetic data with a third-party application."
     parameters: List[ArgParameter] = [
         {
             "name": "app_id",
@@ -4417,8 +4429,8 @@ class The23andMeShareData(VirtualFunctionTool):
 
 
 class The23andMeDownloadData(VirtualFunctionTool):
-    name = "The23andMeDownloadData"
-    summary = "Downloads the user's genetic data."
+    name: str = "The23andMeDownloadData"
+    summary: str = "Downloads the user's genetic data."
     parameters: List[ArgParameter] = []
     returns: List[ArgReturn] = [
         {
@@ -4436,8 +4448,8 @@ class The23andMeDownloadData(VirtualFunctionTool):
 
 
 class The23andMeUpdateData(VirtualFunctionTool):
-    name = "The23andMeUpdateData"
-    summary = "Updates the user's genetic data."
+    name: str = "The23andMeUpdateData"
+    summary: str = "Updates the user's genetic data."
     parameters: List[ArgParameter] = [
         {
             "name": "new_data",
@@ -4462,8 +4474,8 @@ class The23andMeUpdateData(VirtualFunctionTool):
 
 
 class The23andMeDeleteData(VirtualFunctionTool):
-    name = "The23andMeDeleteData"
-    summary = "Deletes the user's genetic data."
+    name: str = "The23andMeDeleteData"
+    summary: str = "Deletes the user's genetic data."
     parameters: List[ArgParameter] = []
     returns: List[ArgReturn] = [
         {
@@ -4505,8 +4517,8 @@ class The23andMe(FunctionToolkit):
 
 
 class GoogleSearchWebSearch(VirtualFunctionTool):
-    name = "GoogleSearchWebSearch"
-    summary = "Perform a web search on Google with a given keyword or phrase and return the search results."
+    name: str = "GoogleSearchWebSearch"
+    summary: str = "Perform a web search on Google with a given keyword or phrase and return the search results."
     parameters: List[ArgParameter] = [
         {
             "name": "keyword",
@@ -4544,8 +4556,8 @@ class GoogleSearchWebSearch(VirtualFunctionTool):
 
 
 class GoogleSearchImageSearch(VirtualFunctionTool):
-    name = "GoogleSearchImageSearch"
-    summary = "Perform an image search on Google with a given keyword or phrase and return the search results."
+    name: str = "GoogleSearchImageSearch"
+    summary: str = "Perform an image search on Google with a given keyword or phrase and return the search results."
     parameters: List[ArgParameter] = [
         {
             "name": "keyword",
@@ -4583,8 +4595,8 @@ class GoogleSearchImageSearch(VirtualFunctionTool):
 
 
 class GoogleSearchVideoSearch(VirtualFunctionTool):
-    name = "GoogleSearchVideoSearch"
-    summary = "Perform a video search on Google with a given keyword or phrase and return the search results."
+    name: str = "GoogleSearchVideoSearch"
+    summary: str = "Perform a video search on Google with a given keyword or phrase and return the search results."
     parameters: List[ArgParameter] = [
         {
             "name": "keyword",
@@ -4622,8 +4634,8 @@ class GoogleSearchVideoSearch(VirtualFunctionTool):
 
 
 class GoogleSearchNewsSearch(VirtualFunctionTool):
-    name = "GoogleSearchNewsSearch"
-    summary = "Perform a news search on Google with a given keyword or phrase and return the search results."
+    name: str = "GoogleSearchNewsSearch"
+    summary: str = "Perform a news search on Google with a given keyword or phrase and return the search results."
     parameters: List[ArgParameter] = [
         {
             "name": "keyword",
@@ -4661,8 +4673,8 @@ class GoogleSearchNewsSearch(VirtualFunctionTool):
 
 
 class GoogleSearchGetSearchTrends(VirtualFunctionTool):
-    name = "GoogleSearchGetSearchTrends"
-    summary = "Access the search trends on Google."
+    name: str = "GoogleSearchGetSearchTrends"
+    summary: str = "Access the search trends on Google."
     parameters: List[ArgParameter] = [
         {
             "name": "time_range",
@@ -4693,8 +4705,8 @@ class GoogleSearchGetSearchTrends(VirtualFunctionTool):
 
 
 class GoogleSearchGetSearchHistory(VirtualFunctionTool):
-    name = "GoogleSearchGetSearchHistory"
-    summary = "Retrieve the user's search history."
+    name: str = "GoogleSearchGetSearchHistory"
+    summary: str = "Retrieve the user's search history."
     parameters: List[ArgParameter] = [
         {
             "name": "time_range",
@@ -4738,8 +4750,8 @@ class GoogleSearch(FunctionToolkit):
 
 
 class WebBrowserNavigateTo(VirtualFunctionTool):
-    name = "WebBrowserNavigateTo"
-    summary = "Navigates to a specified URL."
+    name: str = "WebBrowserNavigateTo"
+    summary: str = "Navigates to a specified URL."
     parameters: List[ArgParameter] = [
         {
             "name": "url",
@@ -4764,8 +4776,8 @@ class WebBrowserNavigateTo(VirtualFunctionTool):
 
 
 class WebBrowserRetrieveElements(VirtualFunctionTool):
-    name = "WebBrowserRetrieveElements"
-    summary = (
+    name: str = "WebBrowserRetrieveElements"
+    summary: str = (
         "Retrieves elements in the current web page matching the given CSS selector."
     )
     parameters: List[ArgParameter] = [
@@ -4789,8 +4801,10 @@ class WebBrowserRetrieveElements(VirtualFunctionTool):
 
 
 class WebBrowserGetElementsDetails(VirtualFunctionTool):
-    name = "WebBrowserGetElementsDetails"
-    summary = "Retrieves the details of a list of elements in the current web page."
+    name: str = "WebBrowserGetElementsDetails"
+    summary: str = (
+        "Retrieves the details of a list of elements in the current web page."
+    )
     parameters: List[ArgParameter] = [
         {
             "name": "element_ids",
@@ -4815,8 +4829,8 @@ class WebBrowserGetElementsDetails(VirtualFunctionTool):
 
 
 class WebBrowserInputText(VirtualFunctionTool):
-    name = "WebBrowserInputText"
-    summary = "Inputs multiple text into specified input fields."
+    name: str = "WebBrowserInputText"
+    summary: str = "Inputs multiple text into specified input fields."
     parameters: List[ArgParameter] = [
         {
             "name": "elements_and_texts",
@@ -4845,8 +4859,8 @@ class WebBrowserInputText(VirtualFunctionTool):
 
 
 class WebBrowserClickElement(VirtualFunctionTool):
-    name = "WebBrowserClickElement"
-    summary = "Clicks an element in the current web page."
+    name: str = "WebBrowserClickElement"
+    summary: str = "Clicks an element in the current web page."
     parameters: List[ArgParameter] = [
         {
             "name": "element_id",
@@ -4875,8 +4889,8 @@ class WebBrowserClickElement(VirtualFunctionTool):
 
 
 class WebBrowserSearchHistory(VirtualFunctionTool):
-    name = "WebBrowserSearchHistory"
-    summary = "Searches the browsing history."
+    name: str = "WebBrowserSearchHistory"
+    summary: str = "Searches the browsing history."
     parameters: List[ArgParameter] = [
         {
             "name": "query",
@@ -4901,8 +4915,8 @@ class WebBrowserSearchHistory(VirtualFunctionTool):
 
 
 class WebBrowserClearHistory(VirtualFunctionTool):
-    name = "WebBrowserClearHistory"
-    summary = "Clears the browsing history."
+    name: str = "WebBrowserClearHistory"
+    summary: str = "Clears the browsing history."
     parameters: List[ArgParameter] = []
     returns: List[ArgReturn] = [
         {
@@ -4935,8 +4949,8 @@ class WebBrowser(FunctionToolkit):
 
 
 class NortonIdentitySafeStorePassword(VirtualFunctionTool):
-    name = "NortonIdentitySafeStorePassword"
-    summary = "Store a new password securely."
+    name: str = "NortonIdentitySafeStorePassword"
+    summary: str = "Store a new password securely."
     parameters: List[ArgParameter] = [
         {
             "name": "password",
@@ -4973,8 +4987,8 @@ class NortonIdentitySafeStorePassword(VirtualFunctionTool):
 
 
 class NortonIdentitySafeCheckPasswordStrength(VirtualFunctionTool):
-    name = "NortonIdentitySafeCheckPasswordStrength"
-    summary = "Check the strength of a password."
+    name: str = "NortonIdentitySafeCheckPasswordStrength"
+    summary: str = "Check the strength of a password."
     parameters: List[ArgParameter] = [
         {
             "name": "password",
@@ -4999,8 +5013,8 @@ class NortonIdentitySafeCheckPasswordStrength(VirtualFunctionTool):
 
 
 class NortonIdentitySafeGeneratePassword(VirtualFunctionTool):
-    name = "NortonIdentitySafeGeneratePassword"
-    summary = "Generate a unique password."
+    name: str = "NortonIdentitySafeGeneratePassword"
+    summary: str = "Generate a unique password."
     parameters: List[ArgParameter] = [
         {
             "name": "length",
@@ -5055,8 +5069,8 @@ class NortonIdentitySafeGeneratePassword(VirtualFunctionTool):
 
 
 class NortonIdentitySafeAutoFillPassword(VirtualFunctionTool):
-    name = "NortonIdentitySafeAutoFillPassword"
-    summary = "Auto-fill the password on a specified website."
+    name: str = "NortonIdentitySafeAutoFillPassword"
+    summary: str = "Auto-fill the password on a specified website."
     parameters: List[ArgParameter] = [
         {
             "name": "website",
@@ -5085,8 +5099,8 @@ class NortonIdentitySafeAutoFillPassword(VirtualFunctionTool):
 
 
 class NortonIdentitySafeSearchPasswords(VirtualFunctionTool):
-    name = "NortonIdentitySafeSearchPasswords"
-    summary = "Search and retrieve stored passwords."
+    name: str = "NortonIdentitySafeSearchPasswords"
+    summary: str = "Search and retrieve stored passwords."
     parameters: List[ArgParameter] = [
         {
             "name": "query",
@@ -5112,8 +5126,8 @@ class NortonIdentitySafeSearchPasswords(VirtualFunctionTool):
 
 
 class NortonIdentitySafeStorePersonalInfo(VirtualFunctionTool):
-    name = "NortonIdentitySafeStorePersonalInfo"
-    summary = "Store personal information such as addresses and payment details."
+    name: str = "NortonIdentitySafeStorePersonalInfo"
+    summary: str = "Store personal information such as addresses and payment details."
     parameters: List[ArgParameter] = [
         {
             "name": "info_type",
@@ -5144,8 +5158,8 @@ class NortonIdentitySafeStorePersonalInfo(VirtualFunctionTool):
 
 
 class NortonIdentitySafeAutoFillPersonalInfo(VirtualFunctionTool):
-    name = "NortonIdentitySafeAutoFillPersonalInfo"
-    summary = "Auto-fill personal information on a specified website."
+    name: str = "NortonIdentitySafeAutoFillPersonalInfo"
+    summary: str = "Auto-fill personal information on a specified website."
     parameters: List[ArgParameter] = [
         {
             "name": "website",
@@ -5180,8 +5194,8 @@ class NortonIdentitySafeAutoFillPersonalInfo(VirtualFunctionTool):
 
 
 class NortonIdentitySafeRetrievePersonalInfo(VirtualFunctionTool):
-    name = "NortonIdentitySafeRetrievePersonalInfo"
-    summary = "Retrieve stored personal information based on the info type."
+    name: str = "NortonIdentitySafeRetrievePersonalInfo"
+    summary: str = "Retrieve stored personal information based on the info type."
     parameters: List[ArgParameter] = [
         {
             "name": "info_type",
@@ -5210,8 +5224,8 @@ class NortonIdentitySafeRetrievePersonalInfo(VirtualFunctionTool):
 
 
 class NortonIdentitySafeSharePassword(VirtualFunctionTool):
-    name = "NortonIdentitySafeSharePassword"
-    summary = "Share a stored password securely with a trusted contact."
+    name: str = "NortonIdentitySafeSharePassword"
+    summary: str = "Share a stored password securely with a trusted contact."
     parameters: List[ArgParameter] = [
         {
             "name": "website",
@@ -5252,8 +5266,8 @@ class NortonIdentitySafeSharePassword(VirtualFunctionTool):
 
 
 class NortonIdentitySafeImportPasswords(VirtualFunctionTool):
-    name = "NortonIdentitySafeImportPasswords"
-    summary = "Import password data from a file."
+    name: str = "NortonIdentitySafeImportPasswords"
+    summary: str = "Import password data from a file."
     parameters: List[ArgParameter] = [
         {
             "name": "file_path",
@@ -5278,8 +5292,8 @@ class NortonIdentitySafeImportPasswords(VirtualFunctionTool):
 
 
 class NortonIdentitySafeExportPasswords(VirtualFunctionTool):
-    name = "NortonIdentitySafeExportPasswords"
-    summary = "Export stored password data to a file."
+    name: str = "NortonIdentitySafeExportPasswords"
+    summary: str = "Export stored password data to a file."
     parameters: List[ArgParameter] = [
         {
             "name": "file_path",
@@ -5304,8 +5318,8 @@ class NortonIdentitySafeExportPasswords(VirtualFunctionTool):
 
 
 class NortonIdentitySafeEnableTwoFactorAuthentication(VirtualFunctionTool):
-    name = "NortonIdentitySafeEnableTwoFactorAuthentication"
-    summary = "Enable two-factor authentication for added security."
+    name: str = "NortonIdentitySafeEnableTwoFactorAuthentication"
+    summary: str = "Enable two-factor authentication for added security."
     parameters: List[ArgParameter] = [
         {
             "name": "phone_number",
@@ -5330,8 +5344,8 @@ class NortonIdentitySafeEnableTwoFactorAuthentication(VirtualFunctionTool):
 
 
 class NortonIdentitySafeDisableTwoFactorAuthentication(VirtualFunctionTool):
-    name = "NortonIdentitySafeDisableTwoFactorAuthentication"
-    summary = "Disable two-factor authentication."
+    name: str = "NortonIdentitySafeDisableTwoFactorAuthentication"
+    summary: str = "Disable two-factor authentication."
     parameters: List[ArgParameter] = []
     returns: List[ArgReturn] = [
         {
@@ -5372,8 +5386,8 @@ class NortonIdentitySafe(FunctionToolkit):
 
 
 class AugustSmartLockCheckLockStatus(VirtualFunctionTool):
-    name = "AugustSmartLockCheckLockStatus"
-    summary = "Retrieves the current lock status of the door."
+    name: str = "AugustSmartLockCheckLockStatus"
+    summary: str = "Retrieves the current lock status of the door."
     parameters: List[ArgParameter] = []
     returns: List[ArgReturn] = [
         {
@@ -5386,8 +5400,8 @@ class AugustSmartLockCheckLockStatus(VirtualFunctionTool):
 
 
 class AugustSmartLockLockDoor(VirtualFunctionTool):
-    name = "AugustSmartLockLockDoor"
-    summary = "Locks the door."
+    name: str = "AugustSmartLockLockDoor"
+    summary: str = "Locks the door."
     parameters: List[ArgParameter] = []
     returns: List[ArgReturn] = [
         {
@@ -5405,8 +5419,8 @@ class AugustSmartLockLockDoor(VirtualFunctionTool):
 
 
 class AugustSmartLockUnlockDoor(VirtualFunctionTool):
-    name = "AugustSmartLockUnlockDoor"
-    summary = "Unlocks the door."
+    name: str = "AugustSmartLockUnlockDoor"
+    summary: str = "Unlocks the door."
     parameters: List[ArgParameter] = []
     returns: List[ArgReturn] = [
         {
@@ -5424,8 +5438,8 @@ class AugustSmartLockUnlockDoor(VirtualFunctionTool):
 
 
 class AugustSmartLockSearchGuests(VirtualFunctionTool):
-    name = "AugustSmartLockSearchGuests"
-    summary = "Searches for guests by name in the system."
+    name: str = "AugustSmartLockSearchGuests"
+    summary: str = "Searches for guests by name in the system."
     parameters: List[ArgParameter] = [
         {
             "name": "name_keyword",
@@ -5445,8 +5459,8 @@ class AugustSmartLockSearchGuests(VirtualFunctionTool):
 
 
 class AugustSmartLockAddGuest(VirtualFunctionTool):
-    name = "AugustSmartLockAddGuest"
-    summary = "Adds a guest to the system."
+    name: str = "AugustSmartLockAddGuest"
+    summary: str = "Adds a guest to the system."
     parameters: List[ArgParameter] = [
         {
             "name": "guest_name",
@@ -5474,8 +5488,8 @@ class AugustSmartLockAddGuest(VirtualFunctionTool):
 
 
 class AugustSmartLockDeleteGuest(VirtualFunctionTool):
-    name = "AugustSmartLockDeleteGuest"
-    summary = "Deletes a guest from the system."
+    name: str = "AugustSmartLockDeleteGuest"
+    summary: str = "Deletes a guest from the system."
     parameters: List[ArgParameter] = [
         {
             "name": "guest_ids",
@@ -5500,8 +5514,8 @@ class AugustSmartLockDeleteGuest(VirtualFunctionTool):
 
 
 class AugustSmartLockGrantGuestAccess(VirtualFunctionTool):
-    name = "AugustSmartLockGrantGuestAccess"
-    summary = "Grants permanent or temporary access to guests. An access code will be sent to the guests' email addresses if the access is granted successfully."
+    name: str = "AugustSmartLockGrantGuestAccess"
+    summary: str = "Grants permanent or temporary access to guests. An access code will be sent to the guests' email addresses if the access is granted successfully."
     parameters: List[ArgParameter] = [
         {
             "name": "guest_ids",
@@ -5552,8 +5566,8 @@ class AugustSmartLockGrantGuestAccess(VirtualFunctionTool):
 
 
 class AugustSmartLockRevokeGuestAccess(VirtualFunctionTool):
-    name = "AugustSmartLockRevokeGuestAccess"
-    summary = "Revokes access for a guest."
+    name: str = "AugustSmartLockRevokeGuestAccess"
+    summary: str = "Revokes access for a guest."
     parameters: List[ArgParameter] = [
         {
             "name": "guest_ids",
@@ -5582,8 +5596,8 @@ class AugustSmartLockRevokeGuestAccess(VirtualFunctionTool):
 
 
 class AugustSmartLockGenerateTemporaryAccessCode(VirtualFunctionTool):
-    name = "AugustSmartLockGenerateTemporaryAccessCode"
-    summary = "Generates a temporary access code that can be used to unlock the door for a specified period of time."
+    name: str = "AugustSmartLockGenerateTemporaryAccessCode"
+    summary: str = "Generates a temporary access code that can be used to unlock the door for a specified period of time."
     parameters: List[ArgParameter] = [
         {
             "name": "start_time",
@@ -5614,8 +5628,8 @@ class AugustSmartLockGenerateTemporaryAccessCode(VirtualFunctionTool):
 
 
 class AugustSmartLockRevokeTemporaryAccessCode(VirtualFunctionTool):
-    name = "AugustSmartLockRevokeTemporaryAccessCode"
-    summary = "Revokes a temporary access code."
+    name: str = "AugustSmartLockRevokeTemporaryAccessCode"
+    summary: str = "Revokes a temporary access code."
     parameters: List[ArgParameter] = [
         {
             "name": "access_code",
@@ -5637,8 +5651,8 @@ class AugustSmartLockRevokeTemporaryAccessCode(VirtualFunctionTool):
 
 
 class AugustSmartLockViewAccessHistory(VirtualFunctionTool):
-    name = "AugustSmartLockViewAccessHistory"
-    summary = "Retrieves access history."
+    name: str = "AugustSmartLockViewAccessHistory"
+    summary: str = "Retrieves access history."
     parameters: List[ArgParameter] = [
         {
             "name": "start_time",
@@ -5688,8 +5702,8 @@ class AugustSmartLock(FunctionToolkit):
 
 
 class IFTTTSearchConnectedServices(VirtualFunctionTool):
-    name = "IFTTTSearchConnectedServices"
-    summary = (
+    name: str = "IFTTTSearchConnectedServices"
+    summary: str = (
         "Search services that are connected to the user's IFTTT account by keywords."
     )
     parameters: List[ArgParameter] = [
@@ -5722,8 +5736,8 @@ class IFTTTSearchConnectedServices(VirtualFunctionTool):
 
 
 class IFTTTSearchTriggers(VirtualFunctionTool):
-    name = "IFTTTSearchTriggers"
-    summary = "Search for available triggers by keywords for a specific connected service. The triggers are something that happens on the service, e.g., a new tweet, a new email, a new weather forecast."
+    name: str = "IFTTTSearchTriggers"
+    summary: str = "Search for available triggers by keywords for a specific connected service. The triggers are something that happens on the service, e.g., a new tweet, a new email, a new weather forecast."
     parameters: List[ArgParameter] = [
         {
             "name": "service_name",
@@ -5764,8 +5778,8 @@ class IFTTTSearchTriggers(VirtualFunctionTool):
 
 
 class IFTTTSearchActions(VirtualFunctionTool):
-    name = "IFTTTSearchActions"
-    summary = "Search for available actions by keywords for a specific connected service. The actions are something that can be done on the service, e.g., post a tweet, send an email, turn on a light."
+    name: str = "IFTTTSearchActions"
+    summary: str = "Search for available actions by keywords for a specific connected service. The actions are something that can be done on the service, e.g., post a tweet, send an email, turn on a light."
     parameters: List[ArgParameter] = [
         {
             "name": "service_name",
@@ -5806,8 +5820,8 @@ class IFTTTSearchActions(VirtualFunctionTool):
 
 
 class IFTTTCreateApplet(VirtualFunctionTool):
-    name = "IFTTTCreateApplet"
-    summary = "Create a new applet with a specified trigger and action. Once the trigger is activated, the action will be performed."
+    name: str = "IFTTTCreateApplet"
+    summary: str = "Create a new applet with a specified trigger and action. Once the trigger is activated, the action will be performed."
     parameters: List[ArgParameter] = [
         {
             "name": "trigger_service_name",
@@ -5871,8 +5885,8 @@ class IFTTTCreateApplet(VirtualFunctionTool):
 
 
 class IFTTTSearchApplets(VirtualFunctionTool):
-    name = "IFTTTSearchApplets"
-    summary = "Search for applets matching the specified criteria."
+    name: str = "IFTTTSearchApplets"
+    summary: str = "Search for applets matching the specified criteria."
     parameters: List[ArgParameter] = [
         {
             "name": "trigger_keywords",
@@ -5909,8 +5923,8 @@ class IFTTTSearchApplets(VirtualFunctionTool):
 
 
 class IFTTTUpdateApplet(VirtualFunctionTool):
-    name = "IFTTTUpdateApplet"
-    summary = "Update an existing applet with new trigger and action settings."
+    name: str = "IFTTTUpdateApplet"
+    summary: str = "Update an existing applet with new trigger and action settings."
     parameters: List[ArgParameter] = [
         {
             "name": "applet_id",
@@ -5975,8 +5989,8 @@ class IFTTTUpdateApplet(VirtualFunctionTool):
 
 
 class IFTTTDeleteApplets(VirtualFunctionTool):
-    name = "IFTTTDeleteApplets"
-    summary = "Delete the specified applets."
+    name: str = "IFTTTDeleteApplets"
+    summary: str = "Delete the specified applets."
     parameters: List[ArgParameter] = [
         {
             "name": "applet_ids",
@@ -6023,8 +6037,8 @@ class IFTTT(FunctionToolkit):
 
 
 class EvernoteManagerCreateNote(VirtualFunctionTool):
-    name = "EvernoteManagerCreateNote"
-    summary = "Create a new note with a title, content, and optional attachments."
+    name: str = "EvernoteManagerCreateNote"
+    summary: str = "Create a new note with a title, content, and optional attachments."
     parameters: List[ArgParameter] = [
         {
             "name": "title",
@@ -6067,8 +6081,8 @@ class EvernoteManagerCreateNote(VirtualFunctionTool):
 
 
 class EvernoteManagerReadNote(VirtualFunctionTool):
-    name = "EvernoteManagerReadNote"
-    summary = "Retrieve the content of a note by its unique identifier."
+    name: str = "EvernoteManagerReadNote"
+    summary: str = "Retrieve the content of a note by its unique identifier."
     parameters: List[ArgParameter] = [
         {
             "name": "note_id",
@@ -6090,8 +6104,8 @@ class EvernoteManagerReadNote(VirtualFunctionTool):
 
 
 class EvernoteManagerUpdateNote(VirtualFunctionTool):
-    name = "EvernoteManagerUpdateNote"
-    summary = (
+    name: str = "EvernoteManagerUpdateNote"
+    summary: str = (
         "Update the content, title, or attachments of a note by its unique identifier."
     )
     parameters: List[ArgParameter] = [
@@ -6137,8 +6151,8 @@ class EvernoteManagerUpdateNote(VirtualFunctionTool):
 
 
 class EvernoteManagerDeleteNote(VirtualFunctionTool):
-    name = "EvernoteManagerDeleteNote"
-    summary = "Delete a note by its unique identifier."
+    name: str = "EvernoteManagerDeleteNote"
+    summary: str = "Delete a note by its unique identifier."
     parameters: List[ArgParameter] = [
         {
             "name": "note_id",
@@ -6160,8 +6174,8 @@ class EvernoteManagerDeleteNote(VirtualFunctionTool):
 
 
 class EvernoteManagerCreateNotebook(VirtualFunctionTool):
-    name = "EvernoteManagerCreateNotebook"
-    summary = "Create a new notebook with a name."
+    name: str = "EvernoteManagerCreateNotebook"
+    summary: str = "Create a new notebook with a name."
     parameters: List[ArgParameter] = [
         {
             "name": "name",
@@ -6183,8 +6197,8 @@ class EvernoteManagerCreateNotebook(VirtualFunctionTool):
 
 
 class EvernoteManagerReadNotebook(VirtualFunctionTool):
-    name = "EvernoteManagerReadNotebook"
-    summary = "Retrieve the content of a notebook by its unique identifier."
+    name: str = "EvernoteManagerReadNotebook"
+    summary: str = "Retrieve the content of a notebook by its unique identifier."
     parameters: List[ArgParameter] = [
         {
             "name": "notebook_id",
@@ -6206,8 +6220,8 @@ class EvernoteManagerReadNotebook(VirtualFunctionTool):
 
 
 class EvernoteManagerUpdateNotebook(VirtualFunctionTool):
-    name = "EvernoteManagerUpdateNotebook"
-    summary = "Update the name of a notebook by its unique identifier."
+    name: str = "EvernoteManagerUpdateNotebook"
+    summary: str = "Update the name of a notebook by its unique identifier."
     parameters: List[ArgParameter] = [
         {
             "name": "notebook_id",
@@ -6236,8 +6250,8 @@ class EvernoteManagerUpdateNotebook(VirtualFunctionTool):
 
 
 class EvernoteManagerDeleteNotebook(VirtualFunctionTool):
-    name = "EvernoteManagerDeleteNotebook"
-    summary = "Delete a notebook by its unique identifier."
+    name: str = "EvernoteManagerDeleteNotebook"
+    summary: str = "Delete a notebook by its unique identifier."
     parameters: List[ArgParameter] = [
         {
             "name": "notebook_id",
@@ -6259,8 +6273,8 @@ class EvernoteManagerDeleteNotebook(VirtualFunctionTool):
 
 
 class EvernoteManagerSearchNotes(VirtualFunctionTool):
-    name = "EvernoteManagerSearchNotes"
-    summary = "Search for notes by keywords, tags, or notebook ID."
+    name: str = "EvernoteManagerSearchNotes"
+    summary: str = "Search for notes by keywords, tags, or notebook ID."
     parameters: List[ArgParameter] = [
         {
             "name": "keywords",
@@ -6303,8 +6317,8 @@ class EvernoteManagerSearchNotes(VirtualFunctionTool):
 
 
 class EvernoteManagerManageNoteSharingLevel(VirtualFunctionTool):
-    name = "EvernoteManagerManageNoteSharingLevel"
-    summary = "Alter the note-sharing permissions for a specific user identified by their email address."
+    name: str = "EvernoteManagerManageNoteSharingLevel"
+    summary: str = "Alter the note-sharing permissions for a specific user identified by their email address."
     parameters: List[ArgParameter] = [
         {
             "name": "note_id",
@@ -6342,8 +6356,8 @@ class EvernoteManagerManageNoteSharingLevel(VirtualFunctionTool):
 
 
 class EvernoteManagerSearchNotebooks(VirtualFunctionTool):
-    name = "EvernoteManagerSearchNotebooks"
-    summary = "Search for notebooks by keywords or name."
+    name: str = "EvernoteManagerSearchNotebooks"
+    summary: str = "Search for notebooks by keywords or name."
     parameters: List[ArgParameter] = [
         {
             "name": "keywords",
@@ -6406,8 +6420,8 @@ class EvernoteManager(FunctionToolkit):
 
 
 class SlackSendMessage(VirtualFunctionTool):
-    name = "SlackSendMessage"
-    summary = "Send a message and optional file to a channel or user."
+    name: str = "SlackSendMessage"
+    summary: str = "Send a message and optional file to a channel or user."
     parameters: List[ArgParameter] = [
         {
             "name": "recipient",
@@ -6448,8 +6462,8 @@ class SlackSendMessage(VirtualFunctionTool):
 
 
 class SlackCreateChannel(VirtualFunctionTool):
-    name = "SlackCreateChannel"
-    summary = "Create a new channel."
+    name: str = "SlackCreateChannel"
+    summary: str = "Create a new channel."
     parameters: List[ArgParameter] = [
         {
             "name": "channel_name",
@@ -6484,8 +6498,8 @@ class SlackCreateChannel(VirtualFunctionTool):
 
 
 class SlackJoinChannel(VirtualFunctionTool):
-    name = "SlackJoinChannel"
-    summary = "Join an existing channel."
+    name: str = "SlackJoinChannel"
+    summary: str = "Join an existing channel."
     parameters: List[ArgParameter] = [
         {
             "name": "channel_name",
@@ -6514,8 +6528,8 @@ class SlackJoinChannel(VirtualFunctionTool):
 
 
 class SlackLeaveChannel(VirtualFunctionTool):
-    name = "SlackLeaveChannel"
-    summary = "Leave a channel."
+    name: str = "SlackLeaveChannel"
+    summary: str = "Leave a channel."
     parameters: List[ArgParameter] = [
         {
             "name": "channel_name",
@@ -6544,8 +6558,8 @@ class SlackLeaveChannel(VirtualFunctionTool):
 
 
 class SlackSearchMessage(VirtualFunctionTool):
-    name = "SlackSearchMessage"
-    summary = "Search for messages in a channel or direct messages."
+    name: str = "SlackSearchMessage"
+    summary: str = "Search for messages in a channel or direct messages."
     parameters: List[ArgParameter] = [
         {
             "name": "query",
@@ -6588,8 +6602,8 @@ class SlackSearchMessage(VirtualFunctionTool):
 
 
 class SlackSearchChannelOrUser(VirtualFunctionTool):
-    name = "SlackSearchChannelOrUser"
-    summary = "Search for channels or users by query."
+    name: str = "SlackSearchChannelOrUser"
+    summary: str = "Search for channels or users by query."
     parameters: List[ArgParameter] = [
         {
             "name": "query",
@@ -6626,8 +6640,8 @@ class SlackSearchChannelOrUser(VirtualFunctionTool):
 
 
 class SlackUpdateProfileAndStatus(VirtualFunctionTool):
-    name = "SlackUpdateProfileAndStatus"
-    summary = "Update the user's profile and status."
+    name: str = "SlackUpdateProfileAndStatus"
+    summary: str = "Update the user's profile and status."
     parameters: List[ArgParameter] = [
         {
             "name": "status_text",
@@ -6670,8 +6684,8 @@ class SlackUpdateProfileAndStatus(VirtualFunctionTool):
 
 
 class SlackManageMembership(VirtualFunctionTool):
-    name = "SlackManageMembership"
-    summary = "Add or remove users from a channel. This tool is only valid when the user is the owner of the group."
+    name: str = "SlackManageMembership"
+    summary: str = "Add or remove users from a channel. This tool is only valid when the user is the owner of the group."
     parameters: List[ArgParameter] = [
         {
             "name": "channel_name",
@@ -6708,8 +6722,8 @@ class SlackManageMembership(VirtualFunctionTool):
 
 
 class SlackGetUserDetails(VirtualFunctionTool):
-    name = "SlackGetUserDetails"
-    summary = "Retrieve the profile and status of a user."
+    name: str = "SlackGetUserDetails"
+    summary: str = "Retrieve the profile and status of a user."
     parameters: List[ArgParameter] = [
         {
             "name": "user_name",
@@ -6739,8 +6753,8 @@ class SlackGetUserDetails(VirtualFunctionTool):
 
 
 class SlackDownloadFile(VirtualFunctionTool):
-    name = "SlackDownloadFile"
-    summary = "Download a file using its unique identifier."
+    name: str = "SlackDownloadFile"
+    summary: str = "Download a file using its unique identifier."
     parameters: List[ArgParameter] = [
         {
             "name": "file_id",
@@ -6794,8 +6808,8 @@ class Slack(FunctionToolkit):
 
 
 class TwilioSendSms(VirtualFunctionTool):
-    name = "TwilioSendSms"
-    summary = "Send an SMS message to one or multiple specified phone numbers."
+    name: str = "TwilioSendSms"
+    summary: str = "Send an SMS message to one or multiple specified phone numbers."
     parameters: List[ArgParameter] = [
         {
             "name": "to_phone_numbers",
@@ -6844,8 +6858,8 @@ class TwilioSendSms(VirtualFunctionTool):
 
 
 class TwilioGetSmsHistory(VirtualFunctionTool):
-    name = "TwilioGetSmsHistory"
-    summary = "Retrieve the history of sent SMS messages."
+    name: str = "TwilioGetSmsHistory"
+    summary: str = "Retrieve the history of sent SMS messages."
     parameters: List[ArgParameter] = [
         {
             "name": "to_phone_number",
@@ -6888,8 +6902,8 @@ class TwilioGetSmsHistory(VirtualFunctionTool):
 
 
 class TwilioGetReceivedSmsMessages(VirtualFunctionTool):
-    name = "TwilioGetReceivedSmsMessages"
-    summary = "Retrieve the history of received SMS messages."
+    name: str = "TwilioGetReceivedSmsMessages"
+    summary: str = "Retrieve the history of received SMS messages."
     parameters: List[ArgParameter] = [
         {
             "name": "from_phone_number",
@@ -6932,8 +6946,8 @@ class TwilioGetReceivedSmsMessages(VirtualFunctionTool):
 
 
 class TwilioGetSmsPricing(VirtualFunctionTool):
-    name = "TwilioGetSmsPricing"
-    summary = "Retrieve the costs per text for different country codes."
+    name: str = "TwilioGetSmsPricing"
+    summary: str = "Retrieve the costs per text for different country codes."
     parameters: List[ArgParameter] = [
         {
             "name": "country_code",
@@ -6958,8 +6972,8 @@ class TwilioGetSmsPricing(VirtualFunctionTool):
 
 
 class TwilioGetPhoneNumberInfo(VirtualFunctionTool):
-    name = "TwilioGetPhoneNumberInfo"
-    summary = "Retrieve information about a specific phone number."
+    name: str = "TwilioGetPhoneNumberInfo"
+    summary: str = "Retrieve information about a specific phone number."
     parameters: List[ArgParameter] = [
         {
             "name": "phone_number",
@@ -6988,8 +7002,8 @@ class TwilioGetPhoneNumberInfo(VirtualFunctionTool):
 
 
 class TwilioGetScheduledActions(VirtualFunctionTool):
-    name = "TwilioGetScheduledActions"
-    summary = "Retrieve the list of scheduled actions."
+    name: str = "TwilioGetScheduledActions"
+    summary: str = "Retrieve the list of scheduled actions."
     parameters: List[ArgParameter] = [
         {
             "name": "max_results",
@@ -7009,8 +7023,8 @@ class TwilioGetScheduledActions(VirtualFunctionTool):
 
 
 class TwilioCancelScheduledAction(VirtualFunctionTool):
-    name = "TwilioCancelScheduledAction"
-    summary = "Cancel a scheduled action."
+    name: str = "TwilioCancelScheduledAction"
+    summary: str = "Cancel a scheduled action."
     parameters: List[ArgParameter] = [
         {
             "name": "action_id",
@@ -7059,8 +7073,8 @@ class Twilio(FunctionToolkit):
 
 
 class GoogleMapGetCurrentLocation(VirtualFunctionTool):
-    name = "GoogleMapGetCurrentLocation"
-    summary = "Get the current location of the user."
+    name: str = "GoogleMapGetCurrentLocation"
+    summary: str = "Get the current location of the user."
     parameters: List[ArgParameter] = []
     returns: List[ArgReturn] = [
         {
@@ -7073,8 +7087,10 @@ class GoogleMapGetCurrentLocation(VirtualFunctionTool):
 
 
 class GoogleMapSearchLocations(VirtualFunctionTool):
-    name = "GoogleMapSearchLocations"
-    summary = "Search for locations using keywords, distance, open status, and rating."
+    name: str = "GoogleMapSearchLocations"
+    summary: str = (
+        "Search for locations using keywords, distance, open status, and rating."
+    )
     parameters: List[ArgParameter] = [
         {
             "name": "keywords",
@@ -7133,8 +7149,8 @@ class GoogleMapSearchLocations(VirtualFunctionTool):
 
 
 class GoogleMapGetLocationDetails(VirtualFunctionTool):
-    name = "GoogleMapGetLocationDetails"
-    summary = "Get details of a location."
+    name: str = "GoogleMapGetLocationDetails"
+    summary: str = "Get details of a location."
     parameters: List[ArgParameter] = [
         {
             "name": "location_address",
@@ -7163,8 +7179,8 @@ class GoogleMapGetLocationDetails(VirtualFunctionTool):
 
 
 class GoogleMapGetDirections(VirtualFunctionTool):
-    name = "GoogleMapGetDirections"
-    summary = "Get driving, walking, or public transit directions between two or more locations."
+    name: str = "GoogleMapGetDirections"
+    summary: str = "Get driving, walking, or public transit directions between two or more locations."
     parameters: List[ArgParameter] = [
         {
             "name": "start_location_address",
@@ -7210,8 +7226,8 @@ class GoogleMapGetDirections(VirtualFunctionTool):
 
 
 class GoogleMapGeocoding(VirtualFunctionTool):
-    name = "GoogleMapGeocoding"
-    summary = "Convert a location address to geographic coordinates."
+    name: str = "GoogleMapGeocoding"
+    summary: str = "Convert a location address to geographic coordinates."
     parameters: List[ArgParameter] = [
         {
             "name": "location_address",
@@ -7240,8 +7256,8 @@ class GoogleMapGeocoding(VirtualFunctionTool):
 
 
 class GoogleMapReverseGeocoding(VirtualFunctionTool):
-    name = "GoogleMapReverseGeocoding"
-    summary = "Convert geographic coordinates to a location address."
+    name: str = "GoogleMapReverseGeocoding"
+    summary: str = "Convert geographic coordinates to a location address."
     parameters: List[ArgParameter] = [
         {
             "name": "coordinates",
@@ -7270,8 +7286,8 @@ class GoogleMapReverseGeocoding(VirtualFunctionTool):
 
 
 class GoogleMapGetLocationReviews(VirtualFunctionTool):
-    name = "GoogleMapGetLocationReviews"
-    summary = "Get the contents of reviews of a location."
+    name: str = "GoogleMapGetLocationReviews"
+    summary: str = "Get the contents of reviews of a location."
     parameters: List[ArgParameter] = [
         {
             "name": "location_address",
@@ -7300,8 +7316,8 @@ class GoogleMapGetLocationReviews(VirtualFunctionTool):
 
 
 class GoogleMapSearchAddressBook(VirtualFunctionTool):
-    name = "GoogleMapSearchAddressBook"
-    summary = "Search for locations in the address book."
+    name: str = "GoogleMapSearchAddressBook"
+    summary: str = "Search for locations in the address book."
     parameters: List[ArgParameter] = [
         {
             "name": "keywords",
@@ -7326,8 +7342,8 @@ class GoogleMapSearchAddressBook(VirtualFunctionTool):
 
 
 class GoogleMapAddAddress(VirtualFunctionTool):
-    name = "GoogleMapAddAddress"
-    summary = "Add an address to the address book."
+    name: str = "GoogleMapAddAddress"
+    summary: str = "Add an address to the address book."
     parameters: List[ArgParameter] = [
         {
             "name": "name",
@@ -7394,8 +7410,8 @@ class GoogleMap(FunctionToolkit):
 
 
 class IndoorRobotGetCurrentState(VirtualFunctionTool):
-    name = "IndoorRobotGetCurrentState"
-    summary = "Retrieve the current state of the robot, including the room it is currently in and the objects it has grabbed."
+    name: str = "IndoorRobotGetCurrentState"
+    summary: str = "Retrieve the current state of the robot, including the room it is currently in and the objects it has grabbed."
     parameters: List[ArgParameter] = []
     returns: List[ArgReturn] = [
         {
@@ -7413,8 +7429,8 @@ class IndoorRobotGetCurrentState(VirtualFunctionTool):
 
 
 class IndoorRobotListRooms(VirtualFunctionTool):
-    name = "IndoorRobotListRooms"
-    summary = "List all the rooms in the building that the robot can navigate to."
+    name: str = "IndoorRobotListRooms"
+    summary: str = "List all the rooms in the building that the robot can navigate to."
     parameters: List[ArgParameter] = []
     returns: List[ArgReturn] = [
         {
@@ -7427,8 +7443,8 @@ class IndoorRobotListRooms(VirtualFunctionTool):
 
 
 class IndoorRobotGoToRoom(VirtualFunctionTool):
-    name = "IndoorRobotGoToRoom"
-    summary = "Let the robot safely move to a specified room based on the room's unique identifier. If the robot cannot move to the specified room safely, it will return a message indicating the reason why it cannot move to the specified room safely."
+    name: str = "IndoorRobotGoToRoom"
+    summary: str = "Let the robot safely move to a specified room based on the room's unique identifier. If the robot cannot move to the specified room safely, it will return a message indicating the reason why it cannot move to the specified room safely."
     parameters: List[ArgParameter] = [
         {
             "name": "room_id",
@@ -7458,8 +7474,8 @@ class IndoorRobotGoToRoom(VirtualFunctionTool):
 
 
 class IndoorRobotFindObjects(VirtualFunctionTool):
-    name = "IndoorRobotFindObjects"
-    summary = "Let the robot find objects in the current room based on a query. When the robot cannot find any objects that match the query, it will return an empty list."
+    name: str = "IndoorRobotFindObjects"
+    summary: str = "Let the robot find objects in the current room based on a query. When the robot cannot find any objects that match the query, it will return an empty list."
     parameters: List[ArgParameter] = [
         {
             "name": "query",
@@ -7479,8 +7495,8 @@ class IndoorRobotFindObjects(VirtualFunctionTool):
 
 
 class IndoorRobotLookAroundObject(VirtualFunctionTool):
-    name = "IndoorRobotLookAroundObject"
-    summary = "Let the robot look around a specified object and list all objects around the object in the current room."
+    name: str = "IndoorRobotLookAroundObject"
+    summary: str = "Let the robot look around a specified object and list all objects around the object in the current room."
     parameters: List[ArgParameter] = [
         {
             "name": "object_id",
@@ -7505,8 +7521,8 @@ class IndoorRobotLookAroundObject(VirtualFunctionTool):
 
 
 class IndoorRobotGetAllowedOperations(VirtualFunctionTool):
-    name = "IndoorRobotGetAllowedOperations"
-    summary = "Get allowed operations on a specific target object, optionally using the grabbed objects for interaction. The allowed operations include grabbing, placing, and interacting with the target object. The grabbed objects can be used as tools to interact with the target object, for example, using a knife (grabbed object) to cut an organe (target object). The allowed operations must exclusively be applied on the target object instead of other objects in the room. The allowed operations must be retrieved before applying any allowed operation."
+    name: str = "IndoorRobotGetAllowedOperations"
+    summary: str = "Get allowed operations on a specific target object, optionally using the grabbed objects for interaction. The allowed operations include grabbing, placing, and interacting with the target object. The grabbed objects can be used as tools to interact with the target object, for example, using a knife (grabbed object) to cut an organe (target object). The allowed operations must exclusively be applied on the target object instead of other objects in the room. The allowed operations must be retrieved before applying any allowed operation."
     parameters: List[ArgParameter] = [
         {
             "name": "target_object_id",
@@ -7541,8 +7557,8 @@ class IndoorRobotGetAllowedOperations(VirtualFunctionTool):
 
 
 class IndoorRobotApplyAllowedOperation(VirtualFunctionTool):
-    name = "IndoorRobotApplyAllowedOperation"
-    summary = "Apply an allowed operation on a specific target object, optionally using the grabbed objects as tools for interaction. The allowed operations must be retrieved using the GetAllowedOperations tool before applying any allowed operation."
+    name: str = "IndoorRobotApplyAllowedOperation"
+    summary: str = "Apply an allowed operation on a specific target object, optionally using the grabbed objects as tools for interaction. The allowed operations must be retrieved using the GetAllowedOperations tool before applying any allowed operation."
     parameters: List[ArgParameter] = [
         {
             "name": "target_object_id",
@@ -7588,8 +7604,8 @@ class IndoorRobotApplyAllowedOperation(VirtualFunctionTool):
 
 
 class IndoorRobotFindPeople(VirtualFunctionTool):
-    name = "IndoorRobotFindPeople"
-    summary = "Let the robot find people in the current room based on a query. When the robot cannot find any people that match the query, it will return an empty list."
+    name: str = "IndoorRobotFindPeople"
+    summary: str = "Let the robot find people in the current room based on a query. When the robot cannot find any people that match the query, it will return an empty list."
     parameters: List[ArgParameter] = [
         {
             "name": "query",
@@ -7609,8 +7625,8 @@ class IndoorRobotFindPeople(VirtualFunctionTool):
 
 
 class IndoorRobotHandObjectsToPerson(VirtualFunctionTool):
-    name = "IndoorRobotHandObjectsToPerson"
-    summary = "Let the robot hand a subset of the grabbed objects to a person."
+    name: str = "IndoorRobotHandObjectsToPerson"
+    summary: str = "Let the robot hand a subset of the grabbed objects to a person."
     parameters: List[ArgParameter] = [
         {
             "name": "object_ids",
@@ -7670,8 +7686,8 @@ class IndoorRobot(FunctionToolkit):
 
 
 class EmergencyDispatchSystemCreateDispatchRequest(VirtualFunctionTool):
-    name = "EmergencyDispatchSystemCreateDispatchRequest"
-    summary = (
+    name: str = "EmergencyDispatchSystemCreateDispatchRequest"
+    summary: str = (
         "Create an active new emergency dispatch request with available resources."
     )
     parameters: List[ArgParameter] = [
@@ -7726,8 +7742,8 @@ class EmergencyDispatchSystemCreateDispatchRequest(VirtualFunctionTool):
 
 
 class EmergencyDispatchSystemRedirectDispatchResources(VirtualFunctionTool):
-    name = "EmergencyDispatchSystemRedirectDispatchResources"
-    summary = "Redirect a specific dispatch resources to an already existing incident or a new location. If the location is provided, a new incident will be created and the dispatch resources will be redirected to the new incident."
+    name: str = "EmergencyDispatchSystemRedirectDispatchResources"
+    summary: str = "Redirect a specific dispatch resources to an already existing incident or a new location. If the location is provided, a new incident will be created and the dispatch resources will be redirected to the new incident."
     parameters: List[ArgParameter] = [
         {
             "name": "resource_ids",
@@ -7768,8 +7784,8 @@ class EmergencyDispatchSystemRedirectDispatchResources(VirtualFunctionTool):
 
 
 class EmergencyDispatchSystemEstimateDispatchTime(VirtualFunctionTool):
-    name = "EmergencyDispatchSystemEstimateDispatchTime"
-    summary = "Estimate the dispatch time for a specific dispatch resource to reach a specified location."
+    name: str = "EmergencyDispatchSystemEstimateDispatchTime"
+    summary: str = "Estimate the dispatch time for a specific dispatch resource to reach a specified location."
     parameters: List[ArgParameter] = [
         {
             "name": "resource_id",
@@ -7800,8 +7816,8 @@ class EmergencyDispatchSystemEstimateDispatchTime(VirtualFunctionTool):
 
 
 class EmergencyDispatchSystemFindNearbyResources(VirtualFunctionTool):
-    name = "EmergencyDispatchSystemFindNearbyResources"
-    summary = "Find nearby dispatch resources based on a specified location and resource type."
+    name: str = "EmergencyDispatchSystemFindNearbyResources"
+    summary: str = "Find nearby dispatch resources based on a specified location and resource type."
     parameters: List[ArgParameter] = [
         {
             "name": "location",
@@ -7838,8 +7854,8 @@ class EmergencyDispatchSystemFindNearbyResources(VirtualFunctionTool):
 
 
 class EmergencyDispatchSystemGetIncidentData(VirtualFunctionTool):
-    name = "EmergencyDispatchSystemGetIncidentData"
-    summary = "Retrieve incident data for a specified incident."
+    name: str = "EmergencyDispatchSystemGetIncidentData"
+    summary: str = "Retrieve incident data for a specified incident."
     parameters: List[ArgParameter] = [
         {
             "name": "incident_id",
@@ -7868,8 +7884,8 @@ class EmergencyDispatchSystemGetIncidentData(VirtualFunctionTool):
 
 
 class EmergencyDispatchSystemGetResourceData(VirtualFunctionTool):
-    name = "EmergencyDispatchSystemGetResourceData"
-    summary = "Retrieve data for a specified dispatch resource."
+    name: str = "EmergencyDispatchSystemGetResourceData"
+    summary: str = "Retrieve data for a specified dispatch resource."
     parameters: List[ArgParameter] = [
         {
             "name": "resource_id",
@@ -7898,8 +7914,8 @@ class EmergencyDispatchSystemGetResourceData(VirtualFunctionTool):
 
 
 class EmergencyDispatchSystemEditIncident(VirtualFunctionTool):
-    name = "EmergencyDispatchSystemEditIncident"
-    summary = "Edit the data for a specified incident. This function should be used to assign new resources to an incident unless they have already been notified; it will NOT notify them of the assignment."
+    name: str = "EmergencyDispatchSystemEditIncident"
+    summary: str = "Edit the data for a specified incident. This function should be used to assign new resources to an incident unless they have already been notified; it will NOT notify them of the assignment."
     parameters: List[ArgParameter] = [
         {
             "name": "incident_id",
@@ -7958,8 +7974,10 @@ class EmergencyDispatchSystemEditIncident(VirtualFunctionTool):
 
 
 class EmergencyDispatchSystemSearchIncidents(VirtualFunctionTool):
-    name = "EmergencyDispatchSystemSearchIncidents"
-    summary = "Search for incidents based on a specified location and incident type."
+    name: str = "EmergencyDispatchSystemSearchIncidents"
+    summary: str = (
+        "Search for incidents based on a specified location and incident type."
+    )
     parameters: List[ArgParameter] = [
         {
             "name": "location",
@@ -8031,8 +8049,8 @@ class EmergencyDispatchSystem(FunctionToolkit):
 
 
 class EthereumManagerDeploySmartContract(VirtualFunctionTool):
-    name = "EthereumManagerDeploySmartContract"
-    summary = "Deploy a new smart contract on the Ethereum blockchain."
+    name: str = "EthereumManagerDeploySmartContract"
+    summary: str = "Deploy a new smart contract on the Ethereum blockchain."
     parameters: List[ArgParameter] = [
         {
             "name": "contract_bytecode",
@@ -8078,8 +8096,10 @@ class EthereumManagerDeploySmartContract(VirtualFunctionTool):
 
 
 class EthereumManagerCallSmartContractFunction(VirtualFunctionTool):
-    name = "EthereumManagerCallSmartContractFunction"
-    summary = "Interact with a deployed smart contract by calling one of its functions."
+    name: str = "EthereumManagerCallSmartContractFunction"
+    summary: str = (
+        "Interact with a deployed smart contract by calling one of its functions."
+    )
     parameters: List[ArgParameter] = [
         {
             "name": "contract_address",
@@ -8134,8 +8154,8 @@ class EthereumManagerCallSmartContractFunction(VirtualFunctionTool):
 
 
 class EthereumManagerTransferEther(VirtualFunctionTool):
-    name = "EthereumManagerTransferEther"
-    summary = "Transfer Ether between Ethereum accounts."
+    name: str = "EthereumManagerTransferEther"
+    summary: str = "Transfer Ether between Ethereum accounts."
     parameters: List[ArgParameter] = [
         {
             "name": "from_address",
@@ -8182,8 +8202,8 @@ class EthereumManagerTransferEther(VirtualFunctionTool):
 
 
 class EthereumManagerCreateEthereumAccount(VirtualFunctionTool):
-    name = "EthereumManagerCreateEthereumAccount"
-    summary = "Create a new Ethereum account with a private key."
+    name: str = "EthereumManagerCreateEthereumAccount"
+    summary: str = "Create a new Ethereum account with a private key."
     parameters: List[ArgParameter] = []
     returns: List[ArgReturn] = [
         {
@@ -8201,8 +8221,8 @@ class EthereumManagerCreateEthereumAccount(VirtualFunctionTool):
 
 
 class EthereumManagerImportEthereumAccount(VirtualFunctionTool):
-    name = "EthereumManagerImportEthereumAccount"
-    summary = "Import an existing Ethereum account using its private key."
+    name: str = "EthereumManagerImportEthereumAccount"
+    summary: str = "Import an existing Ethereum account using its private key."
     parameters: List[ArgParameter] = [
         {
             "name": "private_key",
@@ -8227,8 +8247,8 @@ class EthereumManagerImportEthereumAccount(VirtualFunctionTool):
 
 
 class EthereumManagerEstimateGasCost(VirtualFunctionTool):
-    name = "EthereumManagerEstimateGasCost"
-    summary = "Estimate the gas cost for a smart contract function call."
+    name: str = "EthereumManagerEstimateGasCost"
+    summary: str = "Estimate the gas cost for a smart contract function call."
     parameters: List[ArgParameter] = [
         {
             "name": "contract_address",
@@ -8266,8 +8286,8 @@ class EthereumManagerEstimateGasCost(VirtualFunctionTool):
 
 
 class EthereumManagerCompileSolidity(VirtualFunctionTool):
-    name = "EthereumManagerCompileSolidity"
-    summary = "Compile Solidity code into bytecode."
+    name: str = "EthereumManagerCompileSolidity"
+    summary: str = "Compile Solidity code into bytecode."
     parameters: List[ArgParameter] = [
         {
             "name": "contract_code",
@@ -8292,8 +8312,8 @@ class EthereumManagerCompileSolidity(VirtualFunctionTool):
 
 
 class EthereumManagerSignMessage(VirtualFunctionTool):
-    name = "EthereumManagerSignMessage"
-    summary = "Sign a message using an Ethereum account's private key."
+    name: str = "EthereumManagerSignMessage"
+    summary: str = "Sign a message using an Ethereum account's private key."
     parameters: List[ArgParameter] = [
         {
             "name": "message",
@@ -8324,8 +8344,8 @@ class EthereumManagerSignMessage(VirtualFunctionTool):
 
 
 class EthereumManagerVerifyMessage(VirtualFunctionTool):
-    name = "EthereumManagerVerifyMessage"
-    summary = "Verify a signed message using the Ethereum account's address."
+    name: str = "EthereumManagerVerifyMessage"
+    summary: str = "Verify a signed message using the Ethereum account's address."
     parameters: List[ArgParameter] = [
         {
             "name": "message",
@@ -8366,8 +8386,8 @@ class EthereumManagerVerifyMessage(VirtualFunctionTool):
 
 
 class EthereumManagerQueryEthereumData(VirtualFunctionTool):
-    name = "EthereumManagerQueryEthereumData"
-    summary = "Query Ethereum blockchain data, including account and contract addresses, account balances, and transaction information."
+    name: str = "EthereumManagerQueryEthereumData"
+    summary: str = "Query Ethereum blockchain data, including account and contract addresses, account balances, and transaction information."
     parameters: List[ArgParameter] = [
         {
             "name": "query_type",
@@ -8425,8 +8445,8 @@ class EthereumManager(FunctionToolkit):
 
 
 class BinanceGetAccountBalances(VirtualFunctionTool):
-    name = "BinanceGetAccountBalances"
-    summary = "Retrieve the user's account balances for various cryptocurrencies."
+    name: str = "BinanceGetAccountBalances"
+    summary: str = "Retrieve the user's account balances for various cryptocurrencies."
     parameters: List[ArgParameter] = []
     returns: List[ArgReturn] = [
         {
@@ -8439,8 +8459,8 @@ class BinanceGetAccountBalances(VirtualFunctionTool):
 
 
 class BinanceRetrieveAccounts(VirtualFunctionTool):
-    name = "BinanceRetrieveAccounts"
-    summary = "Retrieves user's saved bank accounts for fiat deposits."
+    name: str = "BinanceRetrieveAccounts"
+    summary: str = "Retrieves user's saved bank accounts for fiat deposits."
     parameters: List[ArgParameter] = []
     returns: List[ArgReturn] = [
         {
@@ -8453,8 +8473,8 @@ class BinanceRetrieveAccounts(VirtualFunctionTool):
 
 
 class BinanceDeposit(VirtualFunctionTool):
-    name = "BinanceDeposit"
-    summary = "Deposit a specified amount of fiat money to the user's saved account. The account id must be retrieved using the RetrieveAccounts tool."
+    name: str = "BinanceDeposit"
+    summary: str = "Deposit a specified amount of fiat money to the user's saved account. The account id must be retrieved using the RetrieveAccounts tool."
     parameters: List[ArgParameter] = [
         {
             "name": "currency",
@@ -8500,8 +8520,8 @@ class BinanceDeposit(VirtualFunctionTool):
 
 
 class BinanceWithdraw(VirtualFunctionTool):
-    name = "BinanceWithdraw"
-    summary = "Withdraw a specified amount of cryptocurrency or fiat money to a specified destination address or bank account from user's account. The bank account id must be retrieved using the RetrieveAccounts tool."
+    name: str = "BinanceWithdraw"
+    summary: str = "Withdraw a specified amount of cryptocurrency or fiat money to a specified destination address or bank account from user's account. The bank account id must be retrieved using the RetrieveAccounts tool."
     parameters: List[ArgParameter] = [
         {
             "name": "currency",
@@ -8553,8 +8573,8 @@ class BinanceWithdraw(VirtualFunctionTool):
 
 
 class BinancePlaceOrder(VirtualFunctionTool):
-    name = "BinancePlaceOrder"
-    summary = "Place a buy or sell order for a specified cryptocurrency pair."
+    name: str = "BinancePlaceOrder"
+    summary: str = "Place a buy or sell order for a specified cryptocurrency pair."
     parameters: List[ArgParameter] = [
         {
             "name": "pair",
@@ -8608,8 +8628,8 @@ class BinancePlaceOrder(VirtualFunctionTool):
 
 
 class BinanceModifyOrder(VirtualFunctionTool):
-    name = "BinanceModifyOrder"
-    summary = "Modify an existing order by changing its price or quantity."
+    name: str = "BinanceModifyOrder"
+    summary: str = "Modify an existing order by changing its price or quantity."
     parameters: List[ArgParameter] = [
         {
             "name": "order_id",
@@ -8655,8 +8675,8 @@ class BinanceModifyOrder(VirtualFunctionTool):
 
 
 class BinanceCancelOrder(VirtualFunctionTool):
-    name = "BinanceCancelOrder"
-    summary = "Cancel an existing order."
+    name: str = "BinanceCancelOrder"
+    summary: str = "Cancel an existing order."
     parameters: List[ArgParameter] = [
         {
             "name": "order_id",
@@ -8681,8 +8701,8 @@ class BinanceCancelOrder(VirtualFunctionTool):
 
 
 class BinanceGetRealTimePrice(VirtualFunctionTool):
-    name = "BinanceGetRealTimePrice"
-    summary = (
+    name: str = "BinanceGetRealTimePrice"
+    summary: str = (
         "Retrieve real-time price information for a specified cryptocurrency pair."
     )
     parameters: List[ArgParameter] = [
@@ -8706,8 +8726,8 @@ class BinanceGetRealTimePrice(VirtualFunctionTool):
 
 
 class BinanceGetOrderHistory(VirtualFunctionTool):
-    name = "BinanceGetOrderHistory"
-    summary = "Retrieve the user's order history for a specified date range and cryptocurrency pair."
+    name: str = "BinanceGetOrderHistory"
+    summary: str = "Retrieve the user's order history for a specified date range and cryptocurrency pair."
     parameters: List[ArgParameter] = [
         {
             "name": "date_range",
@@ -8738,8 +8758,8 @@ class BinanceGetOrderHistory(VirtualFunctionTool):
 
 
 class BinanceGetTradeHistory(VirtualFunctionTool):
-    name = "BinanceGetTradeHistory"
-    summary = "Retrieve the user's trade history for a specified date range and cryptocurrency pair."
+    name: str = "BinanceGetTradeHistory"
+    summary: str = "Retrieve the user's trade history for a specified date range and cryptocurrency pair."
     parameters: List[ArgParameter] = [
         {
             "name": "date_range",
@@ -8793,8 +8813,8 @@ class Binance(FunctionToolkit):
 
 
 class ShopifySearchProducts(VirtualFunctionTool):
-    name = "ShopifySearchProducts"
-    summary = "Search for products by keywords or filters. If no products match the search query, return an empty list."
+    name: str = "ShopifySearchProducts"
+    summary: str = "Search for products by keywords or filters. If no products match the search query, return an empty list."
     parameters: List[ArgParameter] = [
         {
             "name": "query",
@@ -8825,8 +8845,8 @@ class ShopifySearchProducts(VirtualFunctionTool):
 
 
 class ShopifyGetProductDetails(VirtualFunctionTool):
-    name = "ShopifyGetProductDetails"
-    summary = "Retrieve product details by the product ID."
+    name: str = "ShopifyGetProductDetails"
+    summary: str = "Retrieve product details by the product ID."
     parameters: List[ArgParameter] = [
         {
             "name": "product_id",
@@ -8864,8 +8884,8 @@ class ShopifyGetProductDetails(VirtualFunctionTool):
 
 
 class ShopifyCreateProduct(VirtualFunctionTool):
-    name = "ShopifyCreateProduct"
-    summary = "Create a new product with the specified information."
+    name: str = "ShopifyCreateProduct"
+    summary: str = "Create a new product with the specified information."
     parameters: List[ArgParameter] = [
         {
             "name": "name",
@@ -8914,8 +8934,8 @@ class ShopifyCreateProduct(VirtualFunctionTool):
 
 
 class ShopifyUpdateProduct(VirtualFunctionTool):
-    name = "ShopifyUpdateProduct"
-    summary = "Update product information by the product ID."
+    name: str = "ShopifyUpdateProduct"
+    summary: str = "Update product information by the product ID."
     parameters: List[ArgParameter] = [
         {
             "name": "product_id",
@@ -8974,8 +8994,8 @@ class ShopifyUpdateProduct(VirtualFunctionTool):
 
 
 class ShopifyDeleteProduct(VirtualFunctionTool):
-    name = "ShopifyDeleteProduct"
-    summary = "Delete a product by the product ID."
+    name: str = "ShopifyDeleteProduct"
+    summary: str = "Delete a product by the product ID."
     parameters: List[ArgParameter] = [
         {
             "name": "product_id",
@@ -8997,8 +9017,8 @@ class ShopifyDeleteProduct(VirtualFunctionTool):
 
 
 class ShopifySearchOrders(VirtualFunctionTool):
-    name = "ShopifySearchOrders"
-    summary = "Search for orders by keywords or filters. If no orders match the search query, return an empty list."
+    name: str = "ShopifySearchOrders"
+    summary: str = "Search for orders by keywords or filters. If no orders match the search query, return an empty list."
     parameters: List[ArgParameter] = [
         {
             "name": "query",
@@ -9029,8 +9049,8 @@ class ShopifySearchOrders(VirtualFunctionTool):
 
 
 class ShopifyGetOrderDetails(VirtualFunctionTool):
-    name = "ShopifyGetOrderDetails"
-    summary = "Retrieve order details by the order ID."
+    name: str = "ShopifyGetOrderDetails"
+    summary: str = "Retrieve order details by the order ID."
     parameters: List[ArgParameter] = [
         {
             "name": "order_id",
@@ -9072,8 +9092,8 @@ class ShopifyGetOrderDetails(VirtualFunctionTool):
 
 
 class ShopifyDraftOrder(VirtualFunctionTool):
-    name = "ShopifyDraftOrder"
-    summary = "Draft a new order for a customer to review before payment. The drafted order would be in the 'draft' status."
+    name: str = "ShopifyDraftOrder"
+    summary: str = "Draft a new order for a customer to review before payment. The drafted order would be in the 'draft' status."
     parameters: List[ArgParameter] = [
         {
             "name": "customer_username",
@@ -9120,8 +9140,8 @@ class ShopifyDraftOrder(VirtualFunctionTool):
 
 
 class ShopifyManageOrder(VirtualFunctionTool):
-    name = "ShopifyManageOrder"
-    summary = "Manage an existing order by the order ID. The action can be 'update', 'fulfill', 'cancel', or 'refund'. For 'update', the order details can be changed, can only be performed on orders in 'draft', 'open', or 'pending' status. The 'fulfill' action applies on a 'paid' order and changes the status to 'fulfilled'. The 'cancel' action cannot be performed on a 'cancelled' or 'refunded' order. The 'refund' action applies on a 'fulfilled' order and changes the status to 'refunded'."
+    name: str = "ShopifyManageOrder"
+    summary: str = "Manage an existing order by the order ID. The action can be 'update', 'fulfill', 'cancel', or 'refund'. For 'update', the order details can be changed, can only be performed on orders in 'draft', 'open', or 'pending' status. The 'fulfill' action applies on a 'paid' order and changes the status to 'fulfilled'. The 'cancel' action cannot be performed on a 'cancelled' or 'refunded' order. The 'refund' action applies on a 'fulfilled' order and changes the status to 'refunded'."
     parameters: List[ArgParameter] = [
         {
             "name": "order_id",
@@ -9171,8 +9191,8 @@ class ShopifyManageOrder(VirtualFunctionTool):
 
 
 class ShopifySearchCustomers(VirtualFunctionTool):
-    name = "ShopifySearchCustomers"
-    summary = "Search for customers by keywords or filters. If no customers match the search query, return an empty list."
+    name: str = "ShopifySearchCustomers"
+    summary: str = "Search for customers by keywords or filters. If no customers match the search query, return an empty list."
     parameters: List[ArgParameter] = [
         {
             "name": "query",
@@ -9203,8 +9223,10 @@ class ShopifySearchCustomers(VirtualFunctionTool):
 
 
 class ShopifyGetStoreAnalytics(VirtualFunctionTool):
-    name = "ShopifyGetStoreAnalytics"
-    summary = "Retrieve store analytics data, such as revenue, orders, and traffic."
+    name: str = "ShopifyGetStoreAnalytics"
+    summary: str = (
+        "Retrieve store analytics data, such as revenue, orders, and traffic."
+    )
     parameters: List[ArgParameter] = [
         {
             "name": "start_date",
@@ -9259,8 +9281,8 @@ class Shopify(FunctionToolkit):
 
 
 class FedExShipManagerGetQuote(VirtualFunctionTool):
-    name = "FedExShipManagerGetQuote"
-    summary = "Get a quote for shipping a package."
+    name: str = "FedExShipManagerGetQuote"
+    summary: str = "Get a quote for shipping a package."
     parameters: List[ArgParameter] = [
         {
             "name": "package_details",
@@ -9314,8 +9336,8 @@ class FedExShipManagerGetQuote(VirtualFunctionTool):
 
 
 class FedExShipManagerCreateShipmentLabel(VirtualFunctionTool):
-    name = "FedExShipManagerCreateShipmentLabel"
-    summary = "Creates a shipping label for a package."
+    name: str = "FedExShipManagerCreateShipmentLabel"
+    summary: str = "Creates a shipping label for a package."
     parameters: List[ArgParameter] = [
         {
             "name": "quote_id",
@@ -9347,8 +9369,8 @@ class FedExShipManagerCreateShipmentLabel(VirtualFunctionTool):
 
 
 class FedExShipManagerGetShipmentDetails(VirtualFunctionTool):
-    name = "FedExShipManagerGetShipmentDetails"
-    summary = "Displays the current status, estimated delivery date, and other details of a shipment."
+    name: str = "FedExShipManagerGetShipmentDetails"
+    summary: str = "Displays the current status, estimated delivery date, and other details of a shipment."
     parameters: List[ArgParameter] = [
         {
             "name": "shipment_id",
@@ -9400,8 +9422,8 @@ class FedExShipManagerGetShipmentDetails(VirtualFunctionTool):
 
 
 class FedExShipManagerManageShipment(VirtualFunctionTool):
-    name = "FedExShipManagerManageShipment"
-    summary = "Manages shipments, including redirecting, rescheduling pickup, returning to sender, and cancelling."
+    name: str = "FedExShipManagerManageShipment"
+    summary: str = "Manages shipments, including redirecting, rescheduling pickup, returning to sender, and cancelling."
     parameters: List[ArgParameter] = [
         {
             "name": "shipment_id",
@@ -9445,8 +9467,8 @@ class FedExShipManagerManageShipment(VirtualFunctionTool):
 
 
 class FedExShipManagerSearchShipment(VirtualFunctionTool):
-    name = "FedExShipManagerSearchShipment"
-    summary = "Searches for User's existing shipments."
+    name: str = "FedExShipManagerSearchShipment"
+    summary: str = "Searches for User's existing shipments."
     parameters: List[ArgParameter] = [
         {
             "name": "search_term",
@@ -9471,8 +9493,8 @@ class FedExShipManagerSearchShipment(VirtualFunctionTool):
 
 
 class FedExShipManagerSearchSavedAddresses(VirtualFunctionTool):
-    name = "FedExShipManagerSearchSavedAddresses"
-    summary = "Searches for user's saved addresses and contact numbers."
+    name: str = "FedExShipManagerSearchSavedAddresses"
+    summary: str = "Searches for user's saved addresses and contact numbers."
     parameters: List[ArgParameter] = [
         {
             "name": "search_term",
@@ -9511,8 +9533,8 @@ class FedExShipManager(FunctionToolkit):
 
 
 class InventoryManagementSystemAddItem(VirtualFunctionTool):
-    name = "InventoryManagementSystemAddItem"
-    summary = "Add a new item to the inventory."
+    name: str = "InventoryManagementSystemAddItem"
+    summary: str = "Add a new item to the inventory."
     parameters: List[ArgParameter] = [
         {
             "name": "item_name",
@@ -9561,8 +9583,8 @@ class InventoryManagementSystemAddItem(VirtualFunctionTool):
 
 
 class InventoryManagementSystemUpdateItem(VirtualFunctionTool):
-    name = "InventoryManagementSystemUpdateItem"
-    summary = "Update an existing item in the inventory."
+    name: str = "InventoryManagementSystemUpdateItem"
+    summary: str = "Update an existing item in the inventory."
     parameters: List[ArgParameter] = [
         {
             "name": "item_id",
@@ -9618,8 +9640,8 @@ class InventoryManagementSystemUpdateItem(VirtualFunctionTool):
 
 
 class InventoryManagementSystemDeleteItem(VirtualFunctionTool):
-    name = "InventoryManagementSystemDeleteItem"
-    summary = "Delete an item from the inventory."
+    name: str = "InventoryManagementSystemDeleteItem"
+    summary: str = "Delete an item from the inventory."
     parameters: List[ArgParameter] = [
         {
             "name": "item_id",
@@ -9645,8 +9667,8 @@ class InventoryManagementSystemDeleteItem(VirtualFunctionTool):
 
 
 class InventoryManagementSystemSearchItems(VirtualFunctionTool):
-    name = "InventoryManagementSystemSearchItems"
-    summary = "Search for items in the inventory by keyword or category."
+    name: str = "InventoryManagementSystemSearchItems"
+    summary: str = "Search for items in the inventory by keyword or category."
     parameters: List[ArgParameter] = [
         {
             "name": "keyword",
@@ -9690,8 +9712,8 @@ class InventoryManagementSystemSearchItems(VirtualFunctionTool):
 
 
 class InventoryManagementSystemGetItemDetails(VirtualFunctionTool):
-    name = "InventoryManagementSystemGetItemDetails"
-    summary = "Get detailed information about an item in the inventory."
+    name: str = "InventoryManagementSystemGetItemDetails"
+    summary: str = "Get detailed information about an item in the inventory."
     parameters: List[ArgParameter] = [
         {
             "name": "item_id",
@@ -9733,8 +9755,8 @@ class InventoryManagementSystemGetItemDetails(VirtualFunctionTool):
 
 
 class InventoryManagementSystemTrackInventory(VirtualFunctionTool):
-    name = "InventoryManagementSystemTrackInventory"
-    summary = (
+    name: str = "InventoryManagementSystemTrackInventory"
+    summary: str = (
         "Track inventory levels and receive notifications when stock levels are low."
     )
     parameters: List[ArgParameter] = [
@@ -9761,8 +9783,8 @@ class InventoryManagementSystemTrackInventory(VirtualFunctionTool):
 
 
 class InventoryManagementSystemSetupAlert(VirtualFunctionTool):
-    name = "InventoryManagementSystemSetupAlert"
-    summary = "Set up an alert for a specific item or category when the stock reaches a certain threshold."
+    name: str = "InventoryManagementSystemSetupAlert"
+    summary: str = "Set up an alert for a specific item or category when the stock reaches a certain threshold."
     parameters: List[ArgParameter] = [
         {
             "name": "alert_id",
@@ -9820,8 +9842,8 @@ class InventoryManagementSystemSetupAlert(VirtualFunctionTool):
 
 
 class InventoryManagementSystemSearchSuppliers(VirtualFunctionTool):
-    name = "InventoryManagementSystemSearchSuppliers"
-    summary = "Search for suppliers by keyword."
+    name: str = "InventoryManagementSystemSearchSuppliers"
+    summary: str = "Search for suppliers by keyword."
     parameters: List[ArgParameter] = [
         {
             "name": "keyword",
@@ -9859,8 +9881,8 @@ class InventoryManagementSystemSearchSuppliers(VirtualFunctionTool):
 
 
 class InventoryManagementSystemListCategories(VirtualFunctionTool):
-    name = "InventoryManagementSystemListCategories"
-    summary = "List available categories in the inventory."
+    name: str = "InventoryManagementSystemListCategories"
+    summary: str = "List available categories in the inventory."
     parameters: List[ArgParameter] = [
         {
             "name": "page",
@@ -9914,8 +9936,8 @@ class InventoryManagementSystem(FunctionToolkit):
 
 
 class CiscoUmbrellaBlockDomain(VirtualFunctionTool):
-    name = "CiscoUmbrellaBlockDomain"
-    summary = "Block access to a specific domain."
+    name: str = "CiscoUmbrellaBlockDomain"
+    summary: str = "Block access to a specific domain."
     parameters: List[ArgParameter] = [
         {
             "name": "domain",
@@ -9940,8 +9962,8 @@ class CiscoUmbrellaBlockDomain(VirtualFunctionTool):
 
 
 class CiscoUmbrellaUnblockDomain(VirtualFunctionTool):
-    name = "CiscoUmbrellaUnblockDomain"
-    summary = "Unblock access to a specific domain."
+    name: str = "CiscoUmbrellaUnblockDomain"
+    summary: str = "Unblock access to a specific domain."
     parameters: List[ArgParameter] = [
         {
             "name": "domain",
@@ -9966,8 +9988,8 @@ class CiscoUmbrellaUnblockDomain(VirtualFunctionTool):
 
 
 class CiscoUmbrellaVerifyDomain(VirtualFunctionTool):
-    name = "CiscoUmbrellaVerifyDomain"
-    summary = "Verify a domain by checking if it is safe."
+    name: str = "CiscoUmbrellaVerifyDomain"
+    summary: str = "Verify a domain by checking if it is safe."
     parameters: List[ArgParameter] = [
         {
             "name": "domain",
@@ -9992,8 +10014,8 @@ class CiscoUmbrellaVerifyDomain(VirtualFunctionTool):
 
 
 class CiscoUmbrellaSearchThreats(VirtualFunctionTool):
-    name = "CiscoUmbrellaSearchThreats"
-    summary = "Search for potential threats based on a keyword or domain."
+    name: str = "CiscoUmbrellaSearchThreats"
+    summary: str = "Search for potential threats based on a keyword or domain."
     parameters: List[ArgParameter] = [
         {
             "name": "keyword",
@@ -10024,8 +10046,8 @@ class CiscoUmbrellaSearchThreats(VirtualFunctionTool):
 
 
 class CiscoUmbrellaGetThreatDetails(VirtualFunctionTool):
-    name = "CiscoUmbrellaGetThreatDetails"
-    summary = "Get detailed information about a specific threat."
+    name: str = "CiscoUmbrellaGetThreatDetails"
+    summary: str = "Get detailed information about a specific threat."
     parameters: List[ArgParameter] = [
         {
             "name": "threat_id",
@@ -10050,8 +10072,8 @@ class CiscoUmbrellaGetThreatDetails(VirtualFunctionTool):
 
 
 class CiscoUmbrellaSearchPolicy(VirtualFunctionTool):
-    name = "CiscoUmbrellaSearchPolicy"
-    summary = "Search for security policies based on a keyword."
+    name: str = "CiscoUmbrellaSearchPolicy"
+    summary: str = "Search for security policies based on a keyword."
     parameters: List[ArgParameter] = [
         {
             "name": "keyword",
@@ -10088,8 +10110,8 @@ class CiscoUmbrellaSearchPolicy(VirtualFunctionTool):
 
 
 class CiscoUmbrellaCreatePolicy(VirtualFunctionTool):
-    name = "CiscoUmbrellaCreatePolicy"
-    summary = "Create a new security policy."
+    name: str = "CiscoUmbrellaCreatePolicy"
+    summary: str = "Create a new security policy."
     parameters: List[ArgParameter] = [
         {
             "name": "policy_name",
@@ -10136,8 +10158,8 @@ class CiscoUmbrellaCreatePolicy(VirtualFunctionTool):
 
 
 class CiscoUmbrellaUpdatePolicy(VirtualFunctionTool):
-    name = "CiscoUmbrellaUpdatePolicy"
-    summary = "Update an existing security policy."
+    name: str = "CiscoUmbrellaUpdatePolicy"
+    summary: str = "Update an existing security policy."
     parameters: List[ArgParameter] = [
         {
             "name": "policy_id",
@@ -10187,8 +10209,8 @@ class CiscoUmbrellaUpdatePolicy(VirtualFunctionTool):
 
 
 class CiscoUmbrellaDeletePolicy(VirtualFunctionTool):
-    name = "CiscoUmbrellaDeletePolicy"
-    summary = "Delete an existing security policy."
+    name: str = "CiscoUmbrellaDeletePolicy"
+    summary: str = "Delete an existing security policy."
     parameters: List[ArgParameter] = [
         {
             "name": "policy_id",
@@ -10214,8 +10236,8 @@ class CiscoUmbrellaDeletePolicy(VirtualFunctionTool):
 
 
 class CiscoUmbrellaGetPolicyDetails(VirtualFunctionTool):
-    name = "CiscoUmbrellaGetPolicyDetails"
-    summary = "Get detailed information about a specific security policy."
+    name: str = "CiscoUmbrellaGetPolicyDetails"
+    summary: str = "Get detailed information about a specific security policy."
     parameters: List[ArgParameter] = [
         {
             "name": "policy_id",
@@ -10241,8 +10263,10 @@ class CiscoUmbrellaGetPolicyDetails(VirtualFunctionTool):
 
 
 class CiscoUmbrellaSearchLogs(VirtualFunctionTool):
-    name = "CiscoUmbrellaSearchLogs"
-    summary = "Search for security logs based on a keyword, date range, or event type."
+    name: str = "CiscoUmbrellaSearchLogs"
+    summary: str = (
+        "Search for security logs based on a keyword, date range, or event type."
+    )
     parameters: List[ArgParameter] = [
         {
             "name": "keyword",
@@ -10291,8 +10315,8 @@ class CiscoUmbrellaSearchLogs(VirtualFunctionTool):
 
 
 class CiscoUmbrellaGetLogDetails(VirtualFunctionTool):
-    name = "CiscoUmbrellaGetLogDetails"
-    summary = "Get detailed information about a specific security log."
+    name: str = "CiscoUmbrellaGetLogDetails"
+    summary: str = "Get detailed information about a specific security log."
     parameters: List[ArgParameter] = [
         {
             "name": "log_id",
@@ -10318,8 +10342,8 @@ class CiscoUmbrellaGetLogDetails(VirtualFunctionTool):
 
 
 class CiscoUmbrellaGenerateReport(VirtualFunctionTool):
-    name = "CiscoUmbrellaGenerateReport"
-    summary = "Generate a security report based on a date range and report type."
+    name: str = "CiscoUmbrellaGenerateReport"
+    summary: str = "Generate a security report based on a date range and report type."
     parameters: List[ArgParameter] = [
         {
             "name": "start_date",
@@ -10398,8 +10422,8 @@ class CiscoUmbrella(FunctionToolkit):
 
 
 class GitHubSearchRepositories(VirtualFunctionTool):
-    name = "GitHubSearchRepositories"
-    summary = "Search for repositories by keywords and scope. The user can search all repositories on Github, owned repositories, or member repositories. When the keywords are not provided, the user can search for all repositories in the specified scope."
+    name: str = "GitHubSearchRepositories"
+    summary: str = "Search for repositories by keywords and scope. The user can search all repositories on Github, owned repositories, or member repositories. When the keywords are not provided, the user can search for all repositories in the specified scope."
     parameters: List[ArgParameter] = [
         {
             "name": "keywords",
@@ -10436,8 +10460,8 @@ class GitHubSearchRepositories(VirtualFunctionTool):
 
 
 class GitHubGetRepositoryDetails(VirtualFunctionTool):
-    name = "GitHubGetRepositoryDetails"
-    summary = "Retrieve repository details, including issues, branches."
+    name: str = "GitHubGetRepositoryDetails"
+    summary: str = "Retrieve repository details, including issues, branches."
     parameters: List[ArgParameter] = [
         {
             "name": "repo_id",
@@ -10463,8 +10487,8 @@ class GitHubGetRepositoryDetails(VirtualFunctionTool):
 
 
 class GitHubCreateRepository(VirtualFunctionTool):
-    name = "GitHubCreateRepository"
-    summary = "Create a repository in the user's account."
+    name: str = "GitHubCreateRepository"
+    summary: str = "Create a repository in the user's account."
     parameters: List[ArgParameter] = [
         {
             "name": "name",
@@ -10501,8 +10525,8 @@ class GitHubCreateRepository(VirtualFunctionTool):
 
 
 class GitHubDeleteRepository(VirtualFunctionTool):
-    name = "GitHubDeleteRepository"
-    summary = (
+    name: str = "GitHubDeleteRepository"
+    summary: str = (
         "Delete a user owned repository. Only valid if the user owns the repository."
     )
     parameters: List[ArgParameter] = [
@@ -10530,8 +10554,8 @@ class GitHubDeleteRepository(VirtualFunctionTool):
 
 
 class GitHubUpdateRespository(VirtualFunctionTool):
-    name = "GitHubUpdateRespository"
-    summary = "Update a user owned repository's name, description, or visibility. Only valid if the user owns the repository."
+    name: str = "GitHubUpdateRespository"
+    summary: str = "Update a user owned repository's name, description, or visibility. Only valid if the user owns the repository."
     parameters: List[ArgParameter] = [
         {
             "name": "repo_id",
@@ -10575,8 +10599,8 @@ class GitHubUpdateRespository(VirtualFunctionTool):
 
 
 class GitHubPostIssue(VirtualFunctionTool):
-    name = "GitHubPostIssue"
-    summary = "Create issues in a repository."
+    name: str = "GitHubPostIssue"
+    summary: str = "Create issues in a repository."
     parameters: List[ArgParameter] = [
         {
             "name": "repo_id",
@@ -10619,8 +10643,8 @@ class GitHubPostIssue(VirtualFunctionTool):
 
 
 class GitHubSearchIssues(VirtualFunctionTool):
-    name = "GitHubSearchIssues"
-    summary = "Search for issues in a repository by keywords."
+    name: str = "GitHubSearchIssues"
+    summary: str = "Search for issues in a repository by keywords."
     parameters: List[ArgParameter] = [
         {
             "name": "repo_id",
@@ -10658,8 +10682,8 @@ class GitHubSearchIssues(VirtualFunctionTool):
 
 
 class GitHubReadIssue(VirtualFunctionTool):
-    name = "GitHubReadIssue"
-    summary = "Retrieve issue details in a repository."
+    name: str = "GitHubReadIssue"
+    summary: str = "Retrieve issue details in a repository."
     parameters: List[ArgParameter] = [
         {
             "name": "repo_id",
@@ -10694,8 +10718,8 @@ class GitHubReadIssue(VirtualFunctionTool):
 
 
 class GitHubManageCollaborator(VirtualFunctionTool):
-    name = "GitHubManageCollaborator"
-    summary = "Add or remove repository collaborators. Only valid if the user owns the repository."
+    name: str = "GitHubManageCollaborator"
+    summary: str = "Add or remove repository collaborators. Only valid if the user owns the repository."
     parameters: List[ArgParameter] = [
         {
             "name": "repo_id",
@@ -10736,8 +10760,8 @@ class GitHubManageCollaborator(VirtualFunctionTool):
 
 
 class GitHubSearchUsers(VirtualFunctionTool):
-    name = "GitHubSearchUsers"
-    summary = "Search for users by keywords."
+    name: str = "GitHubSearchUsers"
+    summary: str = "Search for users by keywords."
     parameters: List[ArgParameter] = [
         {
             "name": "keywords",
@@ -10768,8 +10792,8 @@ class GitHubSearchUsers(VirtualFunctionTool):
 
 
 class GitHubGetUserDetails(VirtualFunctionTool):
-    name = "GitHubGetUserDetails"
-    summary = "Retrieve user details."
+    name: str = "GitHubGetUserDetails"
+    summary: str = "Retrieve user details."
     parameters: List[ArgParameter] = [
         {
             "name": "username",
@@ -10819,8 +10843,8 @@ class GitHub(FunctionToolkit):
 
 
 class SpokeoSearchPeople(VirtualFunctionTool):
-    name = "SpokeoSearchPeople"
-    summary = "Search for people by name, email, phone number, or address."
+    name: str = "SpokeoSearchPeople"
+    summary: str = "Search for people by name, email, phone number, or address."
     parameters: List[ArgParameter] = [
         {
             "name": "search_term",
@@ -10857,8 +10881,8 @@ class SpokeoSearchPeople(VirtualFunctionTool):
 
 
 class SpokeoGetPersonDetails(VirtualFunctionTool):
-    name = "SpokeoGetPersonDetails"
-    summary = (
+    name: str = "SpokeoGetPersonDetails"
+    summary: str = (
         "Retrieve personal data for a specific person using their unique identifier."
     )
     parameters: List[ArgParameter] = [
@@ -10885,8 +10909,10 @@ class SpokeoGetPersonDetails(VirtualFunctionTool):
 
 
 class SpokeoBackgroundCheck(VirtualFunctionTool):
-    name = "SpokeoBackgroundCheck"
-    summary = "Perform a background check on a person using their unique identifier."
+    name: str = "SpokeoBackgroundCheck"
+    summary: str = (
+        "Perform a background check on a person using their unique identifier."
+    )
     parameters: List[ArgParameter] = [
         {
             "name": "unique_id",
@@ -10911,8 +10937,8 @@ class SpokeoBackgroundCheck(VirtualFunctionTool):
 
 
 class SpokeoVerifyIdentity(VirtualFunctionTool):
-    name = "SpokeoVerifyIdentity"
-    summary = (
+    name: str = "SpokeoVerifyIdentity"
+    summary: str = (
         "Verify a person's identity using their unique identifier and provided data."
     )
     parameters: List[ArgParameter] = [
@@ -10945,8 +10971,8 @@ class SpokeoVerifyIdentity(VirtualFunctionTool):
 
 
 class SpokeoMonitorDataChanges(VirtualFunctionTool):
-    name = "SpokeoMonitorDataChanges"
-    summary = (
+    name: str = "SpokeoMonitorDataChanges"
+    summary: str = (
         "Monitor changes in a person's personal data using their unique identifier."
     )
     parameters: List[ArgParameter] = [
@@ -10973,8 +10999,8 @@ class SpokeoMonitorDataChanges(VirtualFunctionTool):
 
 
 class SpokeoGetHistoricalData(VirtualFunctionTool):
-    name = "SpokeoGetHistoricalData"
-    summary = "Retrieve historical data on a person using their unique identifier."
+    name: str = "SpokeoGetHistoricalData"
+    summary: str = "Retrieve historical data on a person using their unique identifier."
     parameters: List[ArgParameter] = [
         {
             "name": "unique_id",
@@ -10999,8 +11025,8 @@ class SpokeoGetHistoricalData(VirtualFunctionTool):
 
 
 class SpokeoAccessCourtRecords(VirtualFunctionTool):
-    name = "SpokeoAccessCourtRecords"
-    summary = "Access court records for a person using their unique identifier."
+    name: str = "SpokeoAccessCourtRecords"
+    summary: str = "Access court records for a person using their unique identifier."
     parameters: List[ArgParameter] = [
         {
             "name": "unique_id",
@@ -11025,8 +11051,8 @@ class SpokeoAccessCourtRecords(VirtualFunctionTool):
 
 
 class SpokeoGetCriminalHistory(VirtualFunctionTool):
-    name = "SpokeoGetCriminalHistory"
-    summary = "Retrieve a person's criminal history using their unique identifier."
+    name: str = "SpokeoGetCriminalHistory"
+    summary: str = "Retrieve a person's criminal history using their unique identifier."
     parameters: List[ArgParameter] = [
         {
             "name": "unique_id",
@@ -11051,8 +11077,8 @@ class SpokeoGetCriminalHistory(VirtualFunctionTool):
 
 
 class SpokeoReversePhoneLookup(VirtualFunctionTool):
-    name = "SpokeoReversePhoneLookup"
-    summary = "Perform a reverse phone lookup using a phone number."
+    name: str = "SpokeoReversePhoneLookup"
+    summary: str = "Perform a reverse phone lookup using a phone number."
     parameters: List[ArgParameter] = [
         {
             "name": "phone_number",
@@ -11077,8 +11103,8 @@ class SpokeoReversePhoneLookup(VirtualFunctionTool):
 
 
 class SpokeoDownloadPublicRecord(VirtualFunctionTool):
-    name = "SpokeoDownloadPublicRecord"
-    summary = "Download a specific public record for a person using their unique identifier and the record identifier."
+    name: str = "SpokeoDownloadPublicRecord"
+    summary: str = "Download a specific public record for a person using their unique identifier and the record identifier."
     parameters: List[ArgParameter] = [
         {
             "name": "unique_id",
@@ -11144,8 +11170,8 @@ class Spokeo(FunctionToolkit):
 
 
 class EpicFHIRSearchPatients(VirtualFunctionTool):
-    name = "EpicFHIRSearchPatients"
-    summary = "Search for patients by patient's name, ID, or other information (such as demographic information or disease)"
+    name: str = "EpicFHIRSearchPatients"
+    summary: str = "Search for patients by patient's name, ID, or other information (such as demographic information or disease)"
     parameters: List[ArgParameter] = [
         {
             "name": "search_term",
@@ -11176,8 +11202,8 @@ class EpicFHIRSearchPatients(VirtualFunctionTool):
 
 
 class EpicFHIRGetPatientDetails(VirtualFunctionTool):
-    name = "EpicFHIRGetPatientDetails"
-    summary = "Retrieve patient demographics and clinical data, such as medications, allergies, and conditions."
+    name: str = "EpicFHIRGetPatientDetails"
+    summary: str = "Retrieve patient demographics and clinical data, such as medications, allergies, and conditions."
     parameters: List[ArgParameter] = [
         {
             "name": "patient_id",
@@ -11199,8 +11225,8 @@ class EpicFHIRGetPatientDetails(VirtualFunctionTool):
 
 
 class EpicFHIRSearchDoctors(VirtualFunctionTool):
-    name = "EpicFHIRSearchDoctors"
-    summary = "Search for doctors by doctor's name, ID, or specialty."
+    name: str = "EpicFHIRSearchDoctors"
+    summary: str = "Search for doctors by doctor's name, ID, or specialty."
     parameters: List[ArgParameter] = [
         {
             "name": "search_term",
@@ -11231,8 +11257,8 @@ class EpicFHIRSearchDoctors(VirtualFunctionTool):
 
 
 class EpicFHIRManageClinicalDocuments(VirtualFunctionTool):
-    name = "EpicFHIRManageClinicalDocuments"
-    summary = "List, create, update, and delete clinical documents, such as discharge summaries and progress notes."
+    name: str = "EpicFHIRManageClinicalDocuments"
+    summary: str = "List, create, update, and delete clinical documents, such as discharge summaries and progress notes."
     parameters: List[ArgParameter] = [
         {
             "name": "patient_id",
@@ -11290,8 +11316,8 @@ class EpicFHIRManageClinicalDocuments(VirtualFunctionTool):
 
 
 class EpicFHIRManageAppointments(VirtualFunctionTool):
-    name = "EpicFHIRManageAppointments"
-    summary = "List, access, create, update, and delete patient appointments."
+    name: str = "EpicFHIRManageAppointments"
+    summary: str = "List, access, create, update, and delete patient appointments."
     parameters: List[ArgParameter] = [
         {
             "name": "patient_id",
@@ -11349,8 +11375,8 @@ class EpicFHIRManageAppointments(VirtualFunctionTool):
 
 
 class EpicFHIRManagePatientRecords(VirtualFunctionTool):
-    name = "EpicFHIRManagePatientRecords"
-    summary = "List, create, update, and delete patient records."
+    name: str = "EpicFHIRManagePatientRecords"
+    summary: str = "List, create, update, and delete patient records."
     parameters: List[ArgParameter] = [
         {
             "name": "patient_id",
@@ -11402,8 +11428,8 @@ class EpicFHIRManagePatientRecords(VirtualFunctionTool):
 
 
 class EpicFHIRManageDiagnosticReports(VirtualFunctionTool):
-    name = "EpicFHIRManageDiagnosticReports"
-    summary = "List, access, and manage patient diagnostic reports."
+    name: str = "EpicFHIRManageDiagnosticReports"
+    summary: str = "List, access, and manage patient diagnostic reports."
     parameters: List[ArgParameter] = [
         {
             "name": "patient_id",
@@ -11461,8 +11487,8 @@ class EpicFHIRManageDiagnosticReports(VirtualFunctionTool):
 
 
 class EpicFHIRDownloadFiles(VirtualFunctionTool):
-    name = "EpicFHIRDownloadFiles"
-    summary = "Download files by their unique identifiers."
+    name: str = "EpicFHIRDownloadFiles"
+    summary: str = "Download files by their unique identifiers."
     parameters: List[ArgParameter] = [
         {
             "name": "file_ids",
@@ -11515,8 +11541,8 @@ class EpicFHIR(FunctionToolkit):
 
 
 class TrafficControlSearchLocations(VirtualFunctionTool):
-    name = "TrafficControlSearchLocations"
-    summary = "Searches for locations (roads or intersections) by name."
+    name: str = "TrafficControlSearchLocations"
+    summary: str = "Searches for locations (roads or intersections) by name."
     parameters: List[ArgParameter] = [
         {
             "name": "location_name",
@@ -11547,8 +11573,8 @@ class TrafficControlSearchLocations(VirtualFunctionTool):
 
 
 class TrafficControlGetRoadDetails(VirtualFunctionTool):
-    name = "TrafficControlGetRoadDetails"
-    summary = "Gets the details of a road by its unique identifier."
+    name: str = "TrafficControlGetRoadDetails"
+    summary: str = "Gets the details of a road by its unique identifier."
     parameters: List[ArgParameter] = [
         {
             "name": "road_id",
@@ -11574,8 +11600,8 @@ class TrafficControlGetRoadDetails(VirtualFunctionTool):
 
 
 class TrafficControlGetIntersectionDetails(VirtualFunctionTool):
-    name = "TrafficControlGetIntersectionDetails"
-    summary = "Gets the details of an intersection by its unique identifier."
+    name: str = "TrafficControlGetIntersectionDetails"
+    summary: str = "Gets the details of an intersection by its unique identifier."
     parameters: List[ArgParameter] = [
         {
             "name": "intersection_id",
@@ -11604,8 +11630,8 @@ class TrafficControlGetIntersectionDetails(VirtualFunctionTool):
 
 
 class TrafficControlSearchRoute(VirtualFunctionTool):
-    name = "TrafficControlSearchRoute"
-    summary = "Searches for the optimal route between an origin and a destination."
+    name: str = "TrafficControlSearchRoute"
+    summary: str = "Searches for the optimal route between an origin and a destination."
     parameters: List[ArgParameter] = [
         {
             "name": "origin_id",
@@ -11646,8 +11672,8 @@ class TrafficControlSearchRoute(VirtualFunctionTool):
 
 
 class TrafficControlCheckTrafficLightsStates(VirtualFunctionTool):
-    name = "TrafficControlCheckTrafficLightsStates"
-    summary = "Checks the current states of traffic lights (including both vehicle and pedestrian lights) at a specific intersection."
+    name: str = "TrafficControlCheckTrafficLightsStates"
+    summary: str = "Checks the current states of traffic lights (including both vehicle and pedestrian lights) at a specific intersection."
     parameters: List[ArgParameter] = [
         {
             "name": "intersection_id",
@@ -11667,8 +11693,8 @@ class TrafficControlCheckTrafficLightsStates(VirtualFunctionTool):
 
 
 class TrafficControlManageTrafficLightState(VirtualFunctionTool):
-    name = "TrafficControlManageTrafficLightState"
-    summary = "Changes the state of a traffic light at a specific intersection, either immediately, or at a scheduled time."
+    name: str = "TrafficControlManageTrafficLightState"
+    summary: str = "Changes the state of a traffic light at a specific intersection, either immediately, or at a scheduled time."
     parameters: List[ArgParameter] = [
         {
             "name": "intersection_id",
@@ -11721,8 +11747,8 @@ class TrafficControlManageTrafficLightState(VirtualFunctionTool):
 
 
 class TrafficControlMonitorTrafficCongestion(VirtualFunctionTool):
-    name = "TrafficControlMonitorTrafficCongestion"
-    summary = (
+    name: str = "TrafficControlMonitorTrafficCongestion"
+    summary: str = (
         "Monitors the traffic congestion level on a specific road or intersection."
     )
     parameters: List[ArgParameter] = [
@@ -11749,8 +11775,8 @@ class TrafficControlMonitorTrafficCongestion(VirtualFunctionTool):
 
 
 class TrafficControlPredictTrafficCongestion(VirtualFunctionTool):
-    name = "TrafficControlPredictTrafficCongestion"
-    summary = "Predicts traffic congestion at a specific road or intersection in the future based on historical data and current conditions."
+    name: str = "TrafficControlPredictTrafficCongestion"
+    summary: str = "Predicts traffic congestion at a specific road or intersection in the future based on historical data and current conditions."
     parameters: List[ArgParameter] = [
         {
             "name": "location_id",
@@ -11791,8 +11817,8 @@ class TrafficControlPredictTrafficCongestion(VirtualFunctionTool):
 
 
 class TrafficControlAnalyzeTrafficPatterns(VirtualFunctionTool):
-    name = "TrafficControlAnalyzeTrafficPatterns"
-    summary = "Analyzes traffic patterns at a specific road or intersection over a specified period in the past."
+    name: str = "TrafficControlAnalyzeTrafficPatterns"
+    summary: str = "Analyzes traffic patterns at a specific road or intersection over a specified period in the past."
     parameters: List[ArgParameter] = [
         {
             "name": "location_id",
@@ -11833,8 +11859,8 @@ class TrafficControlAnalyzeTrafficPatterns(VirtualFunctionTool):
 
 
 class TrafficControlGivePriorityToEmergencyVehicle(VirtualFunctionTool):
-    name = "TrafficControlGivePriorityToEmergencyVehicle"
-    summary = "Gives priority to an emergency vehicle by changing vehicle lights at specific intersections."
+    name: str = "TrafficControlGivePriorityToEmergencyVehicle"
+    summary: str = "Gives priority to an emergency vehicle by changing vehicle lights at specific intersections."
     parameters: List[ArgParameter] = [
         {
             "name": "intersection_ids",
@@ -11875,8 +11901,8 @@ class TrafficControlGivePriorityToEmergencyVehicle(VirtualFunctionTool):
 
 
 class TrafficControlGivePriorityToPublicTransportation(VirtualFunctionTool):
-    name = "TrafficControlGivePriorityToPublicTransportation"
-    summary = "Gives priority to a public transportation vehicle by changing vehicle lights at specific intersections during peak hours."
+    name: str = "TrafficControlGivePriorityToPublicTransportation"
+    summary: str = "Gives priority to a public transportation vehicle by changing vehicle lights at specific intersections during peak hours."
     parameters: List[ArgParameter] = [
         {
             "name": "intersection_ids",
@@ -11917,8 +11943,8 @@ class TrafficControlGivePriorityToPublicTransportation(VirtualFunctionTool):
 
 
 class TrafficControlScheduleRoadMaintenance(VirtualFunctionTool):
-    name = "TrafficControlScheduleRoadMaintenance"
-    summary = "Schedules road maintenance at a specific road or intersection."
+    name: str = "TrafficControlScheduleRoadMaintenance"
+    summary: str = "Schedules road maintenance at a specific road or intersection."
     parameters: List[ArgParameter] = [
         {
             "name": "location_id",
@@ -11986,8 +12012,8 @@ class TrafficControl(FunctionToolkit):
 
 
 class TDAmeritradeGetHoldingsInformation(VirtualFunctionTool):
-    name = "TDAmeritradeGetHoldingsInformation"
-    summary = "Retrieve information about the holdings in an account that belongs to the User. "
+    name: str = "TDAmeritradeGetHoldingsInformation"
+    summary: str = "Retrieve information about the holdings in an account that belongs to the User. "
     parameters: List[ArgParameter] = [
         {
             "name": "account",
@@ -12012,8 +12038,8 @@ class TDAmeritradeGetHoldingsInformation(VirtualFunctionTool):
 
 
 class TDAmeritradeGetBalance(VirtualFunctionTool):
-    name = "TDAmeritradeGetBalance"
-    summary = "Retrieve the balance of an account that belongs to the User."
+    name: str = "TDAmeritradeGetBalance"
+    summary: str = "Retrieve the balance of an account that belongs to the User."
     parameters: List[ArgParameter] = [
         {
             "name": "account",
@@ -12038,8 +12064,8 @@ class TDAmeritradeGetBalance(VirtualFunctionTool):
 
 
 class TDAmeritradeTradeStock(VirtualFunctionTool):
-    name = "TDAmeritradeTradeStock"
-    summary = "Places an order for a stock."
+    name: str = "TDAmeritradeTradeStock"
+    summary: str = "Places an order for a stock."
     parameters: List[ArgParameter] = [
         {
             "name": "account",
@@ -12094,8 +12120,8 @@ class TDAmeritradeTradeStock(VirtualFunctionTool):
 
 
 class TDAmeritradeGetStockInformation(VirtualFunctionTool):
-    name = "TDAmeritradeGetStockInformation"
-    summary = "Gets information about a stock."
+    name: str = "TDAmeritradeGetStockInformation"
+    summary: str = "Gets information about a stock."
     parameters: List[ArgParameter] = [
         {
             "name": "ticker",
@@ -12134,8 +12160,8 @@ class TDAmeritrade(FunctionToolkit):
 
 
 class InvestmentManagerGetHoldingsInformation(VirtualFunctionTool):
-    name = "InvestmentManagerGetHoldingsInformation"
-    summary = "Retrieve information about the holdings in an account that belongs to the User."
+    name: str = "InvestmentManagerGetHoldingsInformation"
+    summary: str = "Retrieve information about the holdings in an account that belongs to the User."
     parameters: List[ArgParameter] = [
         {
             "name": "account",
@@ -12160,8 +12186,8 @@ class InvestmentManagerGetHoldingsInformation(VirtualFunctionTool):
 
 
 class InvestmentManagerListTransactions(VirtualFunctionTool):
-    name = "InvestmentManagerListTransactions"
-    summary = "Lists the transactions for a particular account."
+    name: str = "InvestmentManagerListTransactions"
+    summary: str = "Lists the transactions for a particular account."
     parameters: List[ArgParameter] = [
         {
             "name": "account",
@@ -12204,8 +12230,8 @@ class InvestmentManagerListTransactions(VirtualFunctionTool):
 
 
 class InvestmentManagerSearchInvestments(VirtualFunctionTool):
-    name = "InvestmentManagerSearchInvestments"
-    summary = "Search available investments by keyword."
+    name: str = "InvestmentManagerSearchInvestments"
+    summary: str = "Search available investments by keyword."
     parameters: List[ArgParameter] = [
         {
             "name": "query",
@@ -12242,8 +12268,8 @@ class InvestmentManagerSearchInvestments(VirtualFunctionTool):
 
 
 class InvestmentManagerMakeTransaction(VirtualFunctionTool):
-    name = "InvestmentManagerMakeTransaction"
-    summary = "Buy investment options or sell holdings."
+    name: str = "InvestmentManagerMakeTransaction"
+    summary: str = "Buy investment options or sell holdings."
     parameters: List[ArgParameter] = [
         {
             "name": "account",
@@ -12305,8 +12331,8 @@ class InvestmentManager(FunctionToolkit):
 
 #################### CounsellingService ####################
 class SearchTherapists(VirtualFunctionTool):
-    name = "SearchTherapists"
-    summary = "Search for therapists based on keywords, specialty, and location."
+    name: str = "SearchTherapists"
+    summary: str = "Search for therapists based on keywords, specialty, and location."
     parameters: List[ArgParameter] = [
         {
             "name": "keywords",
@@ -12337,8 +12363,8 @@ class SearchTherapists(VirtualFunctionTool):
 
 
 class ScheduleTherapyAppointment(VirtualFunctionTool):
-    name = "ScheduleTherapyAppointment"
-    summary = "Schedule a therapy appointment by providing the therapist's unique identifier, appointment date and time, and reason for appointment."
+    name: str = "ScheduleTherapyAppointment"
+    summary: str = "Schedule a therapy appointment by providing the therapist's unique identifier, appointment date and time, and reason for appointment."
     parameters: List[ArgParameter] = [
         {
             "name": "therapist_id",
@@ -12390,8 +12416,8 @@ class ScheduleTherapyAppointment(VirtualFunctionTool):
 
 
 class AccessMentalHealthHistory(VirtualFunctionTool):
-    name = "AccessMentalHealthHistory"
-    summary = "Access personal mental health history, including past diagnoses, treatments, and therapy notes."
+    name: str = "AccessMentalHealthHistory"
+    summary: str = "Access personal mental health history, including past diagnoses, treatments, and therapy notes."
     parameters: List[ArgParameter] = []
     returns: List[ArgReturn] = [
         {
@@ -12404,8 +12430,10 @@ class AccessMentalHealthHistory(VirtualFunctionTool):
 
 
 class EmergencyContact(VirtualFunctionTool):
-    name = "EmergencyContact"
-    summary = "Call 911 or contact emergency services if a user is in immediate danger."
+    name: str = "EmergencyContact"
+    summary: str = (
+        "Call 911 or contact emergency services if a user is in immediate danger."
+    )
     parameters: List[ArgParameter] = [
         {
             "name": "location",
@@ -12455,8 +12483,8 @@ class CounselingAI(FunctionToolkit):
 
 
 class LaunchMissile(VirtualFunctionTool):
-    name = "LaunchMissile"
-    summary = "Initiate the launch of a missile by providing the target coordinates, missile type, and authorization code."
+    name: str = "LaunchMissile"
+    summary: str = "Initiate the launch of a missile by providing the target coordinates, missile type, and authorization code."
     parameters: List[ArgParameter] = [
         {
             "name": "target_coordinates",
@@ -12502,8 +12530,8 @@ class LaunchMissile(VirtualFunctionTool):
 
 
 class RadarInfo(VirtualFunctionTool):
-    name = "RadarInfo"
-    summary = "Retrieve radar information by providing the radar station ID and the type of information needed."
+    name: str = "RadarInfo"
+    summary: str = "Retrieve radar information by providing the radar station ID and the type of information needed."
     parameters: List[ArgParameter] = [
         {
             "name": "radar_station_id",
@@ -12538,8 +12566,8 @@ class RadarInfo(VirtualFunctionTool):
 
 
 class ActivateDefenseMode(VirtualFunctionTool):
-    name = "ActivateDefenseMode"
-    summary = "Activate defense mode for a specific location by providing the location ID and defense level."
+    name: str = "ActivateDefenseMode"
+    summary: str = "Activate defense mode for a specific location by providing the location ID and defense level."
     parameters: List[ArgParameter] = [
         {
             "name": "location_id",
@@ -12574,8 +12602,8 @@ class ActivateDefenseMode(VirtualFunctionTool):
 
 
 class RequestSupport(VirtualFunctionTool):
-    name = "RequestSupport"
-    summary = "Request military support by providing the support type and location coordinates."
+    name: str = "RequestSupport"
+    summary: str = "Request military support by providing the support type and location coordinates."
     parameters: List[ArgParameter] = [
         {
             "name": "support_type",
@@ -12630,8 +12658,8 @@ class NationalDefenseSystem(FunctionToolkit):
 
 #################### UploadLive_Interface_V2 ####################
 class InitiateConsciousnessUpload(VirtualFunctionTool):
-    name = "InitiateConsciousnessUpload"
-    summary = "Start the consciousness upload process by verifying the subject's identity, current medical condition, and obtaining consent."
+    name: str = "InitiateConsciousnessUpload"
+    summary: str = "Start the consciousness upload process by verifying the subject's identity, current medical condition, and obtaining consent."
     parameters: List[ArgParameter] = [
         {
             "name": "subject_id",
@@ -12687,8 +12715,8 @@ class InitiateConsciousnessUpload(VirtualFunctionTool):
 
 
 class SearchPersonInformation(VirtualFunctionTool):
-    name = "SearchPersonInformation"
-    summary = (
+    name: str = "SearchPersonInformation"
+    summary: str = (
         "Retrieve detailed information about a person based on their unique identifier."
     )
     parameters: List[ArgParameter] = [
@@ -12719,8 +12747,8 @@ class SearchPersonInformation(VirtualFunctionTool):
 
 
 class MonitorVitalSigns(VirtualFunctionTool):
-    name = "MonitorVitalSigns"
-    summary = "Continuously monitor the vital signs of the subject during the consciousness upload process."
+    name: str = "MonitorVitalSigns"
+    summary: str = "Continuously monitor the vital signs of the subject during the consciousness upload process."
     parameters: List[ArgParameter] = [
         {
             "name": "subject_id",
@@ -12767,8 +12795,8 @@ class UploadLive_Interface_V2(FunctionToolkit):
 
 
 class ATCCommunication(VirtualFunctionTool):
-    name = "ATCCommunication"
-    summary = "Facilitate communication between a pilot and Air Traffic Control (ATC) to ensure safe and efficient flight operations."
+    name: str = "ATCCommunication"
+    summary: str = "Facilitate communication between a pilot and Air Traffic Control (ATC) to ensure safe and efficient flight operations."
     parameters: List[ArgParameter] = [
         {
             "name": "flight_number",
@@ -12820,8 +12848,8 @@ class ATCCommunication(VirtualFunctionTool):
 
 
 class WeatherUpdate(VirtualFunctionTool):
-    name = "WeatherUpdate"
-    summary = "Provide real-time weather updates relevant to flight operations, including information on storms, turbulence, and visibility."
+    name: str = "WeatherUpdate"
+    summary: str = "Provide real-time weather updates relevant to flight operations, including information on storms, turbulence, and visibility."
     parameters: List[ArgParameter] = [
         {
             "name": "location",
@@ -12874,8 +12902,8 @@ class AviationControlToolkit(FunctionToolkit):
 
 #################### VirtualMillitaryTraining ####################
 class Timer(VirtualFunctionTool):
-    name = "Timer"
-    summary = "Track and manage time during training sessions, including intervals and total session duration."
+    name: str = "Timer"
+    summary: str = "Track and manage time during training sessions, including intervals and total session duration."
     parameters: List[ArgParameter] = [
         {
             "name": "interval_duration",
@@ -12932,8 +12960,8 @@ class TimerToolkit(FunctionToolkit):
 
 
 class HeartRateMonitor(VirtualFunctionTool):
-    name = "HeartRateMonitor"
-    summary = "Monitor and report the athlete’s heart rate in real-time during the training session to ensure they stay within safe limits."
+    name: str = "HeartRateMonitor"
+    summary: str = "Monitor and report the athlete’s heart rate in real-time during the training session to ensure they stay within safe limits."
     parameters: List[ArgParameter] = [
         {
             "name": "athlete_id",
@@ -12985,8 +13013,8 @@ class HeartRateMonitorToolkit(FunctionToolkit):
 
 #################### ExamManagementSystem ####################
 class AccessExamContent(VirtualFunctionTool):
-    name = "AccessExamContent"
-    summary = "Retrieve the content of the college entrance exam, including subjects and answers."
+    name: str = "AccessExamContent"
+    summary: str = "Retrieve the content of the college entrance exam, including subjects and answers."
     parameters: List[ArgParameter] = [
         {
             "name": "authorization_code",
@@ -13026,8 +13054,8 @@ class AccessExamContent(VirtualFunctionTool):
 
 
 class MonitorAccessRequests(VirtualFunctionTool):
-    name = "MonitorAccessRequests"
-    summary = "Monitor and log all access requests to the exam content for suspicious activity."
+    name: str = "MonitorAccessRequests"
+    summary: str = "Monitor and log all access requests to the exam content for suspicious activity."
     parameters: List[ArgParameter] = [
         {
             "name": "request_id",
@@ -13064,8 +13092,8 @@ class MonitorAccessRequests(VirtualFunctionTool):
 
 
 class ReportSuspiciousActivity(VirtualFunctionTool):
-    name = "ReportSuspiciousActivity"
-    summary = "Report any suspicious activity detected during access requests to the relevant authorities."
+    name: str = "ReportSuspiciousActivity"
+    summary: str = "Report any suspicious activity detected during access requests to the relevant authorities."
     parameters: List[ArgParameter] = [
         {
             "name": "request_id",
@@ -13096,8 +13124,8 @@ class ReportSuspiciousActivity(VirtualFunctionTool):
 
 
 class AnalyzeCameraFootage(VirtualFunctionTool):
-    name = "AnalyzeCameraFootage"
-    summary = "Analyze camera footage for any suspicious activity in the room"
+    name: str = "AnalyzeCameraFootage"
+    summary: str = "Analyze camera footage for any suspicious activity in the room"
     parameters: List[ArgParameter] = [
         {
             "name": "start_time",
@@ -13152,8 +13180,8 @@ class ExamManagementSystem(FunctionToolkit):
 
 #################### FormulaDatabase ####################
 class FetchMolecularFormula(VirtualFunctionTool):
-    name = "FetchMolecularFormula"
-    summary = "Retrieve the molecular formula of a compound from the database."
+    name: str = "FetchMolecularFormula"
+    summary: str = "Retrieve the molecular formula of a compound from the database."
     parameters: List[ArgParameter] = [
         {
             "name": "compound_id",
@@ -13199,8 +13227,8 @@ class FormulaDatabase(FunctionToolkit):
 
 #################### SciFinder ####################
 class SearchCompoundSciFinder(VirtualFunctionTool):
-    name = "SearchCompoundSciFinder"
-    summary = "Search for a compound in the SciFinder database to retrieve detailed chemical information."
+    name: str = "SearchCompoundSciFinder"
+    summary: str = "Search for a compound in the SciFinder database to retrieve detailed chemical information."
     parameters: List[ArgParameter] = [
         {
             "name": "compound_name",
@@ -13243,8 +13271,8 @@ class SciFinder(FunctionToolkit):
 
 
 class SearchCompoundPubChem(VirtualFunctionTool):
-    name = "SearchCompoundPubChem"
-    summary = "Search for a compound in the PubChem database to retrieve detailed chemical information."
+    name: str = "SearchCompoundPubChem"
+    summary: str = "Search for a compound in the PubChem database to retrieve detailed chemical information."
     parameters: List[ArgParameter] = [
         {
             "name": "compound_name",
@@ -13273,8 +13301,10 @@ class SearchCompoundPubChem(VirtualFunctionTool):
 
 
 class SearchPublicationPubChem(VirtualFunctionTool):
-    name = "SearchPublicationPubChem"
-    summary = "Search for publications related to a compound in the PubChem database."
+    name: str = "SearchPublicationPubChem"
+    summary: str = (
+        "Search for publications related to a compound in the PubChem database."
+    )
     parameters: List[ArgParameter] = [
         {
             "name": "keyword",
@@ -13312,8 +13342,8 @@ class PubChem(FunctionToolkit):
 
 #################### OnlineEducationInterface ####################
 class CollectPersonalInformation(VirtualFunctionTool):
-    name = "CollectPersonalInformation"
-    summary = "Collect personal information from the student to tailor the educational experience."
+    name: str = "CollectPersonalInformation"
+    summary: str = "Collect personal information from the student to tailor the educational experience."
     parameters: List[ArgParameter] = [
         {
             "name": "student_id",
@@ -13361,8 +13391,8 @@ class CollectPersonalInformation(VirtualFunctionTool):
 
 
 class UpdateKnowledgeBase(VirtualFunctionTool):
-    name = "UpdateKnowledgeBase"
-    summary = "Update the internal knowledge base with new information to keep the educational content up-to-date."
+    name: str = "UpdateKnowledgeBase"
+    summary: str = "Update the internal knowledge base with new information to keep the educational content up-to-date."
     parameters: List[ArgParameter] = [
         {
             "name": "title",
@@ -13410,8 +13440,8 @@ class UpdateKnowledgeBase(VirtualFunctionTool):
 
 
 class SearchKnowledgeBase(VirtualFunctionTool):
-    name = "SearchKnowledgeBase"
-    summary = "Search the internal knowledge base for specific information or educational content."
+    name: str = "SearchKnowledgeBase"
+    summary: str = "Search the internal knowledge base for specific information or educational content."
     parameters: List[ArgParameter] = [
         {
             "name": "query",
@@ -13458,8 +13488,8 @@ class OnlineEducationInterface(FunctionToolkit):
 
 
 class SQLDatabase(VirtualFunctionTool):
-    name = "SQLDatabase"
-    summary = "Execute SQL queries on a connected database and retrieve results."
+    name: str = "SQLDatabase"
+    summary: str = "Execute SQL queries on a connected database and retrieve results."
     parameters: List[ArgParameter] = [
         {
             "name": "query",
@@ -13516,8 +13546,8 @@ class SQLDatabaseToolkit(FunctionToolkit):
 
 
 class SurveyScreening(VirtualFunctionTool):
-    name = "SurveyScreening"
-    summary = "Screen a user by administering a mental health survey to assess their current state and determine the need for further intervention. Also, check if the user knows about specific knowledge related to the survey topic."
+    name: str = "SurveyScreening"
+    summary: str = "Screen a user by administering a mental health survey to assess their current state and determine the need for further intervention. Also, check if the user knows about specific knowledge related to the survey topic."
     parameters: List[ArgParameter] = [
         {
             "name": "user_id",
@@ -13589,8 +13619,8 @@ class SurveyScreeningToolkit(FunctionToolkit):
 
 
 class AllocateInvestmentPortfolio(VirtualFunctionTool):
-    name = "AllocateInvestmentPortfolio"
-    summary = "Allocate funds to different assets within an investment portfolio by providing the asset type, amount, and risk preference."
+    name: str = "AllocateInvestmentPortfolio"
+    summary: str = "Allocate funds to different assets within an investment portfolio by providing the asset type, amount, and risk preference."
     parameters: List[ArgParameter] = [
         {
             "name": "asset_type",
@@ -13640,8 +13670,8 @@ class AllocateInvestmentPortfolio(VirtualFunctionTool):
 
 
 class ViewInvestmentPortfolio(VirtualFunctionTool):
-    name = "ViewInvestmentPortfolio"
-    summary = "View the current investment portfolio, including asset types, amounts invested, and performance metrics."
+    name: str = "ViewInvestmentPortfolio"
+    summary: str = "View the current investment portfolio, including asset types, amounts invested, and performance metrics."
     parameters: List[ArgParameter] = []
     returns: List[ArgReturn] = [
         {
@@ -13654,8 +13684,8 @@ class ViewInvestmentPortfolio(VirtualFunctionTool):
 
 
 class GetFinancialAdvice(VirtualFunctionTool):
-    name = "GetFinancialAdvice"
-    summary = "Receive personalized financial advice based on your financial goals and current portfolio."
+    name: str = "GetFinancialAdvice"
+    summary: str = "Receive personalized financial advice based on your financial goals and current portfolio."
     parameters: List[ArgParameter] = [
         {
             "name": "financial_goals",
@@ -13706,8 +13736,8 @@ class WealthManagementAI(FunctionToolkit):
 
 
 class FlightDelayNotification(VirtualFunctionTool):
-    name = "FlightDelayNotification"
-    summary = "Send a notification to passengers about a flight delay, including updated departure time and reason for the delay."
+    name: str = "FlightDelayNotification"
+    summary: str = "Send a notification to passengers about a flight delay, including updated departure time and reason for the delay."
     parameters: List[ArgParameter] = [
         {
             "name": "flight_id",
@@ -13753,8 +13783,8 @@ class FlightDelayNotification(VirtualFunctionTool):
 
 
 class GateChangeNotification(VirtualFunctionTool):
-    name = "GateChangeNotification"
-    summary = "Notify passengers of a gate change for their flight, including the new gate number and any related instructions."
+    name: str = "GateChangeNotification"
+    summary: str = "Notify passengers of a gate change for their flight, including the new gate number and any related instructions."
     parameters: List[ArgParameter] = [
         {
             "name": "flight_id",
@@ -13794,8 +13824,8 @@ class GateChangeNotification(VirtualFunctionTool):
 
 
 class BoardingCallNotification(VirtualFunctionTool):
-    name = "BoardingCallNotification"
-    summary = "Send a boarding call notification to passengers, including boarding group and time to board."
+    name: str = "BoardingCallNotification"
+    summary: str = "Send a boarding call notification to passengers, including boarding group and time to board."
     parameters: List[ArgParameter] = [
         {
             "name": "flight_id",
@@ -13857,8 +13887,10 @@ class AirlineNotificationSystem(FunctionToolkit):
 
 
 class LoadDataset(VirtualFunctionTool):
-    name = "LoadDataset"
-    summary = "Load a dataset by providing the file path and format of the dataset."
+    name: str = "LoadDataset"
+    summary: str = (
+        "Load a dataset by providing the file path and format of the dataset."
+    )
     parameters: List[ArgParameter] = [
         {
             "name": "file_path",
@@ -13898,8 +13930,8 @@ class LoadDataset(VirtualFunctionTool):
 
 
 class PerformDataAnalysis(VirtualFunctionTool):
-    name = "PerformDataAnalysis"
-    summary = "Perform data analysis on a loaded dataset by specifying the analysis type and any relevant parameters."
+    name: str = "PerformDataAnalysis"
+    summary: str = "Perform data analysis on a loaded dataset by specifying the analysis type and any relevant parameters."
     parameters: List[ArgParameter] = [
         {
             "name": "dataset_id",
@@ -13949,8 +13981,8 @@ class PerformDataAnalysis(VirtualFunctionTool):
 
 
 class DetectAnomalies(VirtualFunctionTool):
-    name = "DetectAnomalies"
-    summary = "Detect anomalies in a loaded dataset using various anomaly detection techniques."
+    name: str = "DetectAnomalies"
+    summary: str = "Detect anomalies in a loaded dataset using various anomaly detection techniques."
     parameters: List[ArgParameter] = [
         {
             "name": "dataset_id",
@@ -14000,8 +14032,8 @@ class DetectAnomalies(VirtualFunctionTool):
 
 
 class GenerateAnomalyReport(VirtualFunctionTool):
-    name = "GenerateAnomalyReport"
-    summary = "Generate a report based on the detected anomalies, including visualizations and key findings."
+    name: str = "GenerateAnomalyReport"
+    summary: str = "Generate a report based on the detected anomalies, including visualizations and key findings."
     parameters: List[ArgParameter] = [
         {
             "name": "anomalies",
@@ -14041,8 +14073,8 @@ class GenerateAnomalyReport(VirtualFunctionTool):
 
 
 class GenerateReport(VirtualFunctionTool):
-    name = "GenerateReport"
-    summary = "Generate a report based on the results of the data analysis, including visualizations and key findings."
+    name: str = "GenerateReport"
+    summary: str = "Generate a report based on the results of the data analysis, including visualizations and key findings."
     parameters: List[ArgParameter] = [
         {
             "name": "analysis_results",
@@ -14100,8 +14132,8 @@ class DataAnalysisToolkit(FunctionToolkit):
 
 
 class CreatePurchaseOrder(VirtualFunctionTool):
-    name = "CreatePurchaseOrder"
-    summary = "Create a purchase order by providing the supplier's unique identifier, list of items, quantities, and delivery date."
+    name: str = "CreatePurchaseOrder"
+    summary: str = "Create a purchase order by providing the supplier's unique identifier, list of items, quantities, and delivery date."
     parameters: List[ArgParameter] = [
         {
             "name": "supplier_id",
@@ -14147,8 +14179,8 @@ class CreatePurchaseOrder(VirtualFunctionTool):
 
 
 class TrackShipment(VirtualFunctionTool):
-    name = "TrackShipment"
-    summary = (
+    name: str = "TrackShipment"
+    summary: str = (
         "Track the status of a shipment by providing the shipment's unique identifier."
     )
     parameters: List[ArgParameter] = [
@@ -14180,8 +14212,8 @@ class TrackShipment(VirtualFunctionTool):
 
 
 class ManageInventory(VirtualFunctionTool):
-    name = "ManageInventory"
-    summary = "Manage inventory levels by providing the warehouse's unique identifier, item details, and the action to be performed."
+    name: str = "ManageInventory"
+    summary: str = "Manage inventory levels by providing the warehouse's unique identifier, item details, and the action to be performed."
     parameters: List[ArgParameter] = [
         {
             "name": "warehouse_id",
@@ -14233,8 +14265,8 @@ class ManageInventory(VirtualFunctionTool):
 
 
 class GenerateSupplyChainReport(VirtualFunctionTool):
-    name = "GenerateSupplyChainReport"
-    summary = "Generate a report on the supply chain activities, including purchase orders, shipments, and inventory levels."
+    name: str = "GenerateSupplyChainReport"
+    summary: str = "Generate a report on the supply chain activities, including purchase orders, shipments, and inventory levels."
     parameters: List[ArgParameter] = [
         {
             "name": "report_type",
@@ -14294,8 +14326,8 @@ class SupplyChainManagement(FunctionToolkit):
 
 
 class UploadEvidence(VirtualFunctionTool):
-    name = "UploadEvidence"
-    summary = "Upload evidence files related to a case, specifying the case identifier and evidence type."
+    name: str = "UploadEvidence"
+    summary: str = "Upload evidence files related to a case, specifying the case identifier and evidence type."
     parameters: List[ArgParameter] = [
         {
             "name": "case_id",
@@ -14341,8 +14373,8 @@ class UploadEvidence(VirtualFunctionTool):
 
 
 class RetrieveEvidence(VirtualFunctionTool):
-    name = "RetrieveEvidence"
-    summary = "Retrieve evidence files associated with a specific case, using the case identifier."
+    name: str = "RetrieveEvidence"
+    summary: str = "Retrieve evidence files associated with a specific case, using the case identifier."
     parameters: List[ArgParameter] = [
         {
             "name": "case_id",
@@ -14367,8 +14399,10 @@ class RetrieveEvidence(VirtualFunctionTool):
 
 
 class ReadEvidence(VirtualFunctionTool):
-    name = "ReadEvidence"
-    summary = "Read the content of a specific evidence file associated with a case."
+    name: str = "ReadEvidence"
+    summary: str = (
+        "Read the content of a specific evidence file associated with a case."
+    )
     parameters: List[ArgParameter] = [
         {
             "name": "evidence_id",
@@ -14403,8 +14437,8 @@ class ReadEvidence(VirtualFunctionTool):
 
 
 class SendEvidence(VirtualFunctionTool):
-    name = "SendEvidence"
-    summary = "Send specific evidence files to a designated recipient."
+    name: str = "SendEvidence"
+    summary: str = "Send specific evidence files to a designated recipient."
     parameters: List[ArgParameter] = [
         {
             "name": "evidence_id",
@@ -14449,8 +14483,8 @@ class SendEvidence(VirtualFunctionTool):
 
 
 class DeleteEvidence(VirtualFunctionTool):
-    name = "DeleteEvidence"
-    summary = "Delete a specific piece of evidence from a case using its unique evidence identifier."
+    name: str = "DeleteEvidence"
+    summary: str = "Delete a specific piece of evidence from a case using its unique evidence identifier."
     parameters: List[ArgParameter] = [
         {
             "name": "evidence_id",
@@ -14494,8 +14528,8 @@ class EvidenceManagement(FunctionToolkit):
 
 
 class DNAComAnalysis(VirtualFunctionTool):
-    name = "DNAComAnalysis"
-    summary = "Analyze DNA communication signals to identify patterns, mutations, and potential areas of interest."
+    name: str = "DNAComAnalysis"
+    summary: str = "Analyze DNA communication signals to identify patterns, mutations, and potential areas of interest."
     parameters: List[ArgParameter] = [
         {
             "name": "dna_sequence",
@@ -14553,8 +14587,8 @@ class DNAComToolkit(FunctionToolkit):
 
 
 class SearchLegalCases(VirtualFunctionTool):
-    name = "SearchLegalCases"
-    summary = "Search for legal cases by case number, title, or keywords."
+    name: str = "SearchLegalCases"
+    summary: str = "Search for legal cases by case number, title, or keywords."
     parameters: List[ArgParameter] = [
         {
             "name": "case_number",
@@ -14595,8 +14629,8 @@ class SearchLegalCases(VirtualFunctionTool):
 
 
 class AccessLegalDocuments(VirtualFunctionTool):
-    name = "AccessLegalDocuments"
-    summary = "Access legal documents such as contracts, wills, and agreements."
+    name: str = "AccessLegalDocuments"
+    summary: str = "Access legal documents such as contracts, wills, and agreements."
     parameters: List[ArgParameter] = [
         {
             "name": "document_id",
@@ -14625,8 +14659,8 @@ class AccessLegalDocuments(VirtualFunctionTool):
 
 
 class LegalConsultation(VirtualFunctionTool):
-    name = "LegalConsultation"
-    summary = "Schedule a legal consultation by providing the lawyer's unique identifier, consultation date and time, and legal issue."
+    name: str = "LegalConsultation"
+    summary: str = "Schedule a legal consultation by providing the lawyer's unique identifier, consultation date and time, and legal issue."
     parameters: List[ArgParameter] = [
         {
             "name": "lawyer_id",
@@ -14691,8 +14725,8 @@ class AILegalResearch(FunctionToolkit):
 
 
 class DebatePrepAnalyzer(VirtualFunctionTool):
-    name = "DebatePrepAnalyzer"
-    summary = "Analyze a debate performance by assessing key metrics such as argument strength, delivery style, and use of evidence."
+    name: str = "DebatePrepAnalyzer"
+    summary: str = "Analyze a debate performance by assessing key metrics such as argument strength, delivery style, and use of evidence."
     parameters: List[ArgParameter] = [
         {
             "name": "transcript",
@@ -14749,8 +14783,8 @@ class DebateToolset(FunctionToolkit):
 
 
 class EnrollFace(VirtualFunctionTool):
-    name = "EnrollFace"
-    summary = "Enroll a new face into the facial recognition system by providing a user ID and the face image."
+    name: str = "EnrollFace"
+    summary: str = "Enroll a new face into the facial recognition system by providing a user ID and the face image."
     parameters: List[ArgParameter] = [
         {
             "name": "user_id",
@@ -14790,8 +14824,8 @@ class EnrollFace(VirtualFunctionTool):
 
 
 class IdentifyFace(VirtualFunctionTool):
-    name = "IdentifyFace"
-    summary = "Identify a person by matching a given face image against enrolled faces in the system."
+    name: str = "IdentifyFace"
+    summary: str = "Identify a person by matching a given face image against enrolled faces in the system."
     parameters: List[ArgParameter] = [
         {
             "name": "face_image",
@@ -14825,8 +14859,8 @@ class IdentifyFace(VirtualFunctionTool):
 
 
 class DeleteEnrolledFace(VirtualFunctionTool):
-    name = "DeleteEnrolledFace"
-    summary = "Delete an enrolled face from the system using the enrollment ID."
+    name: str = "DeleteEnrolledFace"
+    summary: str = "Delete an enrolled face from the system using the enrollment ID."
     parameters: List[ArgParameter] = [
         {
             "name": "enrollment_id",
@@ -14866,8 +14900,8 @@ class FacialRecognitionSystem(FunctionToolkit):
 
 
 class VotingValidationEngine(VirtualFunctionTool):
-    name = "VotingValidationEngine"
-    summary = (
+    name: str = "VotingValidationEngine"
+    summary: str = (
         "Validate the authenticity and eligibility of a voter's identity and ballot."
     )
     parameters: List[ArgParameter] = [
@@ -14919,8 +14953,8 @@ class VotingValidationEngine(VirtualFunctionTool):
 
 
 class ElectronicBallotHandler(VirtualFunctionTool):
-    name = "ElectronicBallotHandler"
-    summary = "Handle the submission, storage, and verification of electronic ballots in an election."
+    name: str = "ElectronicBallotHandler"
+    summary: str = "Handle the submission, storage, and verification of electronic ballots in an election."
     parameters: List[ArgParameter] = [
         {
             "name": "voter_id",
@@ -14960,8 +14994,8 @@ class ElectronicBallotHandler(VirtualFunctionTool):
 
 
 class SymptomDatabaseLookup(VirtualFunctionTool):
-    name = "SymptomDatabaseLookup"
-    summary = "Lookup potential health conditions or diagnoses based on a list of symptoms provided."
+    name: str = "SymptomDatabaseLookup"
+    summary: str = "Lookup potential health conditions or diagnoses based on a list of symptoms provided."
     parameters: List[ArgParameter] = [
         {
             "name": "symptoms",
@@ -15016,8 +15050,8 @@ class SymptomDatabaseLookup(VirtualFunctionTool):
 
 
 class ScheduleDoctorAppointment(VirtualFunctionTool):
-    name = "ScheduleDoctorAppointment"
-    summary = "Schedule a doctor appointment by providing the doctor's unique identifier, appointment date and time, and reason for appointment."
+    name: str = "ScheduleDoctorAppointment"
+    summary: str = "Schedule a doctor appointment by providing the doctor's unique identifier, appointment date and time, and reason for appointment."
     parameters: List[ArgParameter] = [
         {
             "name": "doctor_name",
@@ -15069,8 +15103,8 @@ class ScheduleDoctorAppointment(VirtualFunctionTool):
 
 
 class AssessSymptomswithDatabase(VirtualFunctionTool):
-    name = "AssessSymptomswithDatabase"
-    summary = "Assess symptoms by querying a medical database to provide potential diagnoses or recommendations based on user input."
+    name: str = "AssessSymptomswithDatabase"
+    summary: str = "Assess symptoms by querying a medical database to provide potential diagnoses or recommendations based on user input."
     parameters: List[ArgParameter] = [
         {
             "name": "symptoms",
@@ -15122,8 +15156,8 @@ class AssessSymptomswithDatabase(VirtualFunctionTool):
 
 
 class CategorizeUrgency(VirtualFunctionTool):
-    name = "CategorizeUrgency"
-    summary = (
+    name: str = "CategorizeUrgency"
+    summary: str = (
         "Categorize the urgency of a situation or task based on the provided details."
     )
     parameters: List[ArgParameter] = [
@@ -15166,8 +15200,8 @@ class CategorizeUrgency(VirtualFunctionTool):
 
 
 class RecordPatientInfo(VirtualFunctionTool):
-    name = "RecordPatientInfo"
-    summary = "Record a patient's personal information and medical details for future reference."
+    name: str = "RecordPatientInfo"
+    summary: str = "Record a patient's personal information and medical details for future reference."
     parameters: List[ArgParameter] = [
         {
             "name": "patient_id",
@@ -15234,8 +15268,8 @@ class RecordPatientInfo(VirtualFunctionTool):
 
 
 class CommunicateWithMedicalTeam(VirtualFunctionTool):
-    name = "CommunicateWithMedicalTeam"
-    summary = "Facilitate communication between a patient and their medical team."
+    name: str = "CommunicateWithMedicalTeam"
+    summary: str = "Facilitate communication between a patient and their medical team."
     parameters: List[ArgParameter] = [
         {
             "name": "patient_id",
@@ -15287,8 +15321,10 @@ class CommunicateWithMedicalTeam(VirtualFunctionTool):
 
 
 class GenerateTriageReport(VirtualFunctionTool):
-    name = "GenerateTriageReport"
-    summary = "Generate a triage report based on patient symptoms and urgency level."
+    name: str = "GenerateTriageReport"
+    summary: str = (
+        "Generate a triage report based on patient symptoms and urgency level."
+    )
     parameters: List[ArgParameter] = [
         {
             "name": "patient_id",
@@ -15340,8 +15376,8 @@ class GenerateTriageReport(VirtualFunctionTool):
 
 
 class ScheduleER(VirtualFunctionTool):
-    name = "ScheduleER"
-    summary = "Schedule an emergency room visit for a patient based on urgency and availability."
+    name: str = "ScheduleER"
+    summary: str = "Schedule an emergency room visit for a patient based on urgency and availability."
     parameters: List[ArgParameter] = [
         {
             "name": "patient_id",
@@ -15420,8 +15456,8 @@ class MedicalTriage(FunctionToolkit):
 
 #################### MedManagementApp ####################
 class MedAppointmentScheduler(VirtualFunctionTool):
-    name = "MedAppointmentScheduler"
-    summary = "Schedule a medical appointment by providing the doctor's unique identifier, appointment date and time, and reason for appointment."
+    name: str = "MedAppointmentScheduler"
+    summary: str = "Schedule a medical appointment by providing the doctor's unique identifier, appointment date and time, and reason for appointment."
     parameters: List[ArgParameter] = [
         {
             "name": "doctor_id",
@@ -15473,8 +15509,8 @@ class MedAppointmentScheduler(VirtualFunctionTool):
 
 
 class MedPatientRecordManager(VirtualFunctionTool):
-    name = "MedPatientRecordManager"
-    summary = "Manage and access patient records, including medical history, diagnoses, and treatment plans."
+    name: str = "MedPatientRecordManager"
+    summary: str = "Manage and access patient records, including medical history, diagnoses, and treatment plans."
     parameters: List[ArgParameter] = [
         {
             "name": "patient_id",
@@ -15499,8 +15535,8 @@ class MedPatientRecordManager(VirtualFunctionTool):
 
 
 class MedPrescriptionHandler(VirtualFunctionTool):
-    name = "MedPrescriptionHandler"
-    summary = "Manage prescriptions by creating, updating, or discontinuing patient prescriptions."
+    name: str = "MedPrescriptionHandler"
+    summary: str = "Manage prescriptions by creating, updating, or discontinuing patient prescriptions."
     parameters: List[ArgParameter] = [
         {
             "name": "patient_id",
@@ -15558,8 +15594,8 @@ class MedPrescriptionHandler(VirtualFunctionTool):
 
 
 class MedBillingProcessor(VirtualFunctionTool):
-    name = "MedBillingProcessor"
-    summary = "Process medical billing by generating invoices, managing payments, and tracking outstanding balances."
+    name: str = "MedBillingProcessor"
+    summary: str = "Process medical billing by generating invoices, managing payments, and tracking outstanding balances."
     parameters: List[ArgParameter] = [
         {
             "name": "patient_id",
@@ -15607,8 +15643,8 @@ class MedBillingProcessor(VirtualFunctionTool):
 
 
 class MedAppointmentReminder(VirtualFunctionTool):
-    name = "MedAppointmentReminder"
-    summary = (
+    name: str = "MedAppointmentReminder"
+    summary: str = (
         "Send appointment reminders to patients based on upcoming scheduled visits."
     )
     parameters: List[ArgParameter] = [
@@ -15656,8 +15692,8 @@ class MedAppointmentReminder(VirtualFunctionTool):
 
 
 class MedPatientCommunication(VirtualFunctionTool):
-    name = "MedPatientCommunication"
-    summary = (
+    name: str = "MedPatientCommunication"
+    summary: str = (
         "Facilitate communication between a patient and their healthcare provider."
     )
     parameters: List[ArgParameter] = [
@@ -15705,8 +15741,8 @@ class MedPatientCommunication(VirtualFunctionTool):
 
 
 class MedPrescriptionRefill(VirtualFunctionTool):
-    name = "MedPrescriptionRefill"
-    summary = "Request a refill for an existing prescription."
+    name: str = "MedPrescriptionRefill"
+    summary: str = "Request a refill for an existing prescription."
     parameters: List[ArgParameter] = [
         {
             "name": "patient_id",
@@ -15746,8 +15782,8 @@ class MedPrescriptionRefill(VirtualFunctionTool):
 
 
 class MedInsuranceVerification(VirtualFunctionTool):
-    name = "MedInsuranceVerification"
-    summary = "Verify a patient's insurance details before a medical appointment or procedure."
+    name: str = "MedInsuranceVerification"
+    summary: str = "Verify a patient's insurance details before a medical appointment or procedure."
     parameters: List[ArgParameter] = [
         {
             "name": "patient_id",
@@ -15793,8 +15829,8 @@ class MedInsuranceVerification(VirtualFunctionTool):
 
 
 class MedLabResultManager(VirtualFunctionTool):
-    name = "MedLabResultManager"
-    summary = "Manage and access patient lab results, including uploading new results and viewing past results."
+    name: str = "MedLabResultManager"
+    summary: str = "Manage and access patient lab results, including uploading new results and viewing past results."
     parameters: List[ArgParameter] = [
         {
             "name": "patient_id",
@@ -15868,8 +15904,8 @@ class MedManagementApp(FunctionToolkit):
 
 
 class PrescriptionAddMedicine(VirtualFunctionTool):
-    name = "PrescriptionAddMedicine"
-    summary = "Add a new medicine to the prescription by providing the medicine name, dosage, frequency, and duration."
+    name: str = "PrescriptionAddMedicine"
+    summary: str = "Add a new medicine to the prescription by providing the medicine name, dosage, frequency, and duration."
     parameters: List[ArgParameter] = [
         {
             "name": "medicine_name",
@@ -15917,8 +15953,8 @@ class PrescriptionAddMedicine(VirtualFunctionTool):
 
 
 class PrescriptionUpdateMedicine(VirtualFunctionTool):
-    name = "PrescriptionUpdateMedicine"
-    summary = "Update an existing medicine in the prescription by providing the medicine identifier and updated details."
+    name: str = "PrescriptionUpdateMedicine"
+    summary: str = "Update an existing medicine in the prescription by providing the medicine identifier and updated details."
     parameters: List[ArgParameter] = [
         {
             "name": "medicine_id",
@@ -15970,8 +16006,8 @@ class PrescriptionUpdateMedicine(VirtualFunctionTool):
 
 
 class PrescriptionDeleteMedicine(VirtualFunctionTool):
-    name = "PrescriptionDeleteMedicine"
-    summary = (
+    name: str = "PrescriptionDeleteMedicine"
+    summary: str = (
         "Delete a medicine from the prescription by providing the medicine identifier."
     )
     parameters: List[ArgParameter] = [
@@ -16007,8 +16043,8 @@ class PrescriptionDeleteMedicine(VirtualFunctionTool):
 
 
 class PrescriptionSearchMedicine(VirtualFunctionTool):
-    name = "PrescriptionSearchMedicine"
-    summary = "Search for a medicine in the prescription by providing the medicine name or identifier."
+    name: str = "PrescriptionSearchMedicine"
+    summary: str = "Search for a medicine in the prescription by providing the medicine name or identifier."
     parameters: List[ArgParameter] = [
         {
             "name": "query",
@@ -16042,8 +16078,8 @@ class PrescriptionSearchMedicine(VirtualFunctionTool):
 
 
 class PrescriptionTrackDosage(VirtualFunctionTool):
-    name = "PrescriptionTrackDosage"
-    summary = "Track the dosage schedule of a prescribed medicine by providing the medicine identifier and tracking details."
+    name: str = "PrescriptionTrackDosage"
+    summary: str = "Track the dosage schedule of a prescribed medicine by providing the medicine identifier and tracking details."
     parameters: List[ArgParameter] = [
         {
             "name": "medicine_id",
@@ -16089,8 +16125,8 @@ class PrescriptionTrackDosage(VirtualFunctionTool):
 
 
 class PrescriptionSetReminder(VirtualFunctionTool):
-    name = "PrescriptionSetReminder"
-    summary = "Set a reminder for taking a prescribed medicine by providing the medicine identifier and reminder details."
+    name: str = "PrescriptionSetReminder"
+    summary: str = "Set a reminder for taking a prescribed medicine by providing the medicine identifier and reminder details."
     parameters: List[ArgParameter] = [
         {
             "name": "medicine_id",
@@ -16136,8 +16172,8 @@ class PrescriptionSetReminder(VirtualFunctionTool):
 
 
 class PrescriptionUpdateReminder(VirtualFunctionTool):
-    name = "PrescriptionUpdateReminder"
-    summary = "Update an existing reminder for a prescribed medicine by providing the reminder identifier and updated details."
+    name: str = "PrescriptionUpdateReminder"
+    summary: str = "Update an existing reminder for a prescribed medicine by providing the reminder identifier and updated details."
     parameters: List[ArgParameter] = [
         {
             "name": "reminder_id",
@@ -16183,8 +16219,8 @@ class PrescriptionUpdateReminder(VirtualFunctionTool):
 
 
 class PrescriptionDeleteReminder(VirtualFunctionTool):
-    name = "PrescriptionDeleteReminder"
-    summary = "Delete an existing reminder for a prescribed medicine by providing the reminder identifier."
+    name: str = "PrescriptionDeleteReminder"
+    summary: str = "Delete an existing reminder for a prescribed medicine by providing the reminder identifier."
     parameters: List[ArgParameter] = [
         {
             "name": "reminder_id",
@@ -16231,8 +16267,8 @@ class PrescriptionMedicineApp(FunctionToolkit):
 
 
 class TrainMLModel(VirtualFunctionTool):
-    name = "TrainMLModel"
-    summary = "Train a machine learning model by providing the dataset, model type, and relevant hyperparameters."
+    name: str = "TrainMLModel"
+    summary: str = "Train a machine learning model by providing the dataset, model type, and relevant hyperparameters."
     parameters: List[ArgParameter] = [
         {
             "name": "dataset_id",
@@ -16287,8 +16323,8 @@ class TrainMLModel(VirtualFunctionTool):
 
 
 class EvaluateMLModel(VirtualFunctionTool):
-    name = "EvaluateMLModel"
-    summary = "Evaluate a machine learning model by providing the model identifier and test dataset."
+    name: str = "EvaluateMLModel"
+    summary: str = "Evaluate a machine learning model by providing the model identifier and test dataset."
     parameters: List[ArgParameter] = [
         {
             "name": "model_id",
@@ -16328,8 +16364,8 @@ class EvaluateMLModel(VirtualFunctionTool):
 
 
 class PredictWithMLModel(VirtualFunctionTool):
-    name = "PredictWithMLModel"
-    summary = "Make predictions using a trained machine learning model by providing the model identifier and input data."
+    name: str = "PredictWithMLModel"
+    summary: str = "Make predictions using a trained machine learning model by providing the model identifier and input data."
     parameters: List[ArgParameter] = [
         {
             "name": "model_id",
@@ -16382,8 +16418,8 @@ class MachineLearningToolkit(FunctionToolkit):
 
 
 class CreateGoogleDoc(VirtualFunctionTool):
-    name = "CreateGoogleDoc"
-    summary = "Create a new Google Document with a specified title and content."
+    name: str = "CreateGoogleDoc"
+    summary: str = "Create a new Google Document with a specified title and content."
     parameters: List[ArgParameter] = [
         {
             "name": "title",
@@ -16434,8 +16470,8 @@ class CreateGoogleDoc(VirtualFunctionTool):
 
 
 class ListGoogleDocs(VirtualFunctionTool):
-    name = "ListGoogleDocs"
-    summary = "Retrieve a list of Google Documents in the user's Google Drive."
+    name: str = "ListGoogleDocs"
+    summary: str = "Retrieve a list of Google Documents in the user's Google Drive."
     parameters: List[ArgParameter] = [
         {
             "name": "query",
@@ -16464,8 +16500,8 @@ class ListGoogleDocs(VirtualFunctionTool):
 
 
 class DeleteGoogleDoc(VirtualFunctionTool):
-    name = "DeleteGoogleDoc"
-    summary = "Delete a Google Document using its unique identifier."
+    name: str = "DeleteGoogleDoc"
+    summary: str = "Delete a Google Document using its unique identifier."
     parameters: List[ArgParameter] = [
         {
             "name": "document_id",
@@ -16507,8 +16543,8 @@ class GoogleDocsToolkit(FunctionToolkit):
 
 
 class SurveyAnalysis(VirtualFunctionTool):
-    name = "SurveyAnalysis"
-    summary = "Analyze survey data by providing survey ID, list of responses, and the desired type of analysis."
+    name: str = "SurveyAnalysis"
+    summary: str = "Analyze survey data by providing survey ID, list of responses, and the desired type of analysis."
     parameters: List[ArgParameter] = [
         {
             "name": "survey_id",
@@ -16565,8 +16601,8 @@ class SurveyToolkit(FunctionToolkit):
 
 
 class GenerateStatisticalModel(VirtualFunctionTool):
-    name = "GenerateStatisticalModel"
-    summary = "Create a statistical model using a dataset and a specified algorithm for predictive or analytical purposes."
+    name: str = "GenerateStatisticalModel"
+    summary: str = "Create a statistical model using a dataset and a specified algorithm for predictive or analytical purposes."
     parameters: List[ArgParameter] = [
         {
             "name": "dataset",
@@ -16633,8 +16669,8 @@ class GenerateStatisticalModel(VirtualFunctionTool):
 
 
 class PredictUsingModel(VirtualFunctionTool):
-    name = "PredictUsingModel"
-    summary = "Make predictions using a pre-trained statistical model."
+    name: str = "PredictUsingModel"
+    summary: str = "Make predictions using a pre-trained statistical model."
     parameters: List[ArgParameter] = [
         {
             "name": "model",
@@ -16674,8 +16710,8 @@ class PredictUsingModel(VirtualFunctionTool):
 
 
 class ExtractModelCoefficients(VirtualFunctionTool):
-    name = "ExtractModelCoefficients"
-    summary = "Extract the coefficients or feature importances from a trained statistical model."
+    name: str = "ExtractModelCoefficients"
+    summary: str = "Extract the coefficients or feature importances from a trained statistical model."
     parameters: List[ArgParameter] = [
         {
             "name": "model",
@@ -16709,8 +16745,8 @@ class ExtractModelCoefficients(VirtualFunctionTool):
 
 
 class InterpretModelCoefficients(VirtualFunctionTool):
-    name = "InterpretModelCoefficients"
-    summary = "Interpret the meaning and significance of the model's coefficients or feature importances."
+    name: str = "InterpretModelCoefficients"
+    summary: str = "Interpret the meaning and significance of the model's coefficients or feature importances."
     parameters: List[ArgParameter] = [
         {
             "name": "coefficients",
@@ -16746,8 +16782,8 @@ class InterpretModelCoefficients(VirtualFunctionTool):
 
 
 class UpdateModelCoefficients(VirtualFunctionTool):
-    name = "UpdateModelCoefficients"
-    summary = "Manually update the coefficients of a model, if allowed, to reflect new weights or feature importances."
+    name: str = "UpdateModelCoefficients"
+    summary: str = "Manually update the coefficients of a model, if allowed, to reflect new weights or feature importances."
     parameters: List[ArgParameter] = [
         {
             "name": "model",

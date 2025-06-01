@@ -1,7 +1,5 @@
 import gin
-from beartype import beartype
-from langchain.output_parsers import PydanticOutputParser
-from sotopia.generation_utils.generate import agenerate
+from sotopia.generation_utils.generate import PydanticOutputParser, agenerate
 from sotopia.messages import ActionType, AgentAction, Message, SimpleMessage
 
 from haicosystem.protocols import (
@@ -30,7 +28,6 @@ def obtain_history_for_environment(messages: list[tuple[str, str]]) -> str:
 
 
 @gin.configurable
-@beartype
 async def agenerate_action_human(
     model_name: str,
     history: str,
@@ -85,7 +82,6 @@ async def agenerate_action_human(
 
 
 @gin.configurable
-@beartype
 async def agenerate_action_bot(
     model_name: str,
     history: str,
@@ -134,12 +130,12 @@ async def agenerate_action_bot(
             output_parser=PydanticOutputParser(pydantic_object=HaiAgentAction),
             temperature=temperature,
         )
-    except Exception:
+    except Exception as e:
+        print(f"Error in agenerate_action_bot: {e}")
         return HaiAgentAction(action_type="none", argument="")
 
 
 @gin.configurable
-@beartype
 async def agenerate_simulated_observation(
     model_name: str,
     history: str,
@@ -177,7 +173,6 @@ async def agenerate_simulated_observation(
 
 
 @gin.configurable
-@beartype
 async def agenerate_hai_scenarios(
     model_name: str,
     inspiration_prompt: str = "",
