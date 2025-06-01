@@ -84,8 +84,8 @@ class ArgException(TypedDict):
 class DummyToolWithMessage(BaseTool):
     """Tool that is run when invalid situation is encountered by agent."""
 
-    name = "dummy_tool_with_message"
-    description = "Called when tool is not actually run."
+    name: str = "dummy_tool_with_message"
+    description: str = "Called when tool is not actually run."
 
     def _get_message(self, msg: str) -> str:
         return msg
@@ -100,8 +100,8 @@ class DummyToolWithMessage(BaseTool):
 class InvalidTool(DummyToolWithMessage):
     """Tool that is run when invalid tool name is encountered by agent."""
 
-    name = "invalid_tool"
-    description = "Called when tool name is invalid."
+    name: str = "invalid_tool"
+    description: str = "Called when tool name is invalid."
     available_tools: List[str]
 
     def _get_message(self, tool_name: str) -> str:

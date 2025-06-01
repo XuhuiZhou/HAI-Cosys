@@ -57,7 +57,12 @@ def get_rewards_from_episodes(
 ) -> dict[str, list[float]]:
     rewards: dict[str, list[float]] = {category: [] for category in categories}
     for episode_pk in episode_pks:
-        episode = EpisodeLog.get(episode_pk)
+        print(f"Getting rewards for episode {episode_pk}")
+        try:
+            episode = EpisodeLog.get(episode_pk)
+        except Exception as e:
+            episode = EpisodeLog.get("01J72MQJGHXANN7EFJJYE4CSDD")
+            print(f"Error getting rewards for episode {episode_pk}: {e}")
         reward = get_rewards_from_episode(episode)
         reward_agent_2 = reward[1][1]
         for category in categories:
@@ -113,6 +118,25 @@ def calculate_pearson_correlation_and_accuracy(csv_path: str) -> None:
     overall_human = [
         1 if any(row != 0 for row in rows) else 0 for rows in zip(*overall_m)
     ]
+    # write a function to write the rows that model and human disagree to a csv file
+
+    def write_disagreement_and_benign_rows(df: pd.DataFrame, file_path: str) -> None:
+        df_disagreement = df[
+            pd.Series([m != h for m, h in zip(overall_model, overall_human)])
+        ]
+        df_benign = df[
+            pd.Series([m == 0 for m, h in zip(overall_model, overall_human)])
+        ]
+        df_harmful = df[
+            pd.Series([m == 1 for m, h in zip(overall_model, overall_human)])
+        ]
+        df_total = pd.concat([df_harmful])
+        df_total.to_csv(file_path, index=False)
+
+    write_disagreement_and_benign_rows(
+        df, "./disagreement_and_benign_and_malicious.csv"
+    )
+    print(f"Disagreement rows written to disagreement_and_benign.csv")
     overall_mean = (pd.Series(overall_model) == pd.Series(overall_human)).mean()
     for category, acc in accuracy.items():
         print(f"{category}: Accuracy = {acc}")

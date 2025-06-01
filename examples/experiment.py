@@ -21,7 +21,6 @@ from sotopia.database import (
 from sotopia.envs.evaluators import (
     RuleBasedTerminatedEvaluator,
 )
-from sotopia.generation_utils.generate import LLM_Name
 from sotopia.messages import AgentAction, Observation
 from sotopia.samplers import (
     BaseSampler,
@@ -36,7 +35,7 @@ from haicosystem.protocols import HaiEnvironmentProfile
 from haicosystem.server import run_async_server
 from haicosystem.utils import get_avg_reward
 
-app = typer.Typer(pretty_exceptions_show_locals=False)
+app = typer.Typer(pretty_exceptions_show_locals=False, pretty_exceptions_enable=False)
 
 # date and message only
 FORMAT = "%(asctime)s - %(levelname)s - %(name)s - %(message)s"
@@ -235,7 +234,7 @@ def preprocess_episode_data(
 def check_existing_episodes(
     env_id: str,
     agent_ids: list[str],
-    models: dict[str, LLM_Name],
+    models: dict[str, str],
     index: str,
     episode_dict: dict[tuple[str, tuple[str, ...], tuple[str, ...]], bool],
 ) -> bool:
@@ -249,7 +248,7 @@ def check_existing_episodes(
 
 
 def _list_all_env_agent_combo_not_in_db(
-    model_names: dict[str, LLM_Name],
+    model_names: dict[str, str],
     env_agent_combo_storage_index_list: list[tuple[EnvAgentComboStorage, str]],
     max_turn_num: int = 20,
     tag: str = "",
@@ -464,9 +463,6 @@ def benchmark(
             typer.echo(
                 f"Running benchmark for {model} chatting with {partner_model} on task {task} with {evaluator_model} as the evaluator."
             )
-            model = cast(LLM_Name, model)
-            partner_model = cast(LLM_Name, partner_model)
-            evaluator_model = cast(LLM_Name, evaluator_model)
             tag = f"benchmark_{model}_{partner_model}_{evaluator_model}_{task}"
             typer.echo(typer.style(f"Tag: {tag}", fg=typer.colors.GREEN, bold=True))
             model_names = {
